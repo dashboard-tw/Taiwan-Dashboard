@@ -437,6 +437,26 @@ func OpenAPI(o SpecOptions) obj {
 		}}
 	}
 
+	tags = append(tags, obj{"name": "嵌入圖表", "description": "取得網站圖表的 iframe 嵌入碼，不需要 API 憑證，也不計入額度"})
+	paths["/components/{slug}/embed"] = obj{"get": obj{
+		"tags": []string{"嵌入圖表"}, "summary": "取得圖表的嵌入碼", "operationId": "getEmbedCode",
+		"description": "回傳可以直接貼進網頁的 iframe HTML。元件代碼就是元件頁網址最後一段，例如 aqi-by-county。",
+		"security":    []obj{},
+		"parameters": []obj{
+			param("slug", "path", "元件代碼", obj{"type": "string", "examples": []string{"aqi-by-county"}}, true),
+			param("county", "query", "縣市代碼，只顯示這個縣市。省略時是全國", obj{"type": "string", "examples": []string{"63000"}}, false),
+			param("theme", "query", "深淺色，省略時跟隨瀏覽器", obj{"type": "string", "enum": []string{"light", "dark"}}, false),
+			param("width", "query", "寬度（像素）", obj{"type": "integer", "minimum": 200, "maximum": 2000, "default": 450}, false),
+			param("height", "query", "高度（像素）", obj{"type": "integer", "minimum": 200, "maximum": 2000, "default": 400}, false),
+		},
+		"responses": func() obj {
+			r := errorResponses(400, 404)
+			r["200"] = obj{"description": "iframe 嵌入碼", "content": obj{"text/html": obj{"schema": obj{"type": "string",
+				"examples": []string{`<iframe id="dashboard-tw-aqi-by-county" title="各縣市空氣品質指標" src="https://dashboard.tw/embed/aqi-by-county" width="450" height="400" style="border-radius: 5px" frameborder="0" loading="lazy"></iframe>`}}}}}
+			return r
+		}(),
+	}}
+
 	return obj{
 		"openapi": "3.1.0",
 		"info": obj{
