@@ -67,10 +67,6 @@ const TOC = [
             <td>C001 辨識個人者</td>
           </tr>
           <tr>
-            <td>已刪除的 API 憑證與其用量紀錄</td>
-            <td>刪除後 90 天</td>
-          </tr>
-          <tr>
             <td>登入紀錄</td>
             <td>登入時的 IP 位址、瀏覽器資訊、最後使用時間</td>
             <td>C001 辨識個人者</td>
@@ -128,11 +124,25 @@ const TOC = [
       <ul>
         <li>Cloudflare：網站連線與安全防護，會依其隱私權政策處理連線資料。</li>
         <li>GitHub、Google：提供登入。您登入時，由這兩個平台依其隱私權政策處理您的資料。</li>
+        <li>
+          Google Analytics：統計瀏覽人數、看了哪些頁面與從哪裡來，用來改善網站。不會傳送您的名稱或
+          Email。
+        </li>
       </ul>
-      <p>本站伺服器與資料庫位於中華民國境內。本站沒有使用廣告、追蹤或第三方分析服務。</p>
+      <p>本站伺服器與資料庫位於中華民國境內。本站沒有廣告。</p>
+      <p>
+        不想被統計，可以安裝 Google 的<a
+          href="https://tools.google.com/dlpage/gaoptout"
+          rel="noopener"
+          >停用 Google Analytics 外掛程式</a
+        >，或在瀏覽器封鎖第三方 Cookie。
+      </p>
 
       <h2 id="p6">第六條　Cookie 與瀏覽器儲存</h2>
-      <p>本站只使用維持服務運作所必要的 Cookie，不使用追蹤或廣告 Cookie：</p>
+      <p>
+        本站使用維持服務運作所必要的 Cookie，以及 Google Analytics 的統計 Cookie，不使用廣告
+        Cookie：
+      </p>
       <table class="doc-table">
         <thead>
           <tr>
@@ -156,6 +166,11 @@ const TOC = [
             <td>dtw_link</td>
             <td>綁定另一個登入方式時，暫存待確認的綁定</td>
             <td>10 分鐘</td>
+          </tr>
+          <tr>
+            <td>_ga、_ga_*</td>
+            <td>Google Analytics 區分不同的訪客與瀏覽階段</td>
+            <td>2 年</td>
           </tr>
         </tbody>
       </table>
@@ -191,6 +206,10 @@ const TOC = [
             <td>至您刪除帳號為止</td>
           </tr>
           <tr>
+            <td>已刪除的 API 憑證與其用量紀錄</td>
+            <td>刪除後 90 天</td>
+          </tr>
+          <tr>
             <td>登入紀錄</td>
             <td>登出或過期後 30 天</td>
           </tr>
@@ -209,6 +228,10 @@ const TOC = [
           <tr>
             <td>伺服器記憶體中的連線 IP</td>
             <td>僅在記憶體中短暫保存，不寫入資料庫</td>
+          </tr>
+          <tr>
+            <td>Google Analytics 統計資料</td>
+            <td>14 個月</td>
           </tr>
         </tbody>
       </table>
