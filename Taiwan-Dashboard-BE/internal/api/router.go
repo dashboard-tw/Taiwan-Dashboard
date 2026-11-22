@@ -44,14 +44,18 @@ func NewRouter(deps Deps) *gin.Engine {
 	if len(deps.Auth.Origins) > 0 {
 		siteURL = deps.Auth.Origins[0]
 	}
-	r.GET("/robots.txt", robots(deps.Indexable, siteURL))
+	getHead := func(path string, h gin.HandlerFunc) {
+		r.GET(path, h)
+		r.HEAD(path, h)
+	}
+	getHead("/robots.txt", robots(deps.Indexable, siteURL))
 	if siteURL != "" {
-		r.GET(ardPath, ardManifest(siteURL))
-		r.GET("/.well-known/ai-catalog.json", ardManifest(siteURL))
+		getHead(ardPath, ardManifest(siteURL))
+		getHead("/.well-known/ai-catalog.json", ardManifest(siteURL))
 	}
 	if deps.Screen != nil {
-		r.GET("/sitemap.xml", sitemap(deps.Screen, siteURL))
-		r.GET("/llms.txt", llmsTxt(deps.Screen, siteURL))
+		getHead("/sitemap.xml", sitemap(deps.Screen, siteURL))
+		getHead("/llms.txt", llmsTxt(deps.Screen, siteURL))
 	}
 
 	v1 := r.Group("/api/v1")
