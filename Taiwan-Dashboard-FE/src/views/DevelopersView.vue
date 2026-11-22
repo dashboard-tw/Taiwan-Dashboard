@@ -574,6 +574,16 @@ const HEADERS = [
               的網頁使用。它們不開放其他網站呼叫，只有最近一年的資料，格式也可能隨時調整。要在自己的服務使用資料，請用本文件介紹的開放資料
               API。
             </p>
+            <p class="sec-lead">
+              想嵌入圖表，可以直接呼叫
+              <code>GET {{ origin }}/api/v1/components/{元件代碼}/embed</code>
+              取得現成的 iframe 嵌入碼，不需要 API 憑證。可加上
+              <code>county</code>（縣市代碼）、<code>theme</code>（light 或 dark）、<code
+                >width</code
+              >
+              與 <code>height</code>。元件代碼就是元件頁網址最後一段，例如
+              <code>aqi-by-county</code>。
+            </p>
           </section>
         </template>
 

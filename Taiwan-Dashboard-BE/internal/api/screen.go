@@ -33,7 +33,7 @@ type screenHandlers struct {
 	svc *screen.Service
 }
 
-func registerScreen(g *gin.RouterGroup, svc *screen.Service) {
+func registerScreen(g *gin.RouterGroup, svc *screen.Service, base string) {
 	h := screenHandlers{svc: svc}
 	g.GET("/counties", allowParams(), h.counties)
 	g.GET("/geo/counties.geojson", allowParams(), h.countiesGeoJSON)
@@ -44,6 +44,7 @@ func registerScreen(g *gin.RouterGroup, svc *screen.Service) {
 	g.GET("/components/:slug/data", allowParams("county", "from", "to", "typhoon", "format"), h.data(false))
 	g.GET("/components/:slug/history", allowParams("county", "from", "to", "typhoon", "format"), h.data(true))
 	g.GET("/components/:slug/layers/:file", allowParams("county", "typhoon"), h.layer)
+	g.GET("/components/:slug/embed", allowParams("county", "theme", "width", "height"), h.embed(base))
 	g.GET("/typhoons", allowParams(), h.typhoons)
 	g.GET("/earthquakes", allowParams(), h.quakes)
 	g.GET("/earthquakes/:id", allowParams(), h.quake)

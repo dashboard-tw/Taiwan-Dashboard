@@ -95,7 +95,7 @@ func NewRouter(deps Deps) *gin.Engine {
 			burst = 60
 		}
 		screenGroup := v1.Group("", newLimiter(perMinute, burst).middleware())
-		registerScreen(screenGroup, deps.Screen)
+		registerScreen(screenGroup, deps.Screen, siteURL)
 		if deps.ImageDir != "" {
 			registerImages(screenGroup, deps.ImageDir)
 		} else if deps.ImageProxy != nil {
