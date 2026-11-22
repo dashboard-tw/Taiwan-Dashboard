@@ -103,7 +103,7 @@ const openIndex = Math.max(
     animation: none;
   }
 }
-@media (max-width: 759px) {
+@media (max-width: 47.4375em) {
   .map-skeleton {
     display: block;
     position: fixed;

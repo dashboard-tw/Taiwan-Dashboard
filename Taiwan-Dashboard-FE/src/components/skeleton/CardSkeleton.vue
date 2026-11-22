@@ -37,12 +37,12 @@ withDefaults(defineProps<{ kind?: 'bar' | 'donut' | 'line' | 'map'; pills?: bool
   border-radius: var(--radius);
   background: var(--surface);
 }
-@media (min-width: 1050px) {
+@media (min-width: 65.625em) {
   .card-skeleton {
     height: 370px;
   }
 }
-@media (min-width: 1650px) {
+@media (min-width: 103.125em) {
   .card-skeleton {
     height: 400px;
   }

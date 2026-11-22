@@ -101,7 +101,7 @@ h1 {
 }
 .panel-title .mi {
   color: var(--text-muted);
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 .panel p {
   color: var(--text-secondary);
@@ -125,7 +125,7 @@ h1 {
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
-@media (min-width: 1180px) {
+@media (min-width: 73.75em) {
   .split {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 28px;
@@ -204,7 +204,7 @@ h1 {
 .code.c4 {
   color: #d9661f;
 }
-@media (max-width: 640px) {
+@media (max-width: 40em) {
   .statuses li {
     grid-template-columns: 44px minmax(0, 1fr);
   }

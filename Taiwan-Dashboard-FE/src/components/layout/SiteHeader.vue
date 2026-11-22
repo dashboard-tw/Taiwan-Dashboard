@@ -280,7 +280,7 @@ const themeLabel = computed(
 .text-link.on {
   color: var(--header-accent);
 }
-@media (max-width: 1199px) {
+@media (max-width: 74.9375em) {
   .text-link .label {
     display: none;
   }
@@ -382,12 +382,12 @@ const themeLabel = computed(
   display: none;
   margin-left: -0.5rem;
 }
-@media (max-width: 999px) {
+@media (max-width: 62.4375em) {
   .menu-toggle {
     display: grid;
   }
 }
-@media (max-width: 719px) {
+@media (max-width: 44.9375em) {
   .tabs,
   .name-en,
   .text-link {

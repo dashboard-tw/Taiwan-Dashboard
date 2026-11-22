@@ -319,7 +319,7 @@ const TOC = [
 .toc a:hover {
   color: var(--accent);
 }
-@media (max-width: 600px) {
+@media (max-width: 37.5em) {
   .toc ol {
     columns: 1;
   }

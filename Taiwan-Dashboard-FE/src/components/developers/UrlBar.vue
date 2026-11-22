@@ -86,6 +86,6 @@ async function copy() {
   color: var(--text-primary);
 }
 .copy .mi {
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 </style>

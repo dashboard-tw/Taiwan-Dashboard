@@ -47,7 +47,7 @@ withDefaults(defineProps<{ kind?: 'bar' | 'donut' | 'line' | 'map' }>(), { kind:
   border-radius: var(--radius);
   background: var(--surface);
 }
-@media (min-width: 820px) {
+@media (min-width: 51.25em) {
   .info-skeleton {
     grid-template-columns: 3fr 2fr;
     height: 440px;

@@ -167,7 +167,7 @@ function num(v: number | null, d = 1) {
   font-size: 0.875rem;
 }
 .crumbs .mi {
-  font-size: 16px;
+  font-size: 1rem;
 }
 .layout {
   display: grid;
@@ -253,7 +253,7 @@ h2 {
   border-radius: var(--radius);
   background: #ffffff;
 }
-@media (max-width: 999px) {
+@media (max-width: 62.4375em) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
   }

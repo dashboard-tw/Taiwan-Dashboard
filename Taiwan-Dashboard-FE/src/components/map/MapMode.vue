@@ -75,7 +75,7 @@ function onDragEnd(e: PointerEvent) {
   sheet.value = order[Math.max(0, Math.min(2, i))]!
 }
 
-const phone = window.matchMedia('(max-width: 759px)')
+const phone = window.matchMedia('(max-width: 47.4375em)')
 const insetBottom = computed(() => {
   if (!phone.matches) return 0
   const h = window.innerHeight
@@ -376,7 +376,7 @@ function freq(c: ComponentInfo) {
   border-radius: 2px;
 }
 
-@media (max-width: 759px) {
+@media (max-width: 47.4375em) {
   .map-mode {
     display: block;
     position: fixed;

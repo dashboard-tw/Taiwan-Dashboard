@@ -125,7 +125,7 @@ const skeleton = computed(() => (list.value ? list.value.map(slotOf) : UNKNOWN_S
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
 }
-@media (max-width: 759px) {
+@media (max-width: 47.4375em) {
   .search {
     width: 8rem;
   }

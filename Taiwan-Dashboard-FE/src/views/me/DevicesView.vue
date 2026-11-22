@@ -260,7 +260,7 @@ dd {
 .small a {
   color: var(--accent);
 }
-@media (max-width: 520px) {
+@media (max-width: 32.5em) {
   .device {
     grid-template-columns: auto 1fr;
   }

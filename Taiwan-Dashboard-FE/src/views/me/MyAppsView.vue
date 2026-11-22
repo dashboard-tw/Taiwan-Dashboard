@@ -104,7 +104,7 @@ const hasClient = computed(() => (state.value ? state.value.clients.length > 0 :
   gap: var(--font-m);
   align-items: start;
 }
-@media (min-width: 1100px) {
+@media (min-width: 68.75em) {
   .grid {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   }

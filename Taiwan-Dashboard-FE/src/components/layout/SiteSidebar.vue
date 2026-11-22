@@ -286,7 +286,7 @@ nav a[aria-current='page'] {
   display: none;
 }
 
-@media (max-width: 999px) {
+@media (max-width: 62.4375em) {
   .sidebar,
   .sidebar.collapsed {
     position: fixed;

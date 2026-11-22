@@ -68,7 +68,7 @@ const TABS = [
 .mobile-note {
   display: none;
 }
-@media (max-width: 999px) {
+@media (max-width: 62.4375em) {
   .mobile-note {
     display: block;
     margin-top: 0.5rem;

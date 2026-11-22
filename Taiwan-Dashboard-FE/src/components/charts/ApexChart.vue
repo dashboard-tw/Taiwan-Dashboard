@@ -13,6 +13,15 @@ import 'apexcharts/dist/apexcharts.css'
 import 'apexcharts/dist/apexcharts-legend.css'
 import { resolvedTheme } from '../../theme'
 
+if (typeof window !== 'undefined') {
+  const label = { style: { fontSize: '0.6875rem' } }
+  ;(window as unknown as { Apex: ApexOptions }).Apex = {
+    xaxis: { labels: label },
+    yaxis: { labels: label },
+    dataLabels: { style: { fontSize: '0.75rem' } },
+  }
+}
+
 const props = defineProps<{
   type: 'bar' | 'donut' | 'line' | 'area' | 'treemap'
   series: ApexOptions['series']

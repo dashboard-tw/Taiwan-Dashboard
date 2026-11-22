@@ -154,7 +154,7 @@ h2 {
 .more:hover {
   color: var(--text-primary);
 }
-@media (max-width: 640px) {
+@media (max-width: 40em) {
   .row {
     grid-template-columns: minmax(0, 1fr) auto 20px;
   }

@@ -362,7 +362,7 @@ path.faded {
   stroke-width: 1.6;
 }
 .value {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: central;

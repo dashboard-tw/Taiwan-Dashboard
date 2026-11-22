@@ -241,30 +241,30 @@ function openInfo() {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  height: 330px;
+  height: 20.625rem;
   padding: var(--font-m);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text-primary);
 }
-@media (min-width: 1050px) {
+@media (min-width: 65.625em) {
   .component-card {
-    height: 370px;
+    height: 23.125rem;
   }
 }
-@media (min-width: 1900px) {
+@media (min-width: 118.75em) {
   .component-card {
-    height: 400px;
+    height: 25rem;
   }
 }
 .mode-large {
   height: 100%;
-  min-height: 350px;
+  min-height: 21.875rem;
   padding: 0;
   background: transparent;
 }
 .mode-map {
-  height: 300px;
+  height: 18.75rem;
   padding: 0;
   background: transparent;
 }
@@ -394,7 +394,7 @@ h2 .tag {
   display: flex;
   gap: 4px;
 }
-@media (max-width: 759px) {
+@media (max-width: 47.4375em) {
   .hide-mobile {
     display: none;
   }

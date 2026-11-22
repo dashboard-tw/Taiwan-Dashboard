@@ -457,7 +457,7 @@ function mb(bytes: number) {
 code {
   font-size: 0.8rem;
 }
-@media (max-width: 1100px) {
+@media (max-width: 68.75em) {
   .two {
     grid-template-columns: minmax(0, 1fr);
   }

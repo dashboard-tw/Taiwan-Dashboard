@@ -41,7 +41,7 @@
   --header-h: 60px;
   --font-xl: 1.5rem;
   --font-l: 1.25rem;
-  --font-m: 18px;
+  --font-m: 1.125rem;
   --font-ms: 1rem;
   --font-s: 0.75rem;
 
@@ -209,17 +209,17 @@ button {
   grid-template-columns: minmax(0, 1fr);
   gap: var(--font-m);
 }
-@media (min-width: 720px) {
+@media (min-width: 45em) {
   .component-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@media (min-width: 1200px) {
+@media (min-width: 75em) {
   .component-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-@media (min-width: 1600px) {
+@media (min-width: 100em) {
   .component-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }

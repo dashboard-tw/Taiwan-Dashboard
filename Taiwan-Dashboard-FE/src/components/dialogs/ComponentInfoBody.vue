@@ -159,14 +159,14 @@ function hostname(link: string): string {
   display: grid;
   width: min(400px, calc(100vw - 4rem));
 }
-@media (min-width: 820px) {
+@media (min-width: 51.25em) {
   .info-body {
     width: 720px;
     height: 410px;
     grid-template-columns: 3fr 2fr;
   }
 }
-@media (min-width: 1200px) {
+@media (min-width: 75em) {
   .info-body {
     width: 820px;
     height: 440px;
@@ -179,7 +179,7 @@ function hostname(link: string): string {
   padding: var(--font-ms);
   border-top: 1px solid var(--border);
 }
-@media (min-width: 820px) {
+@media (min-width: 51.25em) {
   .info {
     margin-left: var(--font-ms);
     border-top: 0;

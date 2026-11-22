@@ -19,7 +19,7 @@ import { prefetchDashboards } from './api/client'
 const route = useRoute()
 const bare = computed(() => route.meta.bare === true)
 
-const narrow = useMediaQuery('(max-width: 999px)')
+const narrow = useMediaQuery('(max-width: 62.4375em)')
 const COLLAPSED_KEY = 'dashboardtw:sidebar-collapsed'
 const collapsed = ref(readCollapsed())
 const drawerOpen = ref(false)

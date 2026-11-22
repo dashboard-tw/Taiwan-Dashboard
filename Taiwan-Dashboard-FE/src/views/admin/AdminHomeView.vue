@@ -308,7 +308,7 @@ function time(iso: string | null) {
   display: block;
   margin-top: 2px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 68.75em) {
   .charts,
   .two {
     grid-template-columns: minmax(0, 1fr);

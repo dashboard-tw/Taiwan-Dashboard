@@ -892,7 +892,7 @@ h1 {
 }
 .nav-search .mi {
   color: var(--text-muted);
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 .nav-search input {
   flex: 1;
@@ -950,7 +950,7 @@ h1 {
 }
 .chev {
   color: var(--text-muted);
-  font-size: 18px;
+  font-size: 1.125rem;
   transition: transform 0.2s ease;
 }
 .chev.up {
@@ -1012,7 +1012,7 @@ h1 {
 .split > :first-child {
   margin-top: 0;
 }
-@media (min-width: 1280px) {
+@media (min-width: 80em) {
   .split {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 32px;
@@ -1339,7 +1339,7 @@ h1 {
 .menu {
   display: none;
 }
-@media (max-width: 900px) {
+@media (max-width: 56.25em) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1378,7 +1378,7 @@ h1 {
     padding-left: 24px;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: 40em) {
   .top-inner,
   .main {
     padding-left: 16px;
@@ -1439,7 +1439,7 @@ h1 {
   color: var(--accent);
 }
 .crumbs .mi {
-  font-size: 16px;
+  font-size: 1rem;
 }
 .crumbs + * {
   margin-top: 10px;

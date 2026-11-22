@@ -588,7 +588,7 @@ const downloadMonth: CommandPart[] = [
   gap: var(--font-m);
   align-items: start;
 }
-@media (min-width: 1100px) {
+@media (min-width: 68.75em) {
   .grid {
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   }
@@ -753,7 +753,7 @@ code {
 .small {
   font-size: var(--font-s);
 }
-@media (max-width: 759px) {
+@media (max-width: 47.4375em) {
   .datasets li {
     grid-template-columns: 1fr;
     gap: 0;

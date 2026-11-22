@@ -494,7 +494,7 @@ const shown = computed(() => {
 .meta {
   display: none;
 }
-@media (max-width: 600px) {
+@media (max-width: 37.5em) {
   .doc-table th:not(:first-child),
   .doc-table td:not(:first-child) {
     display: none;

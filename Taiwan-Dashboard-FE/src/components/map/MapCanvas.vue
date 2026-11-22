@@ -39,7 +39,7 @@ const el = ref<HTMLDivElement | null>(null)
 const map = shallowRef<MapLibreMap | null>(null)
 const ready = ref(false)
 const counties = shallowRef<CountyCollection | null>(null)
-const mobile = window.matchMedia('(max-width: 759px)')
+const mobile = window.matchMedia('(max-width: 47.4375em)')
 
 function color(v: string): string {
   if (!v.startsWith('var(')) return v

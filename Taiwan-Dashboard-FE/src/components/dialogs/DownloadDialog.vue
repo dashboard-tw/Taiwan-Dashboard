@@ -62,8 +62,8 @@ async function submit() {
     <form class="download" @submit.prevent="submit">
       <h2>下載資料</h2>
       <label class="field">
-        <span>請輸入檔名</span>
-        <input v-model="name" type="text" required minlength="1" />
+        <span>請輸入檔名（必填）</span>
+        <input v-model="name" type="text" required pattern=".*\S.*" title="請輸入檔名" />
       </label>
       <fieldset>
         <legend>請選擇檔案格式</legend>
@@ -73,7 +73,7 @@ async function submit() {
       <p v-if="failed" class="warn">下載失敗，請稍後再試</p>
       <div class="control">
         <button type="button" class="cancel" @click="dialogs.download = false">取消</button>
-        <button type="submit" class="btn-highlight" :disabled="busy || !name.trim()">
+        <button type="submit" class="btn-highlight" :disabled="busy">
           下載{{ format }}
         </button>
       </div>
@@ -110,7 +110,6 @@ input[type='text'] {
 }
 input[type='text']:focus {
   border-color: var(--accent);
-  outline: none;
 }
 fieldset {
   border: 0;
