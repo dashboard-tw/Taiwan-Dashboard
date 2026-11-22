@@ -9,6 +9,8 @@ import 'apexcharts/treemap'
 import 'apexcharts/features/legend'
 import 'apexcharts/features/exports'
 import VueApexCharts from 'vue3-apexcharts/core'
+import 'apexcharts/dist/apexcharts.css'
+import 'apexcharts/dist/apexcharts-legend.css'
 import { resolvedTheme } from '../../theme'
 
 const props = defineProps<{
@@ -33,6 +35,7 @@ const themed = computed<ApexOptions>(() => {
     chart: {
       fontFamily: 'inherit',
       background: 'transparent',
+      injectStyleSheet: false,
       foreColor: dark ? '#c3c3c3' : '#4a4d52',
       toolbar: { show: false },
       animations:
@@ -49,7 +52,12 @@ const themed = computed<ApexOptions>(() => {
     },
     theme: { mode: dark ? 'dark' : 'light' },
     grid: { borderColor: dark ? '#3a3c3f' : '#e1e3e7', ...props.options.grid },
-    tooltip: { theme: dark ? 'dark' : 'light', ...props.options.tooltip },
+    legend: { fontSize: '0.75rem', ...props.options.legend },
+    tooltip: {
+      theme: dark ? 'dark' : 'light',
+      ...props.options.tooltip,
+      style: { fontSize: '0.75rem', ...props.options.tooltip?.style },
+    },
   }
 })
 

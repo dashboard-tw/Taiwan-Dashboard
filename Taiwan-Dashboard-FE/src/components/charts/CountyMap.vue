@@ -206,7 +206,7 @@ defineExpose({ pngDataUrl: () => pngDataUrl() })
           class="inset-name"
           :x="12"
           :y="inset.y + INSET_HEADER / 2 + 2"
-          :style="{ fontSize: `${insetFont}px` }"
+          :font-size="insetFont"
         >
           {{ inset.name }}
           <tspan v-if="shown.has(inset.code)" class="inset-value" dx="8">
