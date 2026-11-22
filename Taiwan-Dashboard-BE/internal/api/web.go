@@ -24,7 +24,7 @@ func robots(indexable bool, base string) gin.HandlerFunc {
 	if indexable {
 		body = "User-agent: *\nDisallow: /api/\nDisallow: /admin\nDisallow: /me\nDisallow: /embed/\n"
 		if base != "" {
-			body += "\nSitemap: " + base + "/sitemap.xml\n"
+			body += "\nSitemap: " + base + "/sitemap.xml\nAgentmap: " + base + ardPath + "\n"
 		}
 	}
 	return func(c *gin.Context) {

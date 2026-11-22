@@ -45,6 +45,10 @@ func NewRouter(deps Deps) *gin.Engine {
 		siteURL = deps.Auth.Origins[0]
 	}
 	r.GET("/robots.txt", robots(deps.Indexable, siteURL))
+	if siteURL != "" {
+		r.GET(ardPath, ardManifest(siteURL))
+		r.GET("/.well-known/ai-catalog.json", ardManifest(siteURL))
+	}
 	if deps.Screen != nil {
 		r.GET("/sitemap.xml", sitemap(deps.Screen, siteURL))
 		r.GET("/llms.txt", llmsTxt(deps.Screen, siteURL))
