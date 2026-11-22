@@ -13,15 +13,15 @@ defineProps<{
     <div class="tag-tooltip" role="tooltip" :style="{ left: `${x - 40}px`, top: `${y - 110}px` }">
       <h6>組件資訊與功能</h6>
       <p :class="{ off: !hasFilter }">
-        <span class="mi">{{ hasFilter ? 'check' : 'clear' }}</span
+        <span class="mi" aria-hidden="true">{{ hasFilter ? 'check' : 'clear' }}</span
         >可用圖表篩選地圖
       </p>
       <p :class="{ off: !hasMapLayer }">
-        <span class="mi">{{ hasMapLayer ? 'check' : 'clear' }}</span
+        <span class="mi" aria-hidden="true">{{ hasMapLayer ? 'check' : 'clear' }}</span
         >具備空間資料
       </p>
       <p :class="{ off: !hasHistory }">
-        <span class="mi">{{ hasHistory ? 'check' : 'clear' }}</span
+        <span class="mi" aria-hidden="true">{{ hasHistory ? 'check' : 'clear' }}</span
         >具備歷史資料
       </p>
     </div>

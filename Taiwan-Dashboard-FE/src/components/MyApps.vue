@@ -214,7 +214,7 @@ function statusText(a: MyApp) {
     <h2>
       我的應用
       <RouterLink to="/showcase/app" class="btn-plain"
-        ><span class="mi">apps</span>應用活化</RouterLink
+        ><span class="mi" aria-hidden="true">apps</span>應用活化</RouterLink
       >
     </h2>
     <p v-if="!apps.length && editing === null" class="muted small">還沒有申請紀錄</p>
@@ -233,10 +233,10 @@ function statusText(a: MyApp) {
           <p v-if="a.review_note" class="note small">原因：{{ a.review_note }}</p>
           <div class="actions">
             <button type="button" class="btn-plain" @click="start(a)">
-              <span class="mi">edit</span>修改
+              <span class="mi" aria-hidden="true">edit</span>修改
             </button>
             <button type="button" class="btn-plain" @click="remove(a)">
-              <span class="mi">delete</span>刪除
+              <span class="mi" aria-hidden="true">delete</span>刪除
             </button>
           </div>
         </div>
@@ -315,7 +315,8 @@ function statusText(a: MyApp) {
           <div class="image-row">
             <img v-if="preview" :src="preview" alt="" class="thumb" />
             <label class="btn-plain upload">
-              <span class="mi">image</span>{{ preview ? '更換圖片' : '選擇圖片' }}
+              <span class="mi" aria-hidden="true">image</span
+              >{{ preview ? '更換圖片' : '選擇圖片' }}
               <input type="file" accept="image/png,image/jpeg,image/webp" @change="pick" />
             </label>
           </div>
@@ -365,7 +366,7 @@ function statusText(a: MyApp) {
       建立 API 憑證後才能申請。<RouterLink to="/me/api-key">前往 API 憑證</RouterLink>
     </p>
     <button v-else-if="props.hasClient" type="button" class="btn-plain add" @click="start()">
-      <span class="mi">add</span>申請應用活化
+      <span class="mi" aria-hidden="true">add</span>申請應用活化
     </button>
   </section>
 </template>

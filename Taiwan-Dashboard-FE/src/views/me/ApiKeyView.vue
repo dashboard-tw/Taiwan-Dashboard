@@ -362,7 +362,7 @@ const downloadMonth: CommandPart[] = [
           <h2>
             我的憑證（{{ clients.length }}/{{ maxClients }}）
             <RouterLink to="/developers" class="btn-plain"
-              ><span class="mi">description</span>API 文件</RouterLink
+              ><span class="mi" aria-hidden="true">description</span>API 文件</RouterLink
             >
           </h2>
 
@@ -394,7 +394,9 @@ const downloadMonth: CommandPart[] = [
                     :aria-label="`複製 ${c.name} 的 Client Id`"
                     @click="copy(c.client_id, `id-${c.id}`)"
                   >
-                    <span class="mi">{{ copied === `id-${c.id}` ? 'check' : 'content_copy' }}</span>
+                    <span class="mi" aria-hidden="true">{{
+                      copied === `id-${c.id}` ? 'check' : 'content_copy'
+                    }}</span>
                   </button>
                 </dd>
                 <dt>Client Secret</dt>
@@ -406,7 +408,9 @@ const downloadMonth: CommandPart[] = [
                     :aria-label="`複製 ${c.name} 的 Client Secret`"
                     @click="copy(fresh.secret, 'secret')"
                   >
-                    <span class="mi">{{ copied === 'secret' ? 'check' : 'content_copy' }}</span>
+                    <span class="mi" aria-hidden="true">{{
+                      copied === 'secret' ? 'check' : 'content_copy'
+                    }}</span>
                   </button>
                 </dd>
                 <dd v-else-if="c.secret_hint" class="masked">
@@ -424,14 +428,16 @@ const downloadMonth: CommandPart[] = [
               </dl>
               <div class="actions">
                 <button type="button" class="btn-plain" :disabled="busy" @click="rotate(c)">
-                  <span class="mi">autorenew</span>重新產生 Secret
+                  <span class="mi" aria-hidden="true">autorenew</span>重新產生 Secret
                 </button>
                 <button type="button" class="btn-plain" :disabled="busy" @click="toggle(c)">
-                  <span class="mi">{{ c.enabled ? 'block' : 'check_circle' }}</span
+                  <span class="mi" aria-hidden="true">{{
+                    c.enabled ? 'block' : 'check_circle'
+                  }}</span
                   >{{ c.enabled ? '停用' : '啟用' }}
                 </button>
                 <button type="button" class="btn-plain danger" :disabled="busy" @click="remove(c)">
-                  <span class="mi">delete</span>刪除
+                  <span class="mi" aria-hidden="true">delete</span>刪除
                 </button>
               </div>
             </li>
@@ -451,7 +457,7 @@ const downloadMonth: CommandPart[] = [
               aria-label="憑證名稱"
             />
             <button type="submit" class="btn-highlight" :disabled="busy">
-              <span class="mi">add</span>建立憑證
+              <span class="mi" aria-hidden="true">add</span>建立憑證
             </button>
           </form>
           <p v-else-if="clients.length >= maxClients" class="muted small">
@@ -532,7 +538,7 @@ const downloadMonth: CommandPart[] = [
               class="btn-plain"
               @click="((editing = true), (saved = false))"
             >
-              <span class="mi">edit</span>更新
+              <span class="mi" aria-hidden="true">edit</span>更新
             </button>
           </h2>
           <template v-if="editing || !surveyCurrent">

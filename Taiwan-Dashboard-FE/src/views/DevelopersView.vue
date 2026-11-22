@@ -264,6 +264,7 @@ const HEADERS = [
 
 <template>
   <div class="dev">
+    <a class="skip" href="#dev-main">跳到主要內容</a>
     <header class="top">
       <div class="top-inner">
         <button
@@ -381,7 +382,7 @@ const HEADERS = [
         @click="navOpen = false"
       ></button>
 
-      <main class="main">
+      <main id="dev-main" class="main">
         <nav v-if="crumbs.length" class="crumbs" aria-label="位置">
           <RouterLink to="/developers">開放資料 API</RouterLink>
           <template v-for="c in crumbs" :key="c">
@@ -1153,6 +1154,12 @@ h1 {
 }
 .search:focus-within {
   border-color: var(--accent);
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.nav-search:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
 }
 .search input {
   flex: 1;

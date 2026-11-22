@@ -227,7 +227,11 @@ function clearPoint() {
               <td :class="{ bad: !r.county_code }">{{ countyName(r.county_code) ?? '未設定' }}</td>
               <td class="num">
                 {{ r.effective_capacity === null ? '—' : formatNumber(r.effective_capacity, 0) }}
-                <span v-if="r.capacity_locked" class="mi lock" title="已鎖定，不會被資料管線覆寫"
+                <span
+                  v-if="r.capacity_locked"
+                  class="mi lock"
+                  title="已鎖定，不會被資料管線覆寫"
+                  aria-hidden="true"
                   >lock</span
                 >
               </td>

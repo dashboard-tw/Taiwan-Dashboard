@@ -200,12 +200,14 @@ function openInfo() {
         @focus="showTipAt"
         @blur="tip = null"
       >
-        <span v-if="hasFilter" class="tag hide-mobile"><span class="mi">tune</span>篩選地圖</span>
+        <span v-if="hasFilter" class="tag hide-mobile"
+          ><span class="mi" aria-hidden="true">tune</span>篩選地圖</span
+        >
         <span v-if="component.has_map_layers" class="tag hide-mobile"
-          ><span class="mi">map</span>空間資料</span
+          ><span class="mi" aria-hidden="true">map</span>空間資料</span
         >
         <span v-if="component.has_history" class="tag"
-          ><span class="mi">insights</span>歷史資料</span
+          ><span class="mi" aria-hidden="true">insights</span>歷史資料</span
         >
       </div>
       <span v-else></span>
@@ -218,10 +220,16 @@ function openInfo() {
         :has-history="component.has_history"
       />
       <a v-if="mode === 'embed'" class="info" :href="detailHref" target="_blank" rel="noopener"
-        >dashboard.tw<span class="mi">arrow_circle_right</span></a
+        >dashboard.tw<span class="mi" aria-hidden="true">arrow_circle_right</span></a
       >
-      <button v-else type="button" class="info" @click="openInfo">
-        組件資訊<span class="mi">arrow_circle_right</span>
+      <button
+        v-else
+        type="button"
+        class="info"
+        :aria-label="`組件資訊：${component.name}`"
+        @click="openInfo"
+      >
+        組件資訊<span class="mi" aria-hidden="true">arrow_circle_right</span>
       </button>
     </footer>
   </article>

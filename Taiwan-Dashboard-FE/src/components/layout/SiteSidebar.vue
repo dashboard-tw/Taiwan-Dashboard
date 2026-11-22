@@ -1,12 +1,32 @@
 <script setup lang="ts">
+import { nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { DASHBOARD_ICONS, TOPIC_GROUPS, TOPICS } from '../../lib/topics'
 import { useCatalog } from '../../stores/catalog'
 import { useTyphoonAlert } from '../../composables/useTyphoonAlert'
 
-defineProps<{ collapsed: boolean; open: boolean }>()
-defineEmits<{ toggleCollapsed: []; close: [] }>()
+const props = defineProps<{ collapsed: boolean; open: boolean }>()
+const emit = defineEmits<{ toggleCollapsed: []; close: [] }>()
+
+const aside = ref<HTMLElement | null>(null)
+watch(
+  () => props.open,
+  async (open) => {
+    await nextTick()
+    if (open) {
+      aside.value?.querySelector<HTMLElement>('a[href]')?.focus()
+    } else if (aside.value?.contains(document.activeElement)) {
+      document.querySelector<HTMLElement>('.menu-toggle')?.focus()
+    }
+  },
+)
+function onKey(e: KeyboardEvent) {
+  if (e.key === 'Escape' && props.open) {
+    e.stopPropagation()
+    emit('close')
+  }
+}
 
 const { t } = useI18n()
 const route = useRoute()
@@ -23,7 +43,13 @@ function topicActive(slug: string) {
 
 <template>
   <div v-if="open" class="scrim" @click="$emit('close')"></div>
-  <aside :class="['sidebar', { collapsed, open }]" :aria-label="t('sidebar.label')">
+  <aside
+    id="site-sidebar"
+    ref="aside"
+    :class="['sidebar', { collapsed, open }]"
+    :aria-label="t('sidebar.label')"
+    @keydown="onKey"
+  >
     <div class="head">
       <h2 v-if="!collapsed">{{ t('sidebar.public') }}</h2>
       <button
@@ -33,7 +59,7 @@ function topicActive(slug: string) {
         :title="collapsed ? t('sidebar.expand') : t('sidebar.collapse')"
         @click="$emit('toggleCollapsed')"
       >
-        <span class="mi">{{
+        <span class="mi" aria-hidden="true">{{
           collapsed ? 'keyboard_double_arrow_right' : 'keyboard_double_arrow_left'
         }}</span>
       </button>
@@ -45,7 +71,7 @@ function topicActive(slug: string) {
         :aria-current="topicActive('typhoon') ? 'page' : undefined"
         :title="`${typhoon.title.value}（${typhoon.detail.value}）`"
       >
-        <span class="mi">{{ DASHBOARD_ICONS.typhoon }}</span
+        <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS.typhoon }}</span
         ><span class="alert-label"
           >{{ typhoon.title.value }}<small>{{ typhoon.detail.value }}</small></span
         >
@@ -57,7 +83,7 @@ function topicActive(slug: string) {
         :aria-current="route.path === '/' ? 'page' : undefined"
         :title="t('sidebar.home')"
       >
-        <span class="mi">{{ DASHBOARD_ICONS.home }}</span
+        <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS.home }}</span
         ><span>{{ t('sidebar.home') }}</span>
       </RouterLink>
     </nav>
@@ -73,7 +99,7 @@ function topicActive(slug: string) {
           :aria-current="topicActive(tp.slug) ? 'page' : undefined"
           :title="tp.title"
         >
-          <span class="mi">{{ DASHBOARD_ICONS[tp.slug] }}</span
+          <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS[tp.slug] }}</span
           ><span>{{ tp.title }}</span>
         </RouterLink>
       </nav>
@@ -86,7 +112,7 @@ function topicActive(slug: string) {
         :aria-current="topicActive('mapdata') ? 'page' : undefined"
         :title="t('sidebar.mapdata')"
       >
-        <span class="mi">{{ DASHBOARD_ICONS.mapdata }}</span
+        <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS.mapdata }}</span
         ><span>{{ t('sidebar.mapdata') }}</span>
       </RouterLink>
       <RouterLink
@@ -96,7 +122,7 @@ function topicActive(slug: string) {
         "
         :title="t('sidebar.typhoons')"
       >
-        <span class="mi">{{ DASHBOARD_ICONS.typhoons }}</span
+        <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS.typhoons }}</span
         ><span>{{ t('sidebar.typhoons') }}</span>
       </RouterLink>
       <RouterLink
@@ -104,7 +130,7 @@ function topicActive(slug: string) {
         :aria-current="route.path === '/components' ? 'page' : undefined"
         :title="t('sidebar.library')"
       >
-        <span class="mi">apps</span><span>{{ t('sidebar.library') }}</span>
+        <span class="mi" aria-hidden="true">apps</span><span>{{ t('sidebar.library') }}</span>
       </RouterLink>
     </nav>
 
@@ -120,7 +146,7 @@ function topicActive(slug: string) {
           :to="`/county/${c.code}`"
           :aria-current="route.params.code === c.code ? 'page' : undefined"
         >
-          <span class="mi">{{ DASHBOARD_ICONS.county }}</span
+          <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS.county }}</span
           ><span>{{ c.name }}</span>
         </RouterLink>
       </nav>
@@ -270,10 +296,15 @@ nav a[aria-current='page'] {
     margin: 0;
     padding-top: var(--font-m);
     transform: translateX(-100%);
-    transition: transform 0.2s;
+    visibility: hidden;
+    transition:
+      transform 0.2s,
+      visibility 0s linear 0.2s;
   }
   .sidebar.open {
     transform: none;
+    visibility: visible;
+    transition: transform 0.2s;
   }
   .collapse {
     display: none;

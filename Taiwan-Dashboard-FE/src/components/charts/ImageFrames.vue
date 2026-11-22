@@ -108,7 +108,7 @@ onBeforeUnmount(() => {
         :aria-label="playing ? '暫停' : '播放最近的變化'"
         @click="toggle"
       >
-        <span class="mi">{{ playing ? 'pause' : 'play_arrow' }}</span>
+        <span class="mi" aria-hidden="true">{{ playing ? 'pause' : 'play_arrow' }}</span>
       </button>
       <input
         v-model.number="index"

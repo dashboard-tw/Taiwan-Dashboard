@@ -273,7 +273,8 @@ async function remove() {
           :disabled="confirmText.trim() !== '刪除' || deleting"
           @click="remove"
         >
-          <span class="mi">delete_forever</span>{{ deleting ? '刪除中' : '刪除帳號' }}
+          <span class="mi" aria-hidden="true">delete_forever</span
+          >{{ deleting ? '刪除中' : '刪除帳號' }}
         </button>
       </template>
     </section>

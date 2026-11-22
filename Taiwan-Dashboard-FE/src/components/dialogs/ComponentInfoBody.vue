@@ -144,10 +144,10 @@ function hostname(link: string): string {
           class="btn-highlight"
           @click="dialogs.openDownload(component, county)"
         >
-          <span class="mi">download</span>下載
+          <span class="mi" aria-hidden="true">download</span>下載
         </button>
         <button type="button" class="btn-highlight" @click="dialogs.openEmbed(component, county)">
-          <span class="mi">code</span>內嵌
+          <span class="mi" aria-hidden="true">code</span>內嵌
         </button>
       </div>
     </div>

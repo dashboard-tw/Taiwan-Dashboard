@@ -46,7 +46,7 @@ onMounted(async () => {
     <CardSkeleton v-else class="embed-skeleton">
       <template #foot-right>
         <a class="info" :href="detailHref" target="_blank" rel="noopener"
-          >dashboard.tw<span class="mi">arrow_circle_right</span></a
+          >dashboard.tw<span class="mi" aria-hidden="true">arrow_circle_right</span></a
         >
       </template>
     </CardSkeleton>

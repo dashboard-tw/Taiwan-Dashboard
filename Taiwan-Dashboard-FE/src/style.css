@@ -353,3 +353,16 @@ button {
 .doc-table tr:last-child td {
   border-bottom: 0;
 }
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+.skip:focus {
+  left: 1rem;
+  top: 0.5rem;
+  z-index: 100;
+  padding: 0.4rem 0.8rem;
+  background: var(--surface);
+  border-radius: 6px;
+}

@@ -158,10 +158,10 @@ function time(iso: string) {
           />
           <template v-if="a.status === 'pending'">
             <button type="button" class="btn" :disabled="busy === a.id" @click="act(a, 'approve')">
-              <span class="mi">check</span>通過
+              <span class="mi" aria-hidden="true">check</span>通過
             </button>
             <button type="button" class="btn" :disabled="busy === a.id" @click="act(a, 'reject')">
-              <span class="mi">undo</span>不通過
+              <span class="mi" aria-hidden="true">undo</span>不通過
             </button>
           </template>
           <button
@@ -171,7 +171,7 @@ function time(iso: string) {
             :disabled="busy === a.id"
             @click="act(a, 'remove')"
           >
-            <span class="mi">block</span>下架
+            <span class="mi" aria-hidden="true">block</span>下架
           </button>
         </div>
       </div>

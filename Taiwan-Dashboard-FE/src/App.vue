@@ -69,7 +69,7 @@ watch(
   <RouterView v-if="bare" />
   <template v-else>
     <a class="skip" href="#main">跳到主要內容</a>
-    <SiteHeader @toggle-sidebar="drawerOpen = !drawerOpen" />
+    <SiteHeader :sidebar-open="drawerOpen && narrow" @toggle-sidebar="drawerOpen = !drawerOpen" />
     <div class="shell">
       <SiteSidebar
         :collapsed="collapsed && !narrow"
@@ -99,17 +99,5 @@ watch(
 .content {
   flex: 1;
   min-width: 0;
-}
-.skip {
-  position: absolute;
-  left: -999px;
-}
-.skip:focus {
-  left: 1rem;
-  top: 0.5rem;
-  z-index: 100;
-  padding: 0.4rem 0.8rem;
-  background: var(--surface);
-  border-radius: 6px;
 }
 </style>

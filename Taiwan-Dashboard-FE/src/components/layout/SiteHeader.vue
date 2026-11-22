@@ -7,6 +7,7 @@ import { useDialogs } from '../../stores/dialog'
 import { cycleTheme, themeChoice } from '../../theme'
 import TaiwanLogo from './TaiwanLogo.vue'
 
+defineProps<{ sidebarOpen?: boolean }>()
 defineEmits<{ toggleSidebar: [] }>()
 
 const { t } = useI18n()
@@ -64,9 +65,11 @@ const themeLabel = computed(
       type="button"
       class="icon-btn menu-toggle"
       :aria-label="t('nav.menu')"
+      :aria-expanded="sidebarOpen ? 'true' : 'false'"
+      aria-controls="site-sidebar"
       @click="$emit('toggleSidebar')"
     >
-      <span class="mi">menu</span>
+      <span class="mi" aria-hidden="true">menu</span>
     </button>
 
     <RouterLink to="/" class="brand">
@@ -114,7 +117,7 @@ const themeLabel = computed(
         :aria-label="`${t('theme.label')}：${themeLabel}`"
         @click="cycleTheme"
       >
-        <span class="mi">contrast</span>
+        <span class="mi" aria-hidden="true">contrast</span>
       </button>
       <button
         type="button"
@@ -123,52 +126,51 @@ const themeLabel = computed(
         aria-label="使用說明"
         @click="dialogs.intro = true"
       >
-        <span class="mi">help</span>
+        <span class="mi" aria-hidden="true">help</span>
       </button>
       <RouterLink to="/about" class="icon-btn" :title="t('nav.about')" :aria-label="t('nav.about')">
-        <span class="mi">info</span>
+        <span class="mi" aria-hidden="true">info</span>
       </RouterLink>
-      <div v-if="auth.me" ref="menuEl" class="user">
+      <div v-if="auth.me" ref="menuEl" class="user" @keydown.esc="menuOpen = false">
         <button
           type="button"
           class="user-btn"
           :title="auth.me.display_name"
           :aria-expanded="menuOpen"
-          aria-haspopup="menu"
           @click="menuOpen = !menuOpen"
         >
-          <span class="mi">account_circle</span
+          <span class="mi" aria-hidden="true">account_circle</span
           ><span class="user-name">{{ auth.me.display_name }}</span>
         </button>
-        <ul v-if="menuOpen" class="user-menu" role="menu">
-          <li role="none">
-            <RouterLink role="menuitem" to="/me/api-key" @click="menuOpen = false">
-              <span class="mi">key</span>API 憑證
+        <ul v-if="menuOpen" class="user-menu">
+          <li>
+            <RouterLink to="/me/api-key" @click="menuOpen = false">
+              <span class="mi" aria-hidden="true">key</span>API 憑證
             </RouterLink>
           </li>
-          <li role="none">
-            <RouterLink role="menuitem" to="/me/showcase" @click="menuOpen = false">
-              <span class="mi">apps</span>申請應用活化
+          <li>
+            <RouterLink to="/me/showcase" @click="menuOpen = false">
+              <span class="mi" aria-hidden="true">apps</span>申請應用活化
             </RouterLink>
           </li>
-          <li role="none">
-            <RouterLink role="menuitem" to="/me" @click="menuOpen = false">
-              <span class="mi">manage_accounts</span>我的帳號
+          <li>
+            <RouterLink to="/me" @click="menuOpen = false">
+              <span class="mi" aria-hidden="true">manage_accounts</span>我的帳號
             </RouterLink>
           </li>
-          <li role="none">
-            <RouterLink role="menuitem" to="/me/devices" @click="menuOpen = false">
-              <span class="mi">devices</span>登入裝置
+          <li>
+            <RouterLink to="/me/devices" @click="menuOpen = false">
+              <span class="mi" aria-hidden="true">devices</span>登入裝置
             </RouterLink>
           </li>
           <li v-if="auth.isAdmin" role="none">
-            <RouterLink role="menuitem" to="/admin" @click="menuOpen = false">
-              <span class="mi">admin_panel_settings</span>後台
+            <RouterLink to="/admin" @click="menuOpen = false">
+              <span class="mi" aria-hidden="true">admin_panel_settings</span>後台
             </RouterLink>
           </li>
-          <li role="none">
-            <button role="menuitem" type="button" @click="logout">
-              <span class="mi">logout</span>登出
+          <li>
+            <button type="button" @click="logout">
+              <span class="mi" aria-hidden="true">logout</span>登出
             </button>
           </li>
         </ul>

@@ -71,7 +71,7 @@ async function copy() {
         ></button></template
     ></code>
     <button type="button" class="copy" :aria-label="copied ? '已複製' : '複製指令'" @click="copy">
-      <span class="mi">{{ copied ? 'check' : 'content_copy' }}</span>
+      <span class="mi" aria-hidden="true">{{ copied ? 'check' : 'content_copy' }}</span>
     </button>
   </div>
 </template>

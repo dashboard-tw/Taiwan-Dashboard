@@ -95,11 +95,38 @@ function describe(s: Shape): string {
   return `${s.name}：${formatNumber(v, props.decimals)}${props.unit ?? ''}（${props.levelOf(v).label}）`
 }
 
+const navOrder = computed(() => [
+  ...order.value.filter((c) => !OUTLYING.includes(c)),
+  ...OUTLYING.filter((c) => order.value.includes(c)),
+])
+const active = ref<string | null>(null)
+const tabStop = computed(() => active.value ?? props.selected ?? navOrder.value[0] ?? null)
+
+function onFocus(code: string) {
+  hovered.value = code
+  active.value = code
+}
+
+const STEPS: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
+
 function onKey(e: KeyboardEvent, code: string) {
   if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault()
     emit('select', code)
+    return
   }
+  const codes = navOrder.value
+  let next: string | undefined
+  if (e.key === 'Home') next = codes[0]
+  else if (e.key === 'End') next = codes[codes.length - 1]
+  else if (e.key in STEPS) {
+    const i = codes.indexOf(code)
+    next = codes[(i + STEPS[e.key]! + codes.length) % codes.length]
+  }
+  if (!next) return
+  e.preventDefault()
+  active.value = next
+  svgEl.value?.querySelector<SVGPathElement>(`path[data-code="${next}"]`)?.focus()
 }
 
 const tipEl = ref<HTMLElement | null>(null)
@@ -189,7 +216,7 @@ defineExpose({ pngDataUrl: () => pngDataUrl() })
       ref="svgEl"
       :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
       role="group"
-      :aria-label="label ?? '臺灣縣市地圖'"
+      :aria-label="`${label ?? '臺灣縣市地圖'}，用方向鍵切換縣市`"
     >
       <g
         v-for="inset in insets"
@@ -202,12 +229,7 @@ defineExpose({ pngDataUrl: () => pngDataUrl() })
         @mouseleave="hovered = null"
       >
         <rect :x="4" :y="inset.y" :width="INSET.w" :height="INSET.h" rx="6" />
-        <text
-          class="inset-name"
-          :x="12"
-          :y="inset.y + INSET_HEADER / 2 + 2"
-          :font-size="insetFont"
-        >
+        <text class="inset-name" :x="12" :y="inset.y + INSET_HEADER / 2 + 2" :font-size="insetFont">
           {{ inset.name }}
           <tspan v-if="shown.has(inset.code)" class="inset-value" dx="8">
             {{ formatNumber(shown.get(inset.code), decimals) + (unit ?? '') }}
@@ -226,7 +248,7 @@ defineExpose({ pngDataUrl: () => pngDataUrl() })
           pulse: s.code === pulse,
           faded: focus && s.code !== focus,
         }"
-        tabindex="0"
+        :tabindex="s.code === tabStop ? 0 : -1"
         role="button"
         :aria-label="describe(s)"
         :aria-pressed="s.code === selected"
@@ -234,7 +256,7 @@ defineExpose({ pngDataUrl: () => pngDataUrl() })
         @keydown="onKey($event, s.code)"
         @mouseenter="hovered = s.code"
         @mouseleave="hovered = null"
-        @focus="hovered = s.code"
+        @focus="onFocus(s.code)"
         @blur="hovered = null"
       />
       <circle

@@ -612,7 +612,7 @@ function showFeature(a: ActiveLayer, f: maplibregl.MapGeoJSONFeature, lngLat: ma
         :aria-label="framePlaying ? '暫停' : '播放最近的變化'"
         @click="toggleFrames"
       >
-        <span class="mi">{{ framePlaying ? 'pause' : 'play_arrow' }}</span>
+        <span class="mi" aria-hidden="true">{{ framePlaying ? 'pause' : 'play_arrow' }}</span>
       </button>
       <input
         v-model.number="frameIndex"

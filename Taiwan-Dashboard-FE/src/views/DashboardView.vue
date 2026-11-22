@@ -142,9 +142,10 @@ async function share() {
           type="button"
           class="icon-button"
           :title="copied ? '已複製網址' : '分享'"
+          :aria-label="copied ? '已複製網址' : '分享這個頁面'"
           @click="share"
         >
-          <span class="mi">{{ copied ? 'check' : 'share' }}</span>
+          <span class="mi" aria-hidden="true">{{ copied ? 'check' : 'share' }}</span>
         </button>
       </span>
     </h1>
@@ -157,7 +158,7 @@ async function share() {
     </p>
     <p v-if="slug === 'typhoon' && activeEvents.length" class="typhoon-links">
       <RouterLink v-for="t in activeEvents" :key="t.id" :to="`/typhoon/${t.id}`">
-        <span class="mi">history</span>{{ typhoonName(t) }}專區
+        <span class="mi" aria-hidden="true">history</span>{{ typhoonName(t) }}專區
       </RouterLink>
     </p>
     <p v-if="typhoonId && event" class="typhoon-period">
@@ -173,7 +174,7 @@ async function share() {
     <p v-if="slug === 'power' && county" class="notice">電力資料僅有全國數據。</p>
 
     <div v-if="error" class="placeholder">
-      <span class="mi">error</span>
+      <span class="mi" aria-hidden="true">error</span>
       <p>儀表板載入失敗</p>
     </div>
     <MapModeSkeleton v-else-if="!dashboard && map" :slots="skeleton" />

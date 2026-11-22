@@ -61,7 +61,7 @@ const skeleton = computed(() => (list.value ? list.value.map(slotOf) : UNKNOWN_S
     </div>
 
     <div v-if="error" class="placeholder">
-      <span class="mi">error</span>
+      <span class="mi" aria-hidden="true">error</span>
       <p>元件庫載入失敗</p>
     </div>
     <div v-else-if="!list" class="component-grid">

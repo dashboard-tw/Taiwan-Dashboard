@@ -105,7 +105,7 @@ function freq(c: ComponentInfo) {
         <header>
           <h3>{{ selected.title }}</h3>
           <button type="button" class="close" aria-label="關閉" @click="selected = null">
-            <span class="mi">close</span>
+            <span class="mi" aria-hidden="true">close</span>
           </button>
         </header>
         <p v-for="[k, v] in selected.rows" :key="k">
