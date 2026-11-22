@@ -34,6 +34,7 @@ const datasets = ref<DatasetHealth[] | null>(null)
 const runs = ref<PipelineRun[] | null>(null)
 const filter = ref('')
 const error = ref('')
+const loadedAt = ref<Date | null>(null)
 
 async function load() {
   try {
@@ -44,6 +45,7 @@ async function load() {
     datasets.value = d
     runs.value = r
     rememberCount('admin-datasets', d.length)
+    loadedAt.value = new Date()
     error.value = ''
   } catch {
     error.value = '後台資料暫時無法取得'
@@ -253,7 +255,12 @@ function duration(r: PipelineRun): string {
     </section>
 
     <section class="card block">
-      <h2>資料集健康狀態</h2>
+      <h2>
+        資料集健康狀態
+        <span v-if="loadedAt" class="loaded-at"
+          >畫面更新於 {{ loadedAt.toLocaleTimeString('zh-TW', { hour12: false }) }}</span
+        >
+      </h2>
       <table>
         <thead>
           <tr>
@@ -370,6 +377,11 @@ function duration(r: PipelineRun): string {
 </template>
 
 <style scoped>
+.loaded-at {
+  color: var(--text-muted);
+  font-size: var(--font-s);
+  font-weight: 400;
+}
 .run-all h2 {
   display: flex;
   align-items: center;
