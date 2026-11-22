@@ -69,7 +69,7 @@ const themeLabel = computed(
       <span class="mi">menu</span>
     </button>
 
-    <RouterLink to="/" class="brand" :aria-label="`${t('site.title')} 首頁`">
+    <RouterLink to="/" class="brand">
       <TaiwanLogo class="logo" />
       <span class="names">
         <span class="name-zh">{{ t('site.title') }}</span>
