@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
   ;(window as unknown as { Apex: ApexOptions }).Apex = {
     xaxis: { labels: label },
     yaxis: { labels: label },
-    dataLabels: { style: { fontSize: '0.75rem' } },
+    dataLabels: { style: { fontSize: '12px' } },
   }
 }
 

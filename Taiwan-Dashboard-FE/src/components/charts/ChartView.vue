@@ -191,7 +191,7 @@ const treemapOptions = computed<ApexOptions>(() => {
     plotOptions: { treemap: { distributed: true, enableShades: false } },
     dataLabels: {
       enabled: true,
-      style: { fontSize: '0.75rem', fontWeight: 500 },
+      style: { fontSize: '12px', fontWeight: 500 },
       formatter: (text, opts) => [
         String(text),
         formatNumber(Number((opts as { value?: number } | undefined)?.value ?? 0), decimals.value),
