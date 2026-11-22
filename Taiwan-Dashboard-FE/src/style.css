@@ -1,4 +1,10 @@
-@import '@fontsource/material-icons-round/400.css';
+@font-face {
+  font-family: 'Material Icons Round';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url(./assets/fonts/material-icons-round-subset.woff2) format('woff2');
+}
 
 :root {
   --bg: #eef0f2;
@@ -11,6 +17,7 @@
   --border-strong: #b9bdc2;
   --accent: #2f7ce0;
   --accent-text: #ffffff;
+  --accent-strong: #2a6fd0;
   --accent-soft: #e2edfc;
   --focus: #2f7ce0;
   --danger-text: #d43d3d;
@@ -56,15 +63,15 @@
     --surface-muted: #333537;
     --text-primary: #ffffff;
     --text-secondary: #c9c9c9;
-    --text-muted: #888787;
+    --text-muted: #9a9a9a;
     --border: #494b4e;
     --border-strong: #5c5e61;
     --accent: #5a9cf8;
     --accent-text: #ffffff;
     --accent-soft: rgb(90 156 248 / 15%);
     --focus: #5a9cf8;
-    --danger-text: #ed5a5a;
-    --warning-text: #ed5a5a;
+    --danger-text: #f78080;
+    --warning-text: #f78080;
     --warning-bg: rgb(237 90 90 / 12%);
     --button-muted: rgb(77 77 77);
     --overlay: rgb(0 0 0 / 66%);
@@ -86,15 +93,15 @@
   --surface-muted: #333537;
   --text-primary: #ffffff;
   --text-secondary: #c9c9c9;
-  --text-muted: #888787;
+  --text-muted: #9a9a9a;
   --border: #494b4e;
   --border-strong: #5c5e61;
   --accent: #5a9cf8;
   --accent-text: #ffffff;
   --accent-soft: rgb(90 156 248 / 15%);
   --focus: #5a9cf8;
-  --danger-text: #ed5a5a;
-  --warning-text: #ed5a5a;
+  --danger-text: #f78080;
+  --warning-text: #f78080;
   --warning-bg: rgb(237 90 90 / 12%);
   --button-muted: rgb(77 77 77);
   --overlay: rgb(0 0 0 / 66%);
@@ -225,7 +232,7 @@ button {
   padding: 2px 8px;
   border: 0;
   border-radius: var(--radius);
-  background: var(--accent);
+  background: var(--accent-strong);
   color: #ffffff;
   font-size: var(--font-ms);
   cursor: pointer;

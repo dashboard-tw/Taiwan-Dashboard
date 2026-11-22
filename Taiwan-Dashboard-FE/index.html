@@ -35,10 +35,12 @@
           dataLayer.push(arguments)
         }
         gtag('js', new Date())
-        var gtagScript = document.createElement('script')
-        gtagScript.async = true
-        gtagScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-KC6J27BN'
-        document.head.appendChild(gtagScript)
+        window.addEventListener('load', function () {
+          var gtagScript = document.createElement('script')
+          gtagScript.async = true
+          gtagScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-KC6J27BN'
+          document.head.appendChild(gtagScript)
+        })
       }
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

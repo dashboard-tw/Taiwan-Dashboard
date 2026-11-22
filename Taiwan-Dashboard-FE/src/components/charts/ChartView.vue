@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ApexOptions } from 'apexcharts'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { getCountiesGeo, type CountyCollection } from '../../api/client'
 import type { ByCountyItem, ComponentInfo, County, DataMeta, Series } from '../../api/types'
 import { formatAxisTime, formatNumber, formatObserved } from '../../lib/format'
@@ -305,7 +305,7 @@ const timeOptions = computed<ApexOptions>(() => {
   }
 })
 
-const geo = ref<CountyCollection | null>(null)
+const geo = shallowRef<CountyCollection | null>(null)
 const geoError = ref(false)
 let geoRetry: ReturnType<typeof setTimeout> | undefined
 async function loadGeo() {
@@ -355,6 +355,31 @@ onMounted(() => {
   resize.observe(root.value)
 })
 onBeforeUnmount(() => resize?.disconnect())
+
+const inView = ref(typeof IntersectionObserver === 'undefined')
+let viewObserver: IntersectionObserver | null = null
+onMounted(() => {
+  if (inView.value || !root.value) return
+  viewObserver = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return
+      viewObserver?.disconnect()
+      viewObserver = null
+      const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1))
+      idle(() => (inView.value = true), { timeout: 600 })
+    },
+    { rootMargin: '400px 0px' },
+  )
+  viewObserver.observe(root.value)
+})
+onBeforeUnmount(() => viewObserver?.disconnect())
+const skeletonKind = computed<'bar' | 'donut' | 'line' | 'map' | null>(() => {
+  const t = resolved.value
+  if (t === 'map' || t === 'donut') return t
+  if (t === 'bar' || t === 'column' || t === 'treemap') return 'bar'
+  if (t === 'number' || t === 'list' || t === 'image') return null
+  return 'line'
+})
 const barScroll = computed(() => {
   if (resolved.value !== 'bar') return false
   const need = flat.value.labels.length * 16 + 50
@@ -533,6 +558,7 @@ defineExpose({ pngDataUrl })
 <template>
   <div ref="root" :class="['chart-view', { scroll: barScroll }]" :style="{ height: outerHeight }">
     <p v-if="empty" class="empty muted">{{ emptyText }}</p>
+    <ChartSkeleton v-else-if="!inView && skeletonKind" :kind="skeletonKind" />
     <template v-else-if="resolved === 'map'">
       <CountyMap
         v-if="geo"

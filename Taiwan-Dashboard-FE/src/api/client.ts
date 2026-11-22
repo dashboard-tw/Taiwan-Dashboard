@@ -6,6 +6,7 @@ import type {
   DashboardSummary,
   DataMeta,
 } from './types'
+import { markRaw } from 'vue'
 import { pageTyphoon } from '../lib/pageContext'
 
 export interface ApiEnvelope<T> {
@@ -291,7 +292,7 @@ let geo: Promise<CountyCollection> | null = null
 async function fetchCountiesGeo(): Promise<CountyCollection> {
   const r = await fetch(`${API_BASE}/geo/counties.geojson`, { cache: 'no-cache' })
   if (!r.ok) throw new ApiError(r.status, 'http_error', r.statusText)
-  return (await r.json()) as CountyCollection
+  return markRaw((await r.json()) as CountyCollection)
 }
 
 export function getCountiesGeo(): Promise<CountyCollection> {

@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useDialogs } from '../../stores/dialog'
 import DialogContainer from './DialogContainer.vue'
 
 const dialogs = useDialogs()
 const hide = ref(false)
+const instant = ref(false)
+watch(
+  () => dialogs.intro,
+  (open) => {
+    if (open) instant.value = performance.now() < 5000
+  },
+  { immediate: true },
+)
 
 function close() {
   if (hide.value) dialogs.dismissIntro()
@@ -13,7 +21,12 @@ function close() {
 </script>
 
 <template>
-  <DialogContainer :open="dialogs.intro" label="臺灣儀表板使用說明" @close="close">
+  <DialogContainer
+    :open="dialogs.intro"
+    :instant="instant"
+    label="臺灣儀表板使用說明"
+    @close="close"
+  >
     <div class="intro">
       <h2>臺灣儀表板使用說明</h2>
       <p>

@@ -129,16 +129,16 @@ function openInfo() {
 <template>
   <article :class="['component-card', `mode-${mode}`]">
     <header class="head">
-      <h3>
+      <h2>
         <span class="name">{{ component.name }}</span>
         <span v-if="freq" class="tag">{{ freq }}</span>
-      </h3>
-      <h4>
+      </h2>
+      <p class="sub">
         {{ agencies || '—' }} | {{ formatObserved(result?.meta.observed_at) }}
         <span v-if="delayed" class="mi delay" title="資料可能延遲" aria-label="資料延遲"
           >warning</span
         >
-      </h4>
+      </p>
       <div class="city-tags">
         <span class="tag city">{{ scopeLabel }}</span>
       </div>
@@ -191,6 +191,7 @@ function openInfo() {
       <div
         v-if="mode !== 'map'"
         class="tags"
+        role="group"
         :tabindex="hasAnyTag ? 0 : undefined"
         aria-label="組件資訊與功能"
         @mouseenter="showTip"
@@ -259,7 +260,7 @@ function openInfo() {
   padding: 0;
   background: transparent;
 }
-.mode-map h3 {
+.mode-map h2 {
   display: none;
 }
 .mode-embed {
@@ -267,7 +268,7 @@ function openInfo() {
   border-radius: 0;
 }
 
-h3 {
+h2 {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -278,7 +279,7 @@ h3 {
 .name {
   min-width: 0;
 }
-h4 {
+.sub {
   display: flex;
   align-items: center;
   color: var(--text-muted);
@@ -326,7 +327,7 @@ h4 {
   font-weight: 400;
   white-space: nowrap;
 }
-h3 .tag {
+h2 .tag {
   height: 1rem;
   margin-top: 4px;
   padding: 0 2px;
@@ -354,22 +355,17 @@ h3 .tag {
   border: 0;
   border-radius: var(--radius);
   background: var(--button-muted);
-  opacity: 0.6;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: var(--font-s);
   cursor: pointer;
-  transition:
-    color 0.2s,
-    opacity 0.2s;
+  transition: color 0.2s;
 }
 .control button:hover {
-  opacity: 1;
   color: var(--text-primary);
 }
 .control button.active {
-  opacity: 1;
-  background: var(--text-muted);
-  color: #ffffff;
+  background: var(--text-secondary);
+  color: var(--surface);
 }
 
 .chart {

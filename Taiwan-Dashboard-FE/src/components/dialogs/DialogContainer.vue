@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
-const props = defineProps<{ open: boolean; label: string }>()
+const props = defineProps<{ open: boolean; label: string; instant?: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 const panel = ref<HTMLElement | null>(null)
 let previous: Element | null = null
@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
 <template>
   <Teleport to="body">
     <Transition name="dialog">
-      <div v-if="open" class="dialog-container" @keydown="onKey">
+      <div v-if="open" :class="['dialog-container', { instant }]" @keydown="onKey">
         <div class="dialog-background" @click="emit('close')"></div>
         <div
           ref="panel"
@@ -92,5 +92,9 @@ onBeforeUnmount(() => {
 .dialog-enter-active .dialog-panel,
 .dialog-leave-active .dialog-panel {
   transition: transform 0.3s ease;
+}
+.instant.dialog-enter-active,
+.instant.dialog-enter-active .dialog-panel {
+  transition: none;
 }
 </style>
