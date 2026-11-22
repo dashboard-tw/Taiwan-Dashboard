@@ -116,6 +116,7 @@ func TestRuns(t *testing.T) {
 		"/center.csv":  "testdata/center.csv",
 		"/clinic.csv":  "testdata/clinic.csv",
 		"/ltc.csv":     "testdata/ltc.csv",
+		"/ltc_gis.csv": "testdata/ltc_gis.csv",
 		"/shelter.xml": "testdata/shelter.xml",
 		"/report.json": "testdata/report.json",
 	})
@@ -147,6 +148,23 @@ func TestRuns(t *testing.T) {
 	}
 	if n := pipelinetest.Count(t, db, `SELECT count(*) FROM ref.ltc_facility WHERE geom IS NOT NULL`); n != 2 {
 		t.Errorf("ltc with points = %d", n)
+	}
+
+	srv.Fail("/ltc.csv", 404)
+	ltc := &LTCPipeline{URL: srv.URL + "/ltc.csv", FallbackURL: srv.URL + "/ltc_gis.csv"}
+	if res, err := ltc.Run(ctx, env); err != nil || res.RowsFetched != 2 || len(res.Warnings) != 1 {
+		t.Fatalf("ltc fallback %+v, %v", res, err)
+	}
+	if n := pipelinetest.Count(t, db, `SELECT count(*) FROM ref.ltc_facility WHERE facility_id = '2S1500003'
+		AND beds = 0 AND contract_end = '2027-02-28' AND services = '專業照護服務'`); n != 1 {
+		t.Error("the fallback file must update services and keep beds and the contract end date")
+	}
+	if n := pipelinetest.Count(t, db, `SELECT count(*) FROM ref.ltc_facility`); n != 4 {
+		t.Errorf("ltc facilities after fallback = %d", n)
+	}
+	srv.Fail("/ltc_gis.csv", 500)
+	if _, err := ltc.Run(ctx, env); err == nil {
+		t.Error("both sources failing must fail the run")
 	}
 
 	if res, err := (&ShelterPipeline{URL: srv.URL + "/shelter.xml"}).Run(ctx, env); err != nil || res.RowsFetched != 3 {

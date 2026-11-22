@@ -244,7 +244,7 @@ func (p *NCDRPipeline) Run(ctx context.Context, env pipeline.Env) (pipeline.Resu
 	if err != nil {
 		return res, err
 	}
-	updated, entries, err := ParseFeed(body)
+	_, entries, err := ParseFeed(body)
 	if err != nil {
 		return res, err
 	}
@@ -339,10 +339,6 @@ func (p *NCDRPipeline) Run(ctx context.Context, env pipeline.Env) (pipeline.Resu
 		n, _ := r.RowsAffected()
 		res.RowsInserted += int(n)
 	}
-	if !updated.IsZero() {
-		res.ObserveTime(updated)
-	} else {
-		res.ObserveTime(env.Now())
-	}
+	res.ObserveTime(env.Now())
 	return res, nil
 }

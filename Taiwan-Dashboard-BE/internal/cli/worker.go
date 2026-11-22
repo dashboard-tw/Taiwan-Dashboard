@@ -99,7 +99,7 @@ func registry(cfg config.Config) []scheduled {
 			pipeline.Schedule{Every: 12 * h, Offset: 7*h + 20*m}},
 		{&resources.MedicalPipeline{},
 			pipeline.Schedule{Every: 24 * h, Offset: 5*h + 10*m}},
-		{&resources.LTCPipeline{URL: resources.DefaultLTCURL},
+		{&resources.LTCPipeline{URL: resources.DefaultLTCURL, FallbackURL: resources.FallbackLTCURL},
 			pipeline.Schedule{Every: 7 * 24 * h, Offset: 5*h + 30*m}},
 		{&resources.ShelterPipeline{URL: resources.DefaultShelterURL},
 			pipeline.Schedule{Every: 30 * m, Offset: 11 * m}},

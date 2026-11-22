@@ -14,6 +14,9 @@ import (
 
 const DefaultLTCURL = "https://ltcpap.mohw.gov.tw/publish/abc.csv"
 
+// 長照地圖用的檔案，沒有開放床數、現有住民與特約迄日
+const FallbackLTCURL = "https://ltcpgis.mohw.gov.tw/csv/all.csv"
+
 type LTCFacility struct {
 	ID, Name, ABC, County, Town, Address string
 	Services                             []string
@@ -86,7 +89,8 @@ func uniqueSorted(xs []string) []string {
 }
 
 type LTCPipeline struct {
-	URL string
+	URL         string
+	FallbackURL string
 }
 
 func (p *LTCPipeline) Dataset() pipeline.Dataset {
@@ -103,8 +107,18 @@ func (p *LTCPipeline) Dataset() pipeline.Dataset {
 func (p *LTCPipeline) Run(ctx context.Context, env pipeline.Env) (pipeline.Result, error) {
 	var res pipeline.Result
 	body, err := env.Fetch.Get(ctx, p.URL, p.URL)
+	fallback := false
 	if err != nil {
-		return res, err
+		if p.FallbackURL == "" {
+			return res, err
+		}
+		var ferr error
+		body, ferr = env.Fetch.Get(ctx, p.FallbackURL, p.FallbackURL)
+		if ferr != nil {
+			return res, fmt.Errorf("%w；備援也失敗：%v", err, ferr)
+		}
+		fallback = true
+		res.Warnf("原網址無法取得，改用長照地圖的檔案，開放床數、現有住民與特約迄日沿用舊值（%v）", err)
 	}
 	list, err := ParseLTC(body)
 	if err != nil {
@@ -138,11 +152,13 @@ func (p *LTCPipeline) Run(ctx context.Context, env pipeline.Env) (pipeline.Resul
 			        CASE WHEN $11::float8 IS NULL THEN NULL ELSE ST_SetSRID(ST_MakePoint($11, $12), 4326) END)
 			ON CONFLICT (facility_id) DO UPDATE SET
 				name = EXCLUDED.name, abc = EXCLUDED.abc, county_code = EXCLUDED.county_code, town_code = EXCLUDED.town_code,
-				address = EXCLUDED.address, services = EXCLUDED.services, beds = EXCLUDED.beds,
-				residents = EXCLUDED.residents, contract_end = EXCLUDED.contract_end, geom = EXCLUDED.geom,
-				last_seen_at = now()`,
+				address = EXCLUDED.address, services = EXCLUDED.services,
+				beds = CASE WHEN $13 THEN coalesce(EXCLUDED.beds, ltc_facility.beds) ELSE EXCLUDED.beds END,
+				residents = CASE WHEN $13 THEN coalesce(EXCLUDED.residents, ltc_facility.residents) ELSE EXCLUDED.residents END,
+				contract_end = CASE WHEN $13 THEN coalesce(EXCLUDED.contract_end, ltc_facility.contract_end) ELSE EXCLUDED.contract_end END,
+				geom = EXCLUDED.geom, last_seen_at = now()`,
 			f.ID, f.Name, pipeline.NullIfEmpty(f.ABC), county, pipeline.NullIfEmpty(f.Town), pipeline.NullIfEmpty(f.Address),
-			pipeline.NullIfEmpty(strings.Join(f.Services, "、")), f.Beds, f.Residents, f.ContractEnd, lon, lat)
+			pipeline.NullIfEmpty(strings.Join(f.Services, "、")), f.Beds, f.Residents, f.ContractEnd, lon, lat, fallback)
 		if err != nil {
 			return res, fmt.Errorf("upsert ltc facility %s: %w", f.ID, err)
 		}
