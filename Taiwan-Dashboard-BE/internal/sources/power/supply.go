@@ -58,7 +58,14 @@ func ParseDailyCSV(body []byte) ([]SupplyRow, []string, error) {
 }
 
 func ParseForecastCSV(body []byte) ([]SupplyRow, []string, error) {
-	return parseSupplyCSV(body, forecastColumns)
+	rows, warnings, err := parseSupplyCSV(body, forecastColumns)
+	// 台電跨年時會把隔年一月寫成今年，日期比前一筆早就補到下一年
+	for i := 1; i < len(rows); i++ {
+		for !rows[i].Date.After(rows[i-1].Date) {
+			rows[i].Date = rows[i].Date.AddDate(1, 0, 0)
+		}
+	}
+	return rows, warnings, err
 }
 
 func parseSupplyCSV(body []byte, cols []column) ([]SupplyRow, []string, error) {
@@ -94,7 +101,7 @@ func parseSupplyCSV(body []byte, cols []column) ([]SupplyRow, []string, error) {
 		if err != nil {
 			return nil, nil, fmt.Errorf("read CSV line %d: %w", line, err)
 		}
-		if dateIdx >= len(rec) || strings.TrimSpace(rec[dateIdx]) == "" {
+		if dateIdx >= len(rec) || strings.TrimSpace(rec[dateIdx]) == "" || !hasValue(rec, index, cols) {
 			continue
 		}
 		date, err := time.ParseInLocation("20060102", strings.TrimSpace(rec[dateIdx]), pipeline.Taipei)
@@ -311,4 +318,15 @@ func sameNum(a, b *float64) bool {
 		return a == nil && b == nil
 	}
 	return round(*a, 3) == round(*b, 3)
+}
+
+func hasValue(rec []string, index map[string]int, cols []column) bool {
+	for _, c := range cols {
+		if i := index[c.header]; i < len(rec) {
+			if v, err := pipeline.ParseNumber(rec[i]); err == nil && v != nil {
+				return true
+			}
+		}
+	}
+	return false
 }
