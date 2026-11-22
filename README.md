@@ -1,5 +1,15 @@
 # 臺灣儀表板 Taiwan Dashboard
 
+[![CI](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/github-code-scanning/codeql)
+[![License: AGPL-3.0](https://img.shields.io/github/license/dashboard-tw/Taiwan-Dashboard)](LICENSE)
+[![Go](https://img.shields.io/github/go-mod/go-version/dashboard-tw/Taiwan-Dashboard?filename=Taiwan-Dashboard-BE%2Fgo.mod&logo=go&logoColor=white)](Taiwan-Dashboard-BE/go.mod)
+[![Vue 3](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)](Taiwan-Dashboard-FE/package.json)
+[![PostgreSQL + PostGIS](https://img.shields.io/badge/PostgreSQL-PostGIS-4169e1?logo=postgresql&logoColor=white)](docker)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fdashboard.tw&label=dashboard.tw)](https://dashboard.tw)
+[![Last commit](https://img.shields.io/github/last-commit/dashboard-tw/Taiwan-Dashboard)](https://github.com/dashboard-tw/Taiwan-Dashboard/commits/main)
+[![Discord](https://img.shields.io/badge/Discord-%E5%8A%A0%E5%85%A5%E8%A8%8E%E8%AB%96-5865f2?logo=discord&logoColor=white)](https://discord.gg/gU5gndueZH)
+
 ![臺灣儀表板](docs/brand/social-preview.jpg)
 
 用政府開放資料，看全臺各縣市的即時狀況。
