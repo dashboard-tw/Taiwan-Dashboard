@@ -124,7 +124,7 @@ const status = computed(() => STATUS[d.value.status] ?? STATUS.pending!)
       </div>
     </dl>
 
-    <h4>端點</h4>
+    <h2>端點</h2>
     <ul class="endpoints">
       <li v-for="e in endpoints" :key="e.path">
         <span class="method">GET</span>
@@ -134,7 +134,7 @@ const status = computed(() => STATUS[d.value.status] ?? STATUS.pending!)
     </ul>
     <p class="muted small">可用的參數：{{ filters.join('、') }}</p>
 
-    <h4>欄位</h4>
+    <h2>欄位</h2>
     <div v-if="fieldTabs.length > 1" class="seg" role="tablist" aria-label="欄位">
       <button
         v-for="(t, i) in fieldTabs"
@@ -172,7 +172,7 @@ const status = computed(() => STATUS[d.value.status] ?? STATUS.pending!)
       </table>
     </div>
 
-    <h4>呼叫範例</h4>
+    <h2>呼叫範例</h2>
     <CodeBlock :code="examples" label="端點" />
   </div>
 </template>
@@ -219,7 +219,7 @@ const status = computed(() => STATUS[d.value.status] ?? STATUS.pending!)
 .dot.warn {
   background: #e0a32b;
 }
-h4 {
+h2 {
   margin-top: 6px;
   font-size: 0.85rem;
   font-weight: 600;

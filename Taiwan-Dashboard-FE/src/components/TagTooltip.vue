@@ -10,8 +10,12 @@ defineProps<{
 
 <template>
   <Teleport to="body">
-    <div class="tag-tooltip" role="tooltip" :style="{ left: `${x - 40}px`, top: `${y - 110}px` }">
-      <h6>組件資訊與功能</h6>
+    <div
+      class="tag-tooltip"
+      aria-hidden="true"
+      :style="{ left: `${x - 40}px`, top: `${y - 110}px` }"
+    >
+      <p class="tip-title">組件資訊與功能</p>
       <p :class="{ off: !hasFilter }">
         <span class="mi" aria-hidden="true">{{ hasFilter ? 'check' : 'clear' }}</span
         >可用圖表篩選地圖
@@ -39,7 +43,7 @@ defineProps<{
   box-shadow: 0 0 5px rgb(0 0 0 / 60%);
   pointer-events: none;
 }
-h6 {
+.tip-title {
   margin: 0;
   color: var(--text-muted);
   font-size: var(--font-s);

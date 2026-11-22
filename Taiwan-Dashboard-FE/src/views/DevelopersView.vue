@@ -472,7 +472,7 @@ const HEADERS = [
             <div class="cards">
               <div class="card">
                 <span class="mi" aria-hidden="true">key</span>
-                <h3>OAuth 2.0</h3>
+                <h2>OAuth 2.0</h2>
                 <p>
                   以 Client Credentials 換取 Access Token，放在
                   <code>Authorization: Bearer</code> 標頭。token 只能讀取資料。
@@ -480,7 +480,7 @@ const HEADERS = [
               </div>
               <div class="card">
                 <span class="mi" aria-hidden="true">speed</span>
-                <h3>額度</h3>
+                <h2>額度</h2>
                 <p>
                   每天 {{ PER_DAY }} 次、{{ MB_PER_DAY }} MB 流量，每分鐘
                   {{ PER_MINUTE }} 次，每天午夜歸零。應用上架到<RouterLink to="/showcase/app"
@@ -490,7 +490,7 @@ const HEADERS = [
               </div>
               <div class="card">
                 <span class="mi" aria-hidden="true">public</span>
-                <h3>跨網域</h3>
+                <h2>跨網域</h2>
                 <p>支援 CORS。請勿把 Client Secret 放在公開的網頁程式碼中。</p>
               </div>
             </div>
@@ -1077,7 +1077,7 @@ h1 {
   color: var(--accent);
   font-size: 1.3rem;
 }
-.card h3 {
+.card h2 {
   margin-top: 10px;
   font-size: 0.95rem;
   font-weight: 600;

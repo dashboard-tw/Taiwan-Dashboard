@@ -103,7 +103,7 @@ function freq(c: ComponentInfo) {
 
       <section v-if="selected" class="selected">
         <header>
-          <h3>{{ selected.title }}</h3>
+          <h2>{{ selected.title }}</h2>
           <button type="button" class="close" aria-label="關閉" @click="selected = null">
             <span class="mi" aria-hidden="true">close</span>
           </button>
@@ -121,7 +121,7 @@ function freq(c: ComponentInfo) {
       >
         <div class="map-card-head">
           <div class="titles">
-            <h3>{{ c.name }}</h3>
+            <h2>{{ c.name }}</h2>
             <span v-if="freq(c)" class="tag">{{ freq(c) }}</span>
             <span v-if="!c.map_layers?.length" class="tag muted-tag">無圖層</span>
           </div>
@@ -164,9 +164,9 @@ function freq(c: ComponentInfo) {
       </div>
       <div v-if="legends.length" class="legend">
         <div v-for="l in legends" :key="l.title">
-          <h4>
+          <h3>
             {{ l.title }}<template v-if="l.unit">（{{ l.unit }}）</template>
-          </h4>
+          </h3>
           <ul>
             <li v-for="lv in l.levels" :key="lv.label">
               <i :style="{ background: lv.color }"></i>{{ lv.label }}
@@ -215,7 +215,7 @@ function freq(c: ComponentInfo) {
   align-items: center;
   gap: 6px;
 }
-.titles h3 {
+.titles h2 {
   font-size: var(--font-ms);
   font-weight: 700;
 }
@@ -291,7 +291,7 @@ function freq(c: ComponentInfo) {
   justify-content: space-between;
   align-items: center;
 }
-.selected h3 {
+.selected h2 {
   font-size: var(--font-ms);
 }
 .selected p {
@@ -355,7 +355,7 @@ function freq(c: ComponentInfo) {
   font-size: var(--font-s);
   box-shadow: 0 0 4px rgb(0 0 0 / 40%);
 }
-.legend h4 {
+.legend h3 {
   margin-bottom: 2px;
   color: var(--text-primary);
   font-size: var(--font-s);

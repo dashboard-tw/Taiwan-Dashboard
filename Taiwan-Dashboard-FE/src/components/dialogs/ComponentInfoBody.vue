@@ -86,16 +86,16 @@ function hostname(link: string): string {
 
     <div class="info">
       <div class="info-data">
-        <h3>組件說明（{{ component.slug }}｜{{ component.dataset_ids.join('、') }}）</h3>
+        <h2>組件說明（{{ component.slug }}｜{{ component.dataset_ids.join('、') }}）</h2>
         <p>{{ component.long_desc || component.short_desc }}</p>
 
         <template v-if="component.use_case">
-          <h3>範例情境</h3>
+          <h2>範例情境</h2>
           <p>{{ component.use_case }}</p>
         </template>
 
         <div v-if="component.has_history" class="history">
-          <h3>歷史軸</h3>
+          <h2>歷史軸</h2>
           <div class="ranges" role="group" aria-label="歷史資料的時間範圍">
             <button
               v-for="(r, i) in ranges"
@@ -125,7 +125,7 @@ function hostname(link: string): string {
           </div>
         </div>
 
-        <h3>相關資料</h3>
+        <h2>相關資料</h2>
         <div class="notice">資料可能因更新時間不同，與原始來源略有差異。</div>
         <ul class="links">
           <li v-for="s in component.sources" :key="s.dataset">
@@ -199,7 +199,7 @@ function hostname(link: string): string {
   border-radius: 4px;
   background: rgb(136 135 135 / 50%);
 }
-h3 {
+h2 {
   font-size: var(--font-ms);
   font-weight: 700;
 }
