@@ -38,7 +38,14 @@ func NewRouter(deps Deps) *gin.Engine {
 	if !deps.Indexable {
 		r.Use(noIndex())
 	}
-	r.GET("/robots.txt", robots(deps.Indexable))
+	siteURL := ""
+	if len(deps.Auth.Origins) > 0 {
+		siteURL = deps.Auth.Origins[0]
+	}
+	r.GET("/robots.txt", robots(deps.Indexable, siteURL))
+	if deps.Screen != nil {
+		r.GET("/sitemap.xml", sitemap(deps.Screen, siteURL))
+	}
 
 	v1 := r.Group("/api/v1")
 	v1.GET("/health", health(deps.DB, deps.Version))

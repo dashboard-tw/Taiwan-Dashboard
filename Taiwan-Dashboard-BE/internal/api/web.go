@@ -17,10 +17,13 @@ func noIndex() gin.HandlerFunc {
 	}
 }
 
-func robots(indexable bool) gin.HandlerFunc {
+func robots(indexable bool, base string) gin.HandlerFunc {
 	body := "User-agent: *\nDisallow: /\n"
 	if indexable {
-		body = "User-agent: *\nDisallow: /api/\nDisallow: /admin\nDisallow: /me\n"
+		body = "User-agent: *\nDisallow: /api/\nDisallow: /admin\nDisallow: /me\nDisallow: /embed/\n"
+		if base != "" {
+			body += "\nSitemap: " + base + "/sitemap.xml\n"
+		}
 	}
 	return func(c *gin.Context) {
 		c.Header("Cache-Control", "public, max-age=3600")
