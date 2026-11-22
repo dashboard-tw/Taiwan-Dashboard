@@ -73,9 +73,7 @@ async function submit() {
       <p v-if="failed" class="warn">下載失敗，請稍後再試</p>
       <div class="control">
         <button type="button" class="cancel" @click="dialogs.download = false">取消</button>
-        <button type="submit" class="btn-highlight" :disabled="busy">
-          下載{{ format }}
-        </button>
+        <button type="submit" class="btn-highlight" :disabled="busy">下載{{ format }}</button>
       </div>
     </form>
   </DialogContainer>
