@@ -109,6 +109,12 @@ const detailHref = computed(
 const hasFilter = computed(
   () => !!props.component.chart_map_link && !!props.component.has_map_layers,
 )
+const tagCount = computed(
+  () =>
+    Number(hasFilter.value) +
+    Number(!!props.component.has_map_layers) +
+    Number(!!props.component.has_history),
+)
 const hasAnyTag = computed(
   () => hasFilter.value || !!props.component.has_map_layers || props.component.has_history,
 )
@@ -190,7 +196,7 @@ function openInfo() {
     <footer v-if="mode !== 'large'" class="foot">
       <div
         v-if="mode !== 'map'"
-        class="tags"
+        :class="['tags', `tags-${tagCount}`]"
         role="group"
         :tabindex="hasAnyTag ? 0 : undefined"
         aria-label="組件資訊與功能"
@@ -201,13 +207,16 @@ function openInfo() {
         @blur="tip = null"
       >
         <span v-if="hasFilter" class="tag hide-mobile"
-          ><span class="mi" aria-hidden="true">tune</span>篩選地圖</span
+          ><span class="mi" aria-hidden="true">tune</span
+          ><span class="tag-text">篩選地圖</span></span
         >
         <span v-if="component.has_map_layers" class="tag hide-mobile"
-          ><span class="mi" aria-hidden="true">map</span>空間資料</span
+          ><span class="mi" aria-hidden="true">map</span
+          ><span class="tag-text">空間資料</span></span
         >
         <span v-if="component.has_history" class="tag"
-          ><span class="mi" aria-hidden="true">insights</span>歷史資料</span
+          ><span class="mi" aria-hidden="true">insights</span
+          ><span class="tag-text">歷史資料</span></span
         >
       </div>
       <span v-else></span>
@@ -384,11 +393,36 @@ h2 .tag {
 }
 
 .foot {
+  container: foot / inline-size;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 26px;
+  gap: 4px;
+  height: 1.625rem;
   margin-top: 4px;
+}
+@container foot (max-width: 21rem) {
+  .tags-3 .tag {
+    padding: 0 2px;
+  }
+  .tags-3 .tag-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+@container foot (max-width: 15.5rem) {
+  .tag-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 .tags {
   display: flex;
@@ -404,7 +438,9 @@ h2 .tag {
 }
 .info {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
+  white-space: nowrap;
   gap: 4px;
   border: 0;
   background: transparent;

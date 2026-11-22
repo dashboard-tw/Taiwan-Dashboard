@@ -362,7 +362,6 @@ func respond(c *gin.Context, contentType string, body []byte, stale bool, cacheC
 	etag := `"` + hex.EncodeToString(sum[:16]) + `"`
 	c.Header("Cache-Control", cacheControl)
 	c.Header("ETag", etag)
-	c.Header("Access-Control-Allow-Origin", "*")
 	if match := c.GetHeader("If-None-Match"); match != "" && match == etag {
 		c.Status(http.StatusNotModified)
 		return

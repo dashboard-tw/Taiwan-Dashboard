@@ -119,8 +119,8 @@ func TestScreenResponses(t *testing.T) {
 	if cc := w.Header().Get("Cache-Control"); cc != cachePublic {
 		t.Errorf("Cache-Control = %q", cc)
 	}
-	if w.Header().Get("Access-Control-Allow-Origin") != "*" {
-		t.Error("screen API must allow embedding from any site")
+	if w.Header().Get("Access-Control-Allow-Origin") != "" {
+		t.Error("the site API must not be readable by other origins; embeds use an iframe on dashboard.tw")
 	}
 	body := w.Body.String()
 	if !strings.Contains(body, `"county_code":"63000"`) || !strings.Contains(body, `"sources":[`) {

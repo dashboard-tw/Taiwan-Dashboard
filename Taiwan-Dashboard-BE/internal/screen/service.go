@@ -285,8 +285,16 @@ func (s *Service) timeRange(c *component.Component, req Request, now time.Time) 
 	case to.Sub(from) > component.MaxRange:
 		return time.Time{}, time.Time{}, badRequest("invalid_time_range", "時間範圍最長 5 年")
 	}
+	limit := max(component.Ranges[c.TimeRange], siteHistory)
+	if from.Before(now.Add(-limit - 24*time.Hour)) {
+		return time.Time{}, time.Time{}, badRequest("range_not_available", fmt.Sprintf(
+			"網站的資料介面只提供最近 %d 天，更早的資料請使用開放資料 API：https://dashboard.tw/developers", int(limit.Hours()/24)))
+	}
 	return from, to, nil
 }
+
+// 網站圖表最多回看一年，更長的歷史資料由開放資料 API 提供
+const siteHistory = 366 * 24 * time.Hour
 
 func (s *Service) load(ctx context.Context, c *component.Component, scope, shape string,
 	q component.Compiled, p component.Params) (*Result, error) {

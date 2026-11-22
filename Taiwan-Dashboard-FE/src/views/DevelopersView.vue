@@ -568,6 +568,12 @@ const HEADERS = [
               <code>meta.source</code>。使用時請標示來源機關，例如「資料來源：環境部，經
               dashboard.tw 整理」。使用前請閱讀 <RouterLink to="/terms">使用條款</RouterLink>。
             </p>
+            <p class="sec-lead">
+              網站本身使用的資料介面，例如 <code>/api/v1/components</code> 與
+              <code>/api/v1/dashboards</code>，只供 dashboard.tw
+              的網頁使用。它們不開放其他網站呼叫，只有最近一年的資料，格式也可能隨時調整。要在自己的服務使用資料，請用本文件介紹的開放資料
+              API。
+            </p>
           </section>
         </template>
 
