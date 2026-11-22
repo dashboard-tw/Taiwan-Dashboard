@@ -47,6 +47,7 @@ func NewRouter(deps Deps) *gin.Engine {
 	r.GET("/robots.txt", robots(deps.Indexable, siteURL))
 	if deps.Screen != nil {
 		r.GET("/sitemap.xml", sitemap(deps.Screen, siteURL))
+		r.GET("/llms.txt", llmsTxt(deps.Screen, siteURL))
 	}
 
 	v1 := r.Group("/api/v1")
