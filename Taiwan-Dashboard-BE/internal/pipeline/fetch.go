@@ -20,7 +20,7 @@ type Fetcher struct {
 
 func NewFetcher(version string) *Fetcher {
 	return &Fetcher{
-		Client:    &http.Client{Timeout: 60 * time.Second},
+		Client:    &http.Client{Timeout: 60 * time.Second, Transport: newTransport()},
 		UserAgent: "dashboard.tw-worker/" + version + " (+https://dashboard.tw)",
 		MaxBytes:  50 << 20,
 		Retries:   2,
