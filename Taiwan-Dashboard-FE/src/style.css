@@ -292,7 +292,7 @@ button {
 }
 
 .doc {
-  max-width: 760px;
+  max-width: 40em;
   line-height: 1.8;
 }
 .doc h2 {

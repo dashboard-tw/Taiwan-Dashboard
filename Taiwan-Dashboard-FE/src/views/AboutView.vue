@@ -453,7 +453,7 @@ const shown = computed(() => {
   scroll-margin-top: calc(var(--header-h) + 1rem);
 }
 .sources {
-  max-width: 1000px;
+  max-width: 62.5rem;
   margin: 0.25rem 0 0.5rem;
   padding: var(--font-m);
 }
