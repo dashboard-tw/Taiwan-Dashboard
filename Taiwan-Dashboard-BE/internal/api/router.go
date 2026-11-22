@@ -1,12 +1,14 @@
 package api
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 
 	"github.com/gin-gonic/gin"
 
 	"dashboard.tw/backend/internal/auth"
+	"dashboard.tw/backend/internal/component"
 	"dashboard.tw/backend/internal/opendata"
 	"dashboard.tw/backend/internal/screen"
 )
@@ -93,7 +95,17 @@ func NewRouter(deps Deps) *gin.Engine {
 	}
 
 	if deps.WebDir != "" {
-		r.NoRoute(webHandler(deps.WebDir))
+		var catalog catalogFunc
+		if deps.Screen != nil {
+			catalog = func(ctx context.Context) *component.Catalog {
+				cat, _, err := deps.Screen.Catalog(ctx)
+				if err != nil {
+					return nil
+				}
+				return cat
+			}
+		}
+		r.NoRoute(webHandler(deps.WebDir, siteURL, catalog))
 	} else {
 		r.NoRoute(func(c *gin.Context) {
 			writeError(c, http.StatusNotFound, "not_found", "找不到這個路徑")

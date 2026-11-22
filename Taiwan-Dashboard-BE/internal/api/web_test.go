@@ -39,9 +39,9 @@ func TestWebServesFrontend(t *testing.T) {
 		path, body, cache string
 		status            int
 	}{
-		{"/", "<title>dashboard.tw", "no-cache", 200},
-		{"/weather/63000", "<title>dashboard.tw", "no-cache", 200}, // 前端的路由
-		{"/admin", "<title>dashboard.tw", "no-cache", 200},
+		{"/", "<!doctype html>", "no-cache", 200},
+		{"/weather/63000", "<!doctype html>", "no-cache", 200}, // 前端的路由
+		{"/admin", "<!doctype html>", "no-cache", 200},
 		{"/assets/app-1.js", "console.log", "immutable", 200},
 		{"/favicon.svg", "<svg/>", "max-age=3600", 200},
 		{"/assets/old-0.js", "not found", "no-store", 404}, // 舊版的檔案不能回 index.html

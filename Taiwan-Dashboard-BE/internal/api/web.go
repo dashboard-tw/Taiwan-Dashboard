@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+
+	"dashboard.tw/backend/internal/component"
 )
 
 func noIndex() gin.HandlerFunc {
@@ -31,7 +33,7 @@ func robots(indexable bool, base string) gin.HandlerFunc {
 	}
 }
 
-func webHandler(dir string) gin.HandlerFunc {
+func webHandler(dir, base string, catalog catalogFunc) gin.HandlerFunc {
 	root, _ := filepath.Abs(dir)
 	index := filepath.Join(root, "index.html")
 	return func(c *gin.Context) {
@@ -59,8 +61,17 @@ func webHandler(dir string) gin.HandlerFunc {
 			c.String(http.StatusNotFound, "not found")
 			return
 		}
+		page, err := os.ReadFile(index)
+		if err != nil {
+			writeError(c, http.StatusNotFound, "not_found", "找不到這個路徑")
+			return
+		}
+		var cat *component.Catalog
+		if catalog != nil {
+			cat = catalog(c.Request.Context())
+		}
 		c.Header("Cache-Control", "no-cache")
-		http.ServeFile(c.Writer, c.Request, index)
+		c.Data(http.StatusOK, "text/html; charset=utf-8", renderIndex(page, lookupPage(cat, p), base, p))
 	}
 }
 
