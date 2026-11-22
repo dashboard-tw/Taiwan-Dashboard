@@ -146,6 +146,9 @@ func registerAuth(v1 *gin.RouterGroup, a AuthDeps) {
 		}
 		writeData(c, http.StatusOK, providers, nil)
 	})
+	g.GET("/session", func(c *gin.Context) {
+		writeData(c, http.StatusOK, currentUser(c), nil)
+	})
 	g.POST("/:provider/start", a.start)
 	g.GET("/:provider/callback", a.callback)
 	g.POST("/logout", a.logout)

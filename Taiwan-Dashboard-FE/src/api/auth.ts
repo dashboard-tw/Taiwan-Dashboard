@@ -13,12 +13,7 @@ export interface Provider {
 }
 
 export async function getMe(): Promise<Me | null> {
-  try {
-    return (await getJson<Me>('/me')).data
-  } catch (e) {
-    if (e instanceof ApiError && e.status === 401) return null
-    throw e
-  }
+  return (await getJson<Me | null>('/auth/session')).data
 }
 
 export async function getProviders(): Promise<Provider[]> {
