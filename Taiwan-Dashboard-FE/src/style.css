@@ -366,3 +366,7 @@ button {
   background: var(--surface);
   border-radius: 6px;
 }
+
+main:focus:not(:focus-visible) {
+  outline: none;
+}

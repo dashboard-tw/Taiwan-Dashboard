@@ -147,6 +147,7 @@ export const router = createRouter({
       meta: { bare: true },
     },
     { path: '/docs/api', redirect: '/developers' },
+    { path: '/sitemap', name: 'sitemap', component: () => import('../views/SitemapView.vue') },
     { path: '/privacy', name: 'privacy', component: () => import('../views/PrivacyView.vue') },
     { path: '/terms', name: 'terms', component: () => import('../views/TermsView.vue') },
     {

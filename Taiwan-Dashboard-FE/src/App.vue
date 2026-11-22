@@ -78,7 +78,7 @@ watch(
         @close="drawerOpen = false"
       />
       <div class="content">
-        <main id="main">
+        <main id="main" tabindex="-1">
           <RouterView />
         </main>
         <SiteFooter v-if="!route.path.endsWith('/map')" />

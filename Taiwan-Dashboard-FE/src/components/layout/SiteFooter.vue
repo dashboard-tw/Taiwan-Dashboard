@@ -8,6 +8,7 @@ const { t } = useI18n()
   <footer class="site-footer">
     <p>{{ t('site.unofficialNotice') }}</p>
     <nav aria-label="頁尾">
+      <RouterLink to="/sitemap">網站導覽</RouterLink>
       <RouterLink to="/about">{{ t('nav.about') }}</RouterLink>
       <RouterLink to="/about#sources">{{ t('footer.sources') }}</RouterLink>
       <RouterLink to="/developers">{{ t('footer.apiDocs') }}</RouterLink>

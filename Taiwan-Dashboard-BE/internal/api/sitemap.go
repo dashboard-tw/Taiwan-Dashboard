@@ -15,7 +15,7 @@ import (
 
 var sitemapPages = []string{
 	"/about", "/developers", "/showcase/app", "/showcase/web", "/showcase/innovation",
-	"/typhoons", "/components", "/mapdata/map", "/privacy", "/terms",
+	"/typhoons", "/components", "/mapdata/map", "/sitemap", "/privacy", "/terms",
 }
 
 var sitemapSkipDashboards = []string{"home", "typhoon", "typhoon-event", "mapdata"}

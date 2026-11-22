@@ -382,7 +382,7 @@ const HEADERS = [
         @click="navOpen = false"
       ></button>
 
-      <main id="dev-main" class="main">
+      <main id="dev-main" class="main" tabindex="-1">
         <nav v-if="crumbs.length" class="crumbs" aria-label="位置">
           <RouterLink to="/developers">開放資料 API</RouterLink>
           <template v-for="c in crumbs" :key="c">
