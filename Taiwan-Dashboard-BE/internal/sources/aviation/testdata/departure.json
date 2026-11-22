@@ -1,0 +1,80 @@
+[
+ {
+  "FlightDate": "2026-10-24",
+  "FlightNumber": "7010",
+  "AirlineID": "DA",
+  "DepartureAirportID": "CMJ",
+  "ArrivalAirportID": "KHH",
+  "ScheduleDepartureTime": "2026-10-24T11:40",
+  "DepartureRemark": "取消",
+  "Terminal": "",
+  "IsCargo": false,
+  "UpdateTime": "2026-10-24T04:05:36+08:00"
+ },
+ {
+  "FlightDate": "2026-10-24",
+  "FlightNumber": "7012",
+  "AirlineID": "DA",
+  "DepartureAirportID": "CMJ",
+  "ArrivalAirportID": "KHH",
+  "ScheduleDepartureTime": "2026-10-24T16:15",
+  "DepartureRemark": "準時",
+  "Terminal": "",
+  "IsCargo": false,
+  "UpdateTime": "2026-10-24T04:05:36+08:00"
+ },
+ {
+  "FlightDate": "2026-10-23",
+  "FlightNumber": "216",
+  "AirlineID": "IT",
+  "DepartureAirportID": "TPE",
+  "ArrivalAirportID": "HND",
+  "ScheduleDepartureTime": "2026-10-23T00:10",
+  "ActualDepartureTime": "2026-10-23T00:29",
+  "EstimatedDepartureTime": "2026-10-23T00:29",
+  "DepartureRemark": "出發DEPARTED",
+  "Terminal": "1",
+  "IsCargo": false,
+  "AcType": "A320-271",
+  "UpdateTime": "2026-10-24T04:05:36+08:00"
+ },
+ {
+  "FlightDate": "2026-10-24",
+  "FlightNumber": "387",
+  "AirlineID": "EK",
+  "DepartureAirportID": "TPE",
+  "ArrivalAirportID": "DXB",
+  "ScheduleDepartureTime": "2026-10-24T00:30",
+  "EstimatedDepartureTime": "2026-10-24T13:15",
+  "DepartureRemark": "時間更改SCHEDULE CHANGE",
+  "Terminal": "2",
+  "IsCargo": false,
+  "AcType": "A380",
+  "UpdateTime": "2026-10-24T04:05:36+08:00"
+ },
+ {
+  "FlightDate": "2026-10-24",
+  "FlightNumber": "374",
+  "AirlineID": "AE",
+  "DepartureAirportID": "MZG",
+  "ArrivalAirportID": "TSA",
+  "ScheduleDepartureTime": "2026-10-24T16:50",
+  "EstimatedDepartureTime": "2026-10-24T17:55",
+  "DepartureRemark": "延誤",
+  "Terminal": "",
+  "IsCargo": false,
+  "UpdateTime": "2026-10-24T04:05:36+08:00"
+ },
+ {
+  "FlightDate": "2026-10-24",
+  "FlightNumber": "7010",
+  "AirlineID": "DA",
+  "DepartureAirportID": "CMJ",
+  "ArrivalAirportID": "KHH",
+  "ScheduleDepartureTime": "2026-10-24T11:40",
+  "DepartureRemark": "取消",
+  "Terminal": "",
+  "IsCargo": false,
+  "UpdateTime": "2026-10-24T04:05:36+08:00"
+ }
+]

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+                        <alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+                          <identifier>WRA_floodSensor_20261023165700_0000</identifier>
+                          <sender>ddmt01@wra.gov.tw</sender>
+                          <sent>2026-10-23T16:57:00+08:00</sent>
+                          
+                          <status>Actual</status> 
+                          <msgType>Cancel</msgType>
+                          <scope>Public</scope>
+                          <references>ddmt01@wra.gov.tw,WRA_floodSensor_20261023162700_0000,2026-10-23T16:27:00+08:00</references>
+                          <info>
+                            <language>zh-tw</language>
+                            <category>Met</category>
+                            <event>淹水感測</event>
+                            <responseType>Monitor</responseType>
+                            <urgency>Past</urgency>
+                            <severity>Moderate</severity>
+                            <certainty>Observed</certainty>
+                            <eventCode>
+                              <valueName>profile:CAP-TWP:Event:1.0</valueName>
+                              <value>FloodSensor</value>
+                            </eventCode>
+                            <effective>2026-10-23T16:57:00+08:00</effective>
+                            <expires>2026-10-23T19:57:00+08:00</expires>
+                            <senderName>水利署</senderName>
+                            <headline>淹水感測達門檻</headline>
+                            <description>10/23 16:57 水利署訊: 濱海路二段一巷鐵路箱涵 (感測器 頭城鎮_濱海路二段一巷鐵路箱涵測站)，淹水深度已降至 10公分以下。​​</description>
+                            <instruction>暫時無風險​​</instruction>
+                            <web>https://fhy.wra.gov.tw/fhyv2/monitor/floodMap</web>
+                            <parameter>
+                              <valueName>alert_title</valueName>
+                              <value>淹水感測災點</value>
+                            </parameter>
+                            <parameter>
+                              <valueName>alert_color</valueName>
+                              <value>黃色</value>
+                            </parameter>
+                            <area>
+                              <areaDesc>濱海路二段一巷鐵路箱涵</areaDesc>
+	                          <circle>24.87823,121.840546 1.0</circle>
+                            </area>
+                          </info>
+                        </alert>

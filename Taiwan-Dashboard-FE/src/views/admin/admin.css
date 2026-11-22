@@ -1,0 +1,169 @@
+.admin .block {
+  margin-bottom: var(--font-m);
+  padding: var(--font-m);
+  overflow-x: auto;
+}
+.admin h2 {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: var(--font-ms);
+}
+.admin table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.admin th,
+.admin td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.admin th {
+  color: var(--text-muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.admin td.num,
+.admin th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.admin tbody tr.clickable {
+  cursor: pointer;
+}
+.admin tbody tr.clickable:hover,
+.admin tbody tr.active {
+  background: var(--accent-soft);
+}
+.admin .sub {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--font-s);
+}
+.admin .sub a {
+  color: inherit;
+}
+.admin .badge {
+  padding: 0 6px;
+  border-radius: var(--radius);
+  border: 1px solid currentColor;
+  font-size: var(--font-s);
+  white-space: nowrap;
+}
+.admin .ok {
+  color: #4ade80;
+}
+:root[data-theme='light'] .admin .ok {
+  color: #1a7f37;
+}
+.admin .bad {
+  color: var(--danger-text);
+}
+.admin .warn {
+  color: #f5c26b;
+}
+:root[data-theme='light'] .admin .warn {
+  color: var(--warning-text);
+}
+.admin .error-cell {
+  max-width: 420px;
+  color: var(--text-muted);
+  font-size: var(--font-s);
+  word-break: break-all;
+}
+.admin .cell {
+  display: block;
+  height: 0.75rem;
+  width: 80%;
+}
+
+.admin .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.875rem;
+}
+.admin .field > span {
+  color: var(--text-muted);
+}
+.admin .input,
+.admin textarea {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-primary);
+}
+.admin textarea.sql {
+  min-height: 9rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  resize: vertical;
+  tab-size: 2;
+}
+.admin .input:focus,
+.admin textarea:focus,
+.admin .select:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: -1px;
+}
+.admin .check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+}
+.admin .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.admin .btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.admin .btn:disabled,
+.admin .btn-highlight:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.admin .btn .mi,
+.admin .btn-highlight .mi {
+  font-size: 1.1em;
+}
+.admin .filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+.admin .notice {
+  margin-bottom: var(--font-m);
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  font-size: 0.875rem;
+}
+.admin .notice.bad {
+  border-color: var(--danger-text);
+  background: color-mix(in srgb, var(--danger-text) 12%, transparent);
+  color: var(--text-primary);
+}

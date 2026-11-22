@@ -1,0 +1,89 @@
+{
+ "UpdateTime": "2026-10-24T04:49:32+08:00",
+ "UpdateInterval": 60,
+ "SrcUpdateTime": "2026-10-24T04:49:00+08:00",
+ "SrcUpdateInterval": 60,
+ "AuthorityCode": "TPE",
+ "LiveStatuses": [
+  {
+   "StationID": "TPE0201U03",
+   "ChargingPointID": "90807408-PCP03576",
+   "ConnectorID": "90807408-CCP03576",
+   "ConnectorType": 5,
+   "ConnectorStatus": 2,
+   "LastUpdateTime": "2026-10-24T04:48:03+08:00"
+  },
+  {
+   "StationID": "TPE0201U03",
+   "ChargingPointID": "90807408-PCP03577",
+   "ConnectorID": "90807408-CCP03577",
+   "ConnectorType": 5,
+   "ConnectorStatus": 3,
+   "LastUpdateTime": "2026-10-24T04:48:03+08:00"
+  },
+  {
+   "StationID": "TPE0201U03",
+   "ChargingPointID": "90807408-PCP03578",
+   "ConnectorID": "90807408-CCP03578",
+   "ConnectorType": 6,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:48:03+08:00"
+  },
+  {
+   "StationID": "TPE0383",
+   "ChargingPointID": "90807408-PCP03406",
+   "ConnectorID": "90807408-CCP03406",
+   "ConnectorType": 5,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:48:04+08:00"
+  },
+  {
+   "StationID": "TPE0383",
+   "ChargingPointID": "90807408-PCP03407",
+   "ConnectorID": "90807408-CCP03407",
+   "ConnectorType": 5,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:48:04+08:00"
+  },
+  {
+   "StationID": "TPE0383",
+   "ChargingPointID": "90807408-PCP03408",
+   "ConnectorID": "90807408-CCP03408",
+   "ConnectorType": 6,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:48:04+08:00"
+  },
+  {
+   "StationID": "TPE1726",
+   "ChargingPointID": "00505188-P0001",
+   "ConnectorID": "00505188-C0001",
+   "ConnectorType": 5,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:49:00+08:00"
+  },
+  {
+   "StationID": "TPE1726",
+   "ChargingPointID": "00505188-P0002",
+   "ConnectorID": "00505188-C0002",
+   "ConnectorType": 5,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:49:00+08:00"
+  },
+  {
+   "StationID": "TPE1726",
+   "ChargingPointID": "00505188-P0003",
+   "ConnectorID": "00505188-C0003",
+   "ConnectorType": 5,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:49:00+08:00"
+  },
+  {
+   "StationID": "TPE1726",
+   "ChargingPointID": "00505188-P0004",
+   "ConnectorID": "00505188-C0004",
+   "ConnectorType": 5,
+   "ConnectorStatus": 1,
+   "LastUpdateTime": "2026-10-24T04:49:00+08:00"
+  }
+ ]
+}

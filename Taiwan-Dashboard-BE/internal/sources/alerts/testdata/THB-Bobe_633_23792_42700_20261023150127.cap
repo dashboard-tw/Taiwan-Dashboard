@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<alert xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>THB-Bobe_633_23792_42700_20261023150127</identifier>
+  <sender>thb.gov.tw</sender>
+  <sent>2026-10-23T15:01:27+08:00</sent>
+  <status>Actual</status>
+  <msgType>Update</msgType>
+  <source />
+  <scope>Public</scope>
+  <references>thb.gov.tw,THB-Bobe_633_23792_42666_20261023002107,2026-10-23T00:21:07+08:00</references>
+  <info>
+    <language>zh-TW</language>
+    <category>Transport</category>
+    <event>道路封閉</event>
+    <urgency>Immediate</urgency>
+    <severity>Extreme</severity>
+    <certainty>Observed</certainty>
+    <eventCode>
+      <valueName>profile:CAP-TWP:Event:1.0</valueName>
+      <value>roadClose</value>
+    </eventCode>
+    <effective>2026-10-22T22:00:00+08:00</effective>
+    <expires>2026-10-24T12:00:00+08:00</expires>
+    <senderName>交通部公路局</senderName>
+    <headline>省道台61線 0K+0~2K+0 道路封閉</headline>
+    <description>新北市 八里區 台61線 0K+0~2K+0。受損狀況/管制原因: 因應薔琵颱風侵襲台灣，氣象情資預測淡水地區風速將達到10級風，達到實施預警性封閉標準。 </description>
+    <instruction />
+    <web>https://bobe168.tw</web>
+    <parameter>
+      <valueName>alert_title</valueName>
+      <value>道路封閉通知</value>
+    </parameter>
+    <parameter>
+      <valueName>RoadClose_type</valueName>
+      <value>預警性封閉</value>
+    </parameter>
+    <parameter>
+      <valueName>alert_color</valueName>
+      <value>紅色</value>
+    </parameter>
+    <area>
+      <areaDesc>台61線 0k+0~2k+0</areaDesc>
+      <circle>25.180681,121.420442 10.0</circle>
+    </area>
+  </info>
+</alert>

@@ -1,0 +1,132 @@
+<!doctype html>
+<!--
+
+                      _oo0oo_                                  ▒▒
+                     o8888888o                             ░▒▒▓▓▓▓▓▒
+                     88" . "88                            ░▒▓███▓▓▒
+                     (| -_- |)                          ░▒▒▓████▓▓▒
+                     0\  =  /0                         ░▒▓██████▓▒
+                   ___/`---'\___                      ░▒▓██████▓▒
+                 .' \\|     |// '.                   ░▒▓██████▓▒░
+                / \\|||  :  |||// \                 ░▒▓███████▓▒
+               / _||||| -:- |||||- \               ░▒▓███████▓▒░
+              |   | \\\  -  /// |   |              ░▒▓███████▓▒
+              | \_|  ''\---/''  |_/ |             ░▒▓███████▓▒░
+              \  .-\__  '-'  ___/-. /              ░▒▓█████▓▒░
+            ___'. .'  /--.--\  `. .'___             ▒▓███▓▓▒░
+         ."" '<  `.___\_<|>_/___.' >' "".           ░▒▒▓▓▒░
+        | | :  `- \`.;`\ _ /`;.`/ - ` : | |            ░▒░
+        \  \ `_.   \_ __\ /__ _/   .-` /  /             ▒░
+    =====`-.____`.___ \_____/___.-`___.-'=====          ░
+                      `=---='
+
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+              佛祖保佑            永無BUG            寶島平安
+-->
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="整合政府開放資料，即時呈現全臺各縣市的生活、環境與防災資訊。雲際科技工作室的公益專案。"
+    />
+    <title>臺灣全國儀表板｜dashboard.tw</title>
+    <style>
+      .boot-embed {
+        --s: #282a2c;
+        --m: #333537;
+        --a: #5a9cf8;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        height: 100vh;
+        margin: 0;
+        padding: 18px;
+        background: var(--s);
+        font-family: '微軟正黑體', 'Microsoft JhengHei', 'PingFang TC', system-ui, sans-serif;
+      }
+      .boot-embed.light {
+        --s: #ffffff;
+        --m: #e6e8eb;
+        --a: #2f7ce0;
+      }
+      .boot-embed i {
+        display: block;
+        border-radius: 5px;
+        background: var(--m);
+      }
+      .boot-embed .c {
+        flex: 1;
+        margin-top: 8px;
+      }
+      .boot-embed .f {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .boot-embed a {
+        color: var(--a);
+        font-size: 1rem;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      ;(function () {
+        var path = location.pathname
+        if (path.indexOf('/embed/') !== 0) return
+        var params = new URLSearchParams(location.search)
+        var theme = params.get('theme')
+        var light =
+          theme === 'light' ||
+          (theme !== 'dark' && !matchMedia('(prefers-color-scheme: dark)').matches)
+        document.body.style.margin = '0'
+        var box = document.createElement('div')
+        box.className = 'boot-embed' + (light ? ' light' : '')
+        box.setAttribute('role', 'status')
+        box.setAttribute('aria-label', '載入中')
+        var blocks = [
+          ['45%', '1.1rem'],
+          ['32%', '0.65rem'],
+          ['2.2rem', '0.9rem'],
+        ]
+        blocks.forEach(function (b) {
+          var i = document.createElement('i')
+          i.style.width = b[0]
+          i.style.height = b[1]
+          box.appendChild(i)
+        })
+        var chart = document.createElement('i')
+        chart.className = 'c'
+        box.appendChild(chart)
+        var foot = document.createElement('div')
+        foot.className = 'f'
+        var btn = document.createElement('i')
+        btn.style.width = '5rem'
+        btn.style.height = '1.3rem'
+        foot.appendChild(btn)
+        var link = document.createElement('a')
+        var slug = path.slice('/embed/'.length)
+        var county = params.get('county')
+        link.href = '/components/' + slug + (county ? '?county=' + encodeURIComponent(county) : '')
+        link.target = '_blank'
+        link.rel = 'noopener'
+        link.textContent = 'dashboard.tw ➜'
+        foot.appendChild(link)
+        box.appendChild(foot)
+        document.getElementById('app').appendChild(box)
+      })()
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

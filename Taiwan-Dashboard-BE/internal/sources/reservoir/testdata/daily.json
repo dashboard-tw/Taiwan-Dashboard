@@ -1,0 +1,62 @@
+[
+ {
+  "basinrainfall": "0.0",
+  "capacity": "",
+  "crossflow": "0.0",
+  "datetime": "2026-10-19T00:00:00",
+  "dwl": "",
+  "inflow": "",
+  "nwlmax": "",
+  "outflow": "",
+  "outflowdischarge": "",
+  "outflowtotal": "0.0",
+  "regulatorydischarge": "",
+  "reservoiridentifier": "10802",
+  "reservoirname": "羅東攔河堰"
+ },
+ {
+  "basinrainfall": "0.0",
+  "capacity": "148.08",
+  "crossflow": "0.0",
+  "datetime": "2026-10-19T07:00:00",
+  "dwl": "10.9",
+  "inflow": "0.0",
+  "nwlmax": "18.35",
+  "outflow": "0.18",
+  "outflowdischarge": "",
+  "outflowtotal": "0.18",
+  "regulatorydischarge": "",
+  "reservoiridentifier": "50201",
+  "reservoirname": "太湖水庫"
+ },
+ {
+  "basinrainfall": "0.0",
+  "capacity": "20526.0",
+  "crossflow": "154.27",
+  "datetime": "2026-10-19T00:00:00",
+  "dwl": "175.0",
+  "inflow": "124.29",
+  "nwlmax": "245.0",
+  "outflow": "70.76",
+  "outflowdischarge": "",
+  "outflowtotal": "225.03",
+  "regulatorydischarge": "",
+  "reservoiridentifier": "10201",
+  "reservoirname": "石門水庫"
+ },
+ {
+  "basinrainfall": "0.0",
+  "capacity": "36997.6",
+  "crossflow": "",
+  "datetime": "2026-10-19T00:00:00",
+  "dwl": "110.0",
+  "inflow": "204.72",
+  "nwlmax": "170.0",
+  "outflow": "",
+  "outflowdischarge": "0.0",
+  "outflowtotal": "187.94",
+  "regulatorydischarge": "0.0",
+  "reservoiridentifier": "10205",
+  "reservoirname": "翡翠水庫"
+ }
+]

@@ -1,0 +1,124 @@
+[
+ {
+  "AirportID": "HND",
+  "AirportName": {
+   "Zh_tw": "東京羽田機場",
+   "En": "Tokyo-Haneda Airport"
+  },
+  "AirportIATA": "HND",
+  "AirportICAO": "RJTT",
+  "AirportPosition": {},
+  "AirportCityName": {
+   "Zh_tw": "東京",
+   "En": "Tokyo"
+  },
+  "AirportNationality": "JP",
+  "AuthorityID": "CAA",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirportID": "KHH",
+  "AirportName": {
+   "Zh_tw": "高雄小港國際機場",
+   "En": "Kaohsiung"
+  },
+  "AirportIATA": "KHH",
+  "AirportICAO": "RCKH",
+  "AirportPosition": {
+   "PositionLon": 120.340417727,
+   "PositionLat": 22.5712348666,
+   "GeoHash": "wsj86kvny"
+  },
+  "AirportCityName": {},
+  "AirportAddress": "高雄市小港區中山四路2號",
+  "AirportNationality": "TW",
+  "AuthorityID": "CAA",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirportID": "MZG",
+  "AirportName": {
+   "Zh_tw": "澎湖機場",
+   "En": "Penghu Airport"
+  },
+  "AirportIATA": "MZG",
+  "AirportICAO": "RCQC",
+  "AirportPosition": {
+   "PositionLon": 119.628333,
+   "PositionLat": 23.568611,
+   "GeoHash": "wsjn44w9n"
+  },
+  "AirportCityName": {
+   "Zh_tw": "澎湖",
+   "En": "Penghu"
+  },
+  "AirportAddress": "澎湖縣湖西鄉隘門村126-5號",
+  "AirportNationality": "TW",
+  "AuthorityID": "CAA",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirportID": "NRT",
+  "AirportName": {
+   "Zh_tw": "東京成田機場",
+   "En": "Tokyo-Narita Intl Airport"
+  },
+  "AirportIATA": "NRT",
+  "AirportICAO": "RJAA",
+  "AirportPosition": {},
+  "AirportCityName": {
+   "Zh_tw": "東京",
+   "En": "Narita"
+  },
+  "AirportNationality": "JP",
+  "AuthorityID": "CAA",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirportID": "TPE",
+  "AirportName": {
+   "Zh_tw": "桃園國際機場",
+   "En": "Taoyuan"
+  },
+  "AirportIATA": "TPE",
+  "AirportICAO": "RCTP",
+  "AirportPosition": {
+   "PositionLon": 121.231976,
+   "PositionLat": 25.0770119995,
+   "GeoHash": "wsqnwtnkj"
+  },
+  "AirportCityName": {},
+  "AirportAddress": "桃園市大園區航站南路9號",
+  "AirportNationality": "TW",
+  "AuthorityID": "CAA",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirportID": "TSA",
+  "AirportName": {
+   "Zh_tw": "臺北松山國際機場",
+   "En": "Songshan Airport"
+  },
+  "AirportIATA": "TSA",
+  "AirportICAO": "RCSS",
+  "AirportPosition": {
+   "PositionLon": 121.551880574,
+   "PositionLat": 25.0636769655,
+   "GeoHash": "wsqqtfxqs"
+  },
+  "AirportCityName": {
+   "Zh_tw": "臺北",
+   "En": "Taipei"
+  },
+  "AirportAddress": "臺北市松山區敦化北路340之9號",
+  "AirportNationality": "TW",
+  "AuthorityID": "CAA",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ }
+]

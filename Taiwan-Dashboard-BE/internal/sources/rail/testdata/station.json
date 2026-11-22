@@ -1,0 +1,77 @@
+{
+ "UpdateTime": "2026-10-23T04:12:49+08:00",
+ "UpdateInterval": 14400,
+ "SrcUpdateTime": "2026-10-23T04:00:00+08:00",
+ "SrcUpdateInterval": -1,
+ "AuthorityCode": "TRA",
+ "Stations": [
+  {
+   "StationUID": "TRA-1130",
+   "StationID": "1130",
+   "StationName": {
+    "Zh_tw": "富岡",
+    "En": "Fugang",
+    "Ja": "富岡",
+    "Kr": "푸강"
+   },
+   "StationPosition": {
+    "PositionLon": 121.08309,
+    "PositionLat": 24.93436
+   },
+   "StationAddress": "326019桃園市楊梅區富岡里成功路 37 號",
+   "StationClass": "3",
+   "StationURL": "https://www.trc.com.tw/tra-tip-web/tip/tip00H/tipH41/viewStaInfo/1130"
+  },
+  {
+   "StationUID": "TRA-3430",
+   "StationID": "3430",
+   "StationName": {
+    "Zh_tw": "二水",
+    "En": "Ershui",
+    "Ja": "二水",
+    "Kr": "얼쉐이"
+   },
+   "StationPosition": {
+    "PositionLon": 120.61805,
+    "PositionLat": 23.81321
+   },
+   "StationAddress": "530018彰化縣二水鄉光化村光文路 1 號",
+   "StationClass": "2",
+   "StationURL": "https://www.trc.com.tw/tra-tip-web/tip/tip00H/tipH41/viewStaInfo/3430"
+  },
+  {
+   "StationUID": "TRA-3470",
+   "StationID": "3470",
+   "StationName": {
+    "Zh_tw": "斗六",
+    "En": "Douliu",
+    "Ja": "斗六",
+    "Kr": "도우리우"
+   },
+   "StationPosition": {
+    "PositionLon": 120.54099,
+    "PositionLat": 23.71184
+   },
+   "StationAddress": "640010雲林縣斗六市信義里民生路 187 號",
+   "StationClass": "1",
+   "StationURL": "https://www.trc.com.tw/tra-tip-web/tip/tip00H/tipH41/viewStaInfo/3470"
+  },
+  {
+   "StationUID": "TRA-0900",
+   "StationID": "0900",
+   "StationName": {
+    "Zh_tw": "基隆",
+    "En": "Keelung",
+    "Ja": "基隆",
+    "Kr": "지롱"
+   },
+   "StationPosition": {
+    "PositionLon": 121.73837,
+    "PositionLat": 25.13191
+   },
+   "StationAddress": "203001基隆市中山區中山一路 16 之 1 號",
+   "StationClass": "1",
+   "StationURL": "https://www.trc.com.tw/tra-tip-web/tip/tip00H/tipH41/viewStaInfo/0900"
+  }
+ ]
+}

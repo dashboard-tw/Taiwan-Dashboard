@@ -1,0 +1,327 @@
+{
+ "success": "true",
+ "records": {
+  "Station": [
+   {
+    "StationName": "新北",
+    "StationId": "466881",
+    "ObsTime": {
+     "DateTime": "2026-10-23T12:00:00+08:00"
+    },
+    "GeoInfo": {
+     "Coordinates": [
+      {
+       "CoordinateName": "TWD67",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.960990",
+       "StationLongitude": "121.516977"
+      },
+      {
+       "CoordinateName": "WGS84",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.959207",
+       "StationLongitude": "121.525196"
+      }
+     ],
+     "StationAltitude": "24.5",
+     "CountyName": "新北市",
+     "TownName": "新店區",
+     "CountyCode": "65000",
+     "TownCode": "65000060"
+    },
+    "WeatherElement": {
+     "Weather": "-99",
+     "Now": {
+      "Precipitation": "91.5"
+     },
+     "WindDirection": "60.0",
+     "WindSpeed": "5.8",
+     "AirTemperature": "24.9",
+     "RelativeHumidity": "91",
+     "AirPressure": "996.3",
+     "GustInfo": {
+      "PeakGustSpeed": "13.1",
+      "Occurred_at": {
+       "WindDirection": "45.0",
+       "DateTime": "2026-10-23T11:14:00+08:00"
+      }
+     },
+     "DailyExtreme": {
+      "DailyHigh": {
+       "TemperatureInfo": {
+        "AirTemperature": "25.4",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T09:51:00+08:00"
+        }
+       }
+      },
+      "DailyLow": {
+       "TemperatureInfo": {
+        "AirTemperature": "22.1",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T00:00:00+08:00"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "StationName": "口湖工作站",
+    "StationId": "12J990",
+    "ObsTime": {
+     "DateTime": "2026-10-23T12:00:00+08:00"
+    },
+    "GeoInfo": {
+     "Coordinates": [
+      {
+       "CoordinateName": "TWD67",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "23.591722",
+       "StationLongitude": "120.172281"
+      },
+      {
+       "CoordinateName": "WGS84",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "23.589978",
+       "StationLongitude": "120.180394"
+      }
+     ],
+     "StationAltitude": "10.0",
+     "CountyName": "雲林縣",
+     "TownName": "口湖鄉",
+     "CountyCode": "10009",
+     "TownCode": "10009190"
+    },
+    "WeatherElement": {
+     "Weather": "-99",
+     "Now": {
+      "Precipitation": "0.0"
+     },
+     "WindDirection": "10.0",
+     "WindSpeed": "8.4",
+     "AirTemperature": "25.7",
+     "RelativeHumidity": "87",
+     "AirPressure": "994.0",
+     "GustInfo": {
+      "PeakGustSpeed": "24.4",
+      "Occurred_at": {
+       "WindDirection": "30.0",
+       "DateTime": "2026-10-23T11:24:00+08:00"
+      }
+     },
+     "DailyExtreme": {
+      "DailyHigh": {
+       "TemperatureInfo": {
+        "AirTemperature": "26.4",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T10:16:00+08:00"
+        }
+       }
+      },
+      "DailyLow": {
+       "TemperatureInfo": {
+        "AirTemperature": "24.0",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T00:04:00+08:00"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "StationName": "崇德",
+    "StationId": "C0TB40",
+    "ObsTime": {
+     "DateTime": "2026-10-23T12:00:00+08:00"
+    },
+    "GeoInfo": {
+     "Coordinates": [
+      {
+       "CoordinateName": "TWD67",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.167948",
+       "StationLongitude": "121.649251"
+      },
+      {
+       "CoordinateName": "WGS84",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.166144",
+       "StationLongitude": "121.657414"
+      }
+     ],
+     "StationAltitude": "8.0",
+     "CountyName": "花蓮縣",
+     "TownName": "秀林鄉",
+     "CountyCode": "10015",
+     "TownCode": "10015110"
+    },
+    "WeatherElement": {
+     "Weather": "-99",
+     "Now": {
+      "Precipitation": "39.0"
+     },
+     "WindDirection": "36.0",
+     "WindSpeed": "10.0",
+     "AirTemperature": "28.1",
+     "RelativeHumidity": "67",
+     "AirPressure": "986.9",
+     "GustInfo": {
+      "PeakGustSpeed": "22.7",
+      "Occurred_at": {
+       "WindDirection": "21.0",
+       "DateTime": "2026-10-23T11:25:00+08:00"
+      }
+     },
+     "DailyExtreme": {
+      "DailyHigh": {
+       "TemperatureInfo": {
+        "AirTemperature": "30.4",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T01:00:00+08:00"
+        }
+       }
+      },
+      "DailyLow": {
+       "TemperatureInfo": {
+        "AirTemperature": "25.7",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T09:40:00+08:00"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "StationName": "磐石",
+    "StationId": "C0TC00",
+    "ObsTime": {
+     "DateTime": "2026-10-23T12:00:00+08:00"
+    },
+    "GeoInfo": {
+     "Coordinates": [
+      {
+       "CoordinateName": "TWD67",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.016800",
+       "StationLongitude": "121.387300"
+      },
+      {
+       "CoordinateName": "WGS84",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.015008",
+       "StationLongitude": "121.395456"
+      }
+     ],
+     "StationAltitude": "1164.0",
+     "CountyName": "花蓮縣",
+     "TownName": "秀林鄉",
+     "CountyCode": "10015",
+     "TownCode": "10015110"
+    },
+    "WeatherElement": {
+     "Weather": "-99",
+     "Now": {
+      "Precipitation": "-99"
+     },
+     "WindDirection": "-99",
+     "WindSpeed": "-99",
+     "AirTemperature": "-99",
+     "RelativeHumidity": "-99",
+     "AirPressure": "-99",
+     "GustInfo": {
+      "PeakGustSpeed": "-99",
+      "Occurred_at": {
+       "WindDirection": "-99",
+       "DateTime": "-99"
+      }
+     },
+     "DailyExtreme": {
+      "DailyHigh": {
+       "TemperatureInfo": {
+        "AirTemperature": "-99",
+        "Occurred_at": {
+         "DateTime": "-99"
+        }
+       }
+      },
+      "DailyLow": {
+       "TemperatureInfo": {
+        "AirTemperature": "-99",
+        "Occurred_at": {
+         "DateTime": "-99"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "StationName": "九宮",
+    "StationId": "C0W240",
+    "ObsTime": {
+     "DateTime": "2026-10-23T12:00:00+08:00"
+    },
+    "GeoInfo": {
+     "Coordinates": [
+      {
+       "CoordinateName": "TWD67",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.425386",
+       "StationLongitude": "118.232031"
+      },
+      {
+       "CoordinateName": "WGS84",
+       "CoordinateFormat": "decimal degrees",
+       "StationLatitude": "24.423753",
+       "StationLongitude": "118.240186"
+      }
+     ],
+     "StationAltitude": "52.0",
+     "CountyName": "金門縣",
+     "TownName": "烈嶼鄉",
+     "CountyCode": "09020",
+     "TownCode": "09020050"
+    },
+    "WeatherElement": {
+     "Weather": "-99",
+     "Now": {
+      "Precipitation": "0.0"
+     },
+     "WindDirection": "6.0",
+     "WindSpeed": "4.3",
+     "AirTemperature": "31.1",
+     "RelativeHumidity": "49",
+     "AirPressure": "998.6",
+     "GustInfo": {
+      "PeakGustSpeed": "10.4",
+      "Occurred_at": {
+       "WindDirection": "21.0",
+       "DateTime": "2026-10-23T11:52:00+08:00"
+      }
+     },
+     "DailyExtreme": {
+      "DailyHigh": {
+       "TemperatureInfo": {
+        "AirTemperature": "31.1",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T12:00:00+08:00"
+        }
+       }
+      },
+      "DailyLow": {
+       "TemperatureInfo": {
+        "AirTemperature": "23.2",
+        "Occurred_at": {
+         "DateTime": "2026-10-23T00:10:00+08:00"
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

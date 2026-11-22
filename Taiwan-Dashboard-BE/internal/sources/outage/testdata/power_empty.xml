@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+	<Schema name="Power_outage" id="Power_outage">
+		<SimpleField name="停電資訊" type="string" />
+		<SimpleField name="行政區" type="string" />
+		<SimpleField name="停電區域" type="string" />
+		<SimpleField name="影響戶數" type="string" />
+		<SimpleField name="預計修復時間" type="string" />
+		<SimpleField name="聯絡人(姓名)" type="string" />
+		<SimpleField name="聯絡人(電話一)" type="string" />
+		<SimpleField name="資料更新時間" type="string" />
+	</Schema>
+	<Folder id="FeatureLayer">
+		<name maxLines="1">停電資訊圖</name>
+		<Snippet maxLines="1"><![CDATA[]]></Snippet>
+		<description><![CDATA[]]></description>
+	</Folder>
+</Document>
+</kml>

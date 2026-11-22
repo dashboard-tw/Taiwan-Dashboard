@@ -1,0 +1,73 @@
+[
+ {
+  "AirlineID": "B7",
+  "AirlineName": {
+   "Zh_tw": "立榮航空",
+   "En": "UNI AIRWAYS CORP."
+  },
+  "AirlineNameAlias": {
+   "Zh_tw": "立榮航空"
+  },
+  "AirlineIATA": "B7",
+  "AirlineICAO": "UIA",
+  "AirlineNationality": "TW",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirlineID": "BR",
+  "AirlineName": {
+   "Zh_tw": "長榮航空",
+   "En": "EVA Air"
+  },
+  "AirlineNameAlias": {
+   "Zh_tw": "長榮航空",
+   "En": "EVA Air"
+  },
+  "AirlineIATA": "BR",
+  "AirlineICAO": "EVA",
+  "AirlineNationality": "TW",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirlineID": "CI",
+  "AirlineName": {
+   "Zh_tw": "中華航空",
+   "En": "China Airlines"
+  },
+  "AirlineNameAlias": {
+   "Zh_tw": "中華航空",
+   "En": "China Airlines"
+  },
+  "AirlineIATA": "CI",
+  "AirlineICAO": "CAL",
+  "AirlineNationality": "TW",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirlineID": "IT",
+  "AirlineName": {
+   "Zh_tw": "臺灣虎航",
+   "En": "Tigerair Taiwan"
+  },
+  "AirlineNameAlias": {
+   "Zh_tw": "臺灣虎航",
+   "En": "Tigerair Taiwan"
+  },
+  "AirlineIATA": "IT",
+  "AirlineICAO": "TTW",
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ },
+ {
+  "AirlineID": "",
+  "AirlineName": {
+   "En": "Executive Aviation Taiwan Corp."
+  },
+  "AirlineNameAlias": {},
+  "UpdateTime": "2026-10-24T02:25:36+08:00",
+  "VersionID": 5870
+ }
+]

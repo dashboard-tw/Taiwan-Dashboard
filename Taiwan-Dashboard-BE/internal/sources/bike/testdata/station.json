@@ -1,0 +1,68 @@
+[
+ {
+  "StationUID": "TPE500101001",
+  "StationID": "500101001",
+  "AuthorityID": "TPE",
+  "StationName": {
+   "Zh_tw": "YouBike2.0_捷運科技大樓站",
+   "En": "YouBike2.0_MRT Technology Bldg. Sta."
+  },
+  "StationPosition": {
+   "PositionLon": 121.5436,
+   "PositionLat": 25.02605,
+   "GeoHash": "wsqqmgc77"
+  },
+  "StationAddress": {
+   "Zh_tw": "復興南路二段235號前",
+   "En": "No.235, Sec. 2, Fuxing S. Rd."
+  },
+  "BikesCapacity": 28,
+  "ServiceType": 2,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00"
+ },
+ {
+  "StationUID": "TPE500101002",
+  "StationID": "500101002",
+  "AuthorityID": "TPE",
+  "StationName": {
+   "Zh_tw": "YouBike2.0_復興南路二段273號前",
+   "En": "YouBike2.0_No.273, Sec. 2, Fuxing S. Rd."
+  },
+  "StationPosition": {
+   "PositionLon": 121.54357,
+   "PositionLat": 25.02565,
+   "GeoHash": "wsqqmgc2f"
+  },
+  "StationAddress": {
+   "Zh_tw": "復興南路二段273號西側",
+   "En": "No.273, Sec. 2, Fuxing S. Rd. (West)"
+  },
+  "BikesCapacity": 21,
+  "ServiceType": 2,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00"
+ },
+ {
+  "StationUID": "TPE500101003",
+  "StationID": "500101003",
+  "AuthorityID": "TPE",
+  "StationName": {
+   "Zh_tw": "YouBike2.0_國北教大實小東側門",
+   "En": "YouBike2.0_NTUE Experiment Elementary School (East)"
+  },
+  "StationPosition": {
+   "PositionLon": 121.54124,
+   "PositionLat": 25.02429,
+   "GeoHash": "wsqqmex9h"
+  },
+  "StationAddress": {
+   "Zh_tw": "和平東路二段96巷7號",
+   "En": "No. 7, Ln. 96, Sec. 2, Heping E. Rd"
+  },
+  "BikesCapacity": 28,
+  "ServiceType": 2,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00"
+ }
+]

@@ -1,0 +1,203 @@
+{
+ "UpdateTime": "2026-10-23T13:01:04+08:00",
+ "UpdateInterval": 120,
+ "SrcUpdateTime": "2026-10-23T13:01:00+08:00",
+ "SrcUpdateInterval": -1,
+ "AuthorityCode": "TRA",
+ "Alerts": [
+  {
+   "AlertID": "8ae4cac2a162d49e01a165b147d1411a",
+   "Title": "颱風期間列車運行資訊",
+   "Description": "八斗子 <--> 菁桐 : 因應薔琵颱風陸上警報發布，依據中央氣象署最新氣象資訊研判，今(23)日列車行駛概況如下：\n(一)\t平溪線、深澳線全區間停駛。\n",
+   "Status": 2,
+   "Scope": {
+    "NetworkList": {
+     "NetworkID": "",
+     "NetworkName": ""
+    },
+    "Stations": [
+     {
+      "StationID": "7330",
+      "StationName": "三貂嶺"
+     },
+     {
+      "StationID": "7331",
+      "StationName": "大華"
+     },
+     {
+      "StationID": "7332",
+      "StationName": "十分"
+     },
+     {
+      "StationID": "7333",
+      "StationName": "望古"
+     },
+     {
+      "StationID": "7334",
+      "StationName": "嶺腳"
+     },
+     {
+      "StationID": "7335",
+      "StationName": "平溪"
+     },
+     {
+      "StationID": "7336",
+      "StationName": "菁桐"
+     },
+     {
+      "StationID": "7350",
+      "StationName": "猴硐"
+     },
+     {
+      "StationID": "7360",
+      "StationName": "瑞芳"
+     },
+     {
+      "StationID": "7361",
+      "StationName": "海科館"
+     },
+     {
+      "StationID": "7362",
+      "StationName": "八斗子"
+     }
+    ],
+    "Lines": [
+     {
+      "LineName": "東部幹線"
+     },
+     {
+      "LineName": "平溪線"
+     },
+     {
+      "LineName": "深澳線"
+     }
+    ],
+    "Routes": [],
+    "Trains": [],
+    "LineSections": [
+     {
+      "LineID": "EL",
+      "StartingStationID": "7360",
+      "StartingStationName": "瑞芳",
+      "EndingStationID": "7330",
+      "EndingStationName": "三貂嶺",
+      "Description": "瑞芳,猴硐,三貂嶺"
+     },
+     {
+      "LineID": "SA",
+      "StartingStationID": "7362",
+      "StartingStationName": "八斗子",
+      "EndingStationID": "7360",
+      "EndingStationName": "瑞芳",
+      "Description": "八斗子,海科館,瑞芳"
+     },
+     {
+      "LineID": "PX",
+      "StartingStationID": "7330",
+      "StartingStationName": "三貂嶺",
+      "EndingStationID": "7336",
+      "EndingStationName": "菁桐",
+      "Description": "三貂嶺,大華,十分,望古,嶺腳,平溪,菁桐"
+     }
+    ]
+   },
+   "Direction": 2,
+   "Level": 1,
+   "Effect": "4",
+   "Reason": "颱風期間列車運行資訊",
+   "AlertURL": "https://www.trc.com.tw/tra-tip-web/tip/tip007/tip711/blockList",
+   "StartTime": "2026-10-23T06:11:19+08:00",
+   "EndTime": "2026-10-24T23:00:00+08:00",
+   "PublishTime": "2026-10-23T06:11:19+08:00",
+   "UpdateTime": "2026-10-23T06:17:59+08:00"
+  },
+  {
+   "AlertID": "8ae4cac2a162d49e01a165b38157411d",
+   "Title": "颱風期間列車運行資訊",
+   "Description": "北新竹 <--> 內灣 : 因應薔琵颱風陸上警報發布，依據中央氣象署最新氣象資訊研判，今(23)日列車行駛概況如下：\n(一)\t內灣線全區間停駛。\n\n",
+   "Status": 2,
+   "Scope": {
+    "NetworkList": {
+     "NetworkID": "",
+     "NetworkName": ""
+    },
+    "Stations": [
+     {
+      "StationID": "1190",
+      "StationName": "北新竹"
+     },
+     {
+      "StationID": "1191",
+      "StationName": "千甲"
+     },
+     {
+      "StationID": "1192",
+      "StationName": "新莊"
+     },
+     {
+      "StationID": "1193",
+      "StationName": "竹中"
+     },
+     {
+      "StationID": "1201",
+      "StationName": "上員"
+     },
+     {
+      "StationID": "1202",
+      "StationName": "榮華"
+     },
+     {
+      "StationID": "1203",
+      "StationName": "竹東"
+     },
+     {
+      "StationID": "1204",
+      "StationName": "橫山"
+     },
+     {
+      "StationID": "1205",
+      "StationName": "九讚頭"
+     },
+     {
+      "StationID": "1206",
+      "StationName": "合興"
+     },
+     {
+      "StationID": "1207",
+      "StationName": "富貴"
+     },
+     {
+      "StationID": "1208",
+      "StationName": "內灣"
+     }
+    ],
+    "Lines": [
+     {
+      "LineName": "內灣線"
+     }
+    ],
+    "Routes": [],
+    "Trains": [],
+    "LineSections": [
+     {
+      "LineID": "NW",
+      "StartingStationID": "1190",
+      "StartingStationName": "北新竹",
+      "EndingStationID": "1208",
+      "EndingStationName": "內灣",
+      "Description": "北新竹,千甲,新莊,竹中,上員,榮華,竹東,橫山,九讚頭,合興,富貴,內灣"
+     }
+    ]
+   },
+   "Direction": 2,
+   "Level": 1,
+   "Effect": "4",
+   "Reason": "颱風期間列車運行資訊",
+   "AlertURL": "https://www.trc.com.tw/tra-tip-web/tip/tip007/tip711/blockList",
+   "StartTime": "2026-10-23T06:18:09+08:00",
+   "EndTime": "2026-10-24T23:50:00+08:00",
+   "PublishTime": "2026-10-23T06:18:09+08:00",
+   "UpdateTime": "2026-10-23T06:34:47+08:00"
+  }
+ ]
+}

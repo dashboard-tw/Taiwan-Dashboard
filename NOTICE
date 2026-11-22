@@ -1,0 +1,41 @@
+dashboard.tw
+Copyright (C) 2026 dashboard.tw contributors
+
+本專案以 GNU Affero General Public License v3.0 授權，全文見 LICENSE。
+
+dashboard.tw 為民間公益專案，並非任何政府機關的官方網站。
+
+---
+
+參考與重用的專案
+
+臺北城市儀表板（Taipei City Dashboard）
+  來源：https://github.com/tpe-doit/Taipei-City-Dashboard
+  授權：GNU Affero General Public License v3.0
+  開發：臺北市政府資訊局 臺北大數據中心（Taipei Urban Intelligence Center）
+
+  dashboard.tw 參考了其系統架構、元件設定模型與頁面設計。
+  直接重用的程式碼會保留原始的版權聲明，並在下方逐一列出。
+
+  沒有直接複製程式碼，但下列檔案的版面與樣式數值（顏色、字級、間距、圓角）
+  照著臺北城市儀表板的對應檔案重新撰寫：
+  - Taiwan-Dashboard-FE/src/style.css ← Taipei-City-Dashboard-FE/src/assets/styles/globalStyles.css
+  - Taiwan-Dashboard-FE/src/components/ComponentCard.vue ← src/dashboardComponent/DashboardComponent.vue（Apache-2.0）
+  - Taiwan-Dashboard-FE/src/components/dialogs/DialogContainer.vue ← src/components/dialogs/DialogContainer.vue
+  - Taiwan-Dashboard-FE/src/components/dialogs/ComponentInfoBody.vue ← src/components/dialogs/MoreInfo.vue
+  - Taiwan-Dashboard-FE/src/components/dialogs/DownloadDialog.vue ← src/components/dialogs/DownloadData.vue
+  - Taiwan-Dashboard-FE/src/components/dialogs/EmbedDialog.vue ← src/components/dialogs/EmbedComponent.vue
+
+Material Icons Round（介面圖示，透過 @fontsource/material-icons-round 自架）
+  授權：SIL Open Font License 1.1（字型由 Google 以 Apache-2.0 釋出）
+
+台灣外形圖示（左上角 Logo）
+  來源：SVG Repo「Taiwan Taiwan」https://www.svgrepo.com/svg/308354
+  授權：CC0
+
+---
+
+資料來源
+
+本網站顯示的資料來自政府開放資料，依「政府資料開放授權條款－第 1 版」使用，
+各資料集的提供機關與出處標示於網站與 API 回應中。

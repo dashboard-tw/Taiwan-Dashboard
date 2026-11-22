@@ -1,0 +1,92 @@
+[
+ {
+  "sitename": "臺北",
+  "uvi": "0.00",
+  "unit": "中央氣象署",
+  "county": "臺北市",
+  "wgs84_lon": "121,30,53",
+  "wgs84_lat": "25,02,16",
+  "datacreationdate": "2026-10-22 01:00"
+ },
+ {
+  "sitename": "臺北",
+  "uvi": "0.00",
+  "unit": "中央氣象署",
+  "county": "臺北市",
+  "wgs84_lon": "121,30,53",
+  "wgs84_lat": "25,02,16",
+  "datacreationdate": "2026-10-22 02:00"
+ },
+ {
+  "sitename": "基隆",
+  "uvi": "0.00",
+  "unit": "中央氣象署",
+  "county": "基隆市",
+  "wgs84_lon": "121,44,26",
+  "wgs84_lat": "25,07,60",
+  "datacreationdate": "2026-10-22 01:00"
+ },
+ {
+  "sitename": "基隆",
+  "uvi": "0.00",
+  "unit": "中央氣象署",
+  "county": "基隆市",
+  "wgs84_lon": "121,44,26",
+  "wgs84_lat": "25,07,60",
+  "datacreationdate": "2026-10-22 02:00"
+ },
+ {
+  "sitename": "日月潭",
+  "uvi": "-999",
+  "unit": "中央氣象署",
+  "county": "南投縣",
+  "wgs84_lon": "120,54,29",
+  "wgs84_lat": "23,52,53",
+  "datacreationdate": "2026-10-22 01:00"
+ },
+ {
+  "sitename": "日月潭",
+  "uvi": "-999",
+  "unit": "中央氣象署",
+  "county": "南投縣",
+  "wgs84_lon": "120,54,29",
+  "wgs84_lat": "23,52,53",
+  "datacreationdate": "2026-10-22 02:00"
+ },
+ {
+  "sitename": "鹿林山",
+  "uvi": "0",
+  "unit": "環境部",
+  "county": "嘉義縣",
+  "wgs84_lon": "120.85985238",
+  "wgs84_lat": "23.4720725",
+  "datacreationdate": "2026-10-22 02:00:00"
+ },
+ {
+  "sitename": "測試站",
+  "uvi": "3.5",
+  "unit": "中央氣象署",
+  "county": "火星市",
+  "wgs84_lon": "121,00,00",
+  "wgs84_lat": "24,00,00",
+  "datacreationdate": "2026-10-22 02:00"
+ },
+ {
+  "sitename": "故障站",
+  "uvi": "31",
+  "unit": "中央氣象署",
+  "county": "臺北市",
+  "wgs84_lon": "121,30,00",
+  "wgs84_lat": "25,00,00",
+  "datacreationdate": "2026-10-22 02:00"
+ },
+ {
+  "sitename": "",
+  "uvi": "1",
+  "unit": "",
+  "county": "",
+  "wgs84_lon": "",
+  "wgs84_lat": "",
+  "datacreationdate": "2026-10-22 02:00"
+ }
+]

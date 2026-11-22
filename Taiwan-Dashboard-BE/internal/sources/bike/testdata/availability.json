@@ -1,0 +1,58 @@
+[
+ {
+  "StationUID": "TPE500101001",
+  "StationID": "500101001",
+  "ServiceStatus": 1,
+  "ServiceType": 2,
+  "AvailableRentBikes": 5,
+  "AvailableReturnBikes": 23,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00",
+  "AvailableRentBikesDetail": {
+   "GeneralBikes": 0,
+   "ElectricBikes": 2
+  }
+ },
+ {
+  "StationUID": "TPE500101002",
+  "StationID": "500101002",
+  "ServiceStatus": 1,
+  "ServiceType": 2,
+  "AvailableRentBikes": 0,
+  "AvailableReturnBikes": 14,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00",
+  "AvailableRentBikesDetail": {
+   "GeneralBikes": 0,
+   "ElectricBikes": 0
+  }
+ },
+ {
+  "StationUID": "TPE500101003",
+  "StationID": "500101003",
+  "ServiceStatus": 1,
+  "ServiceType": 2,
+  "AvailableRentBikes": 12,
+  "AvailableReturnBikes": 0,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00",
+  "AvailableRentBikesDetail": {
+   "GeneralBikes": 0,
+   "ElectricBikes": 0
+  }
+ },
+ {
+  "StationUID": "TPE500101004",
+  "StationID": "500101004",
+  "ServiceStatus": 1,
+  "ServiceType": 2,
+  "AvailableRentBikes": 0,
+  "AvailableReturnBikes": 0,
+  "SrcUpdateTime": "2026-10-23T22:17:03+08:00",
+  "UpdateTime": "2026-10-23T22:17:56+08:00",
+  "AvailableRentBikesDetail": {
+   "GeneralBikes": 0,
+   "ElectricBikes": 0
+  }
+ }
+]

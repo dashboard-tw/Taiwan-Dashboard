@@ -1,0 +1,56 @@
+name: taiwan-dashboard
+
+services:
+  db:
+    image: postgis/postgis:16-3.5
+    environment:
+      POSTGRES_DB: dashboardtw
+      POSTGRES_PASSWORD: dashboardtw
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "dashboardtw"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgres://postgres:dashboardtw@db:5432/dashboardtw?sslmode=disable
+      PUBLIC_ORIGINS: http://localhost:8080
+      AUTH_DEV_LOGIN: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - files:/data
+
+  worker:
+    profiles: ["worker"]
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["worker"]
+    depends_on:
+      - app
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgres://postgres:dashboardtw@db:5432/dashboardtw?sslmode=disable
+    volumes:
+      - files:/data
+
+volumes:
+  db:
+  files:

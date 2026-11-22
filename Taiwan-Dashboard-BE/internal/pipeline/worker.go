@@ -1,0 +1,80 @@
+package pipeline
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"sync"
+	"time"
+)
+
+type Job struct {
+	Name       string
+	Schedule   Schedule
+	RunAtStart bool
+	Run        func(ctx context.Context) error
+}
+
+func PipelineJob(r *Runner, p Pipeline, s Schedule) Job {
+	return Job{
+		Name:       p.Dataset().ID,
+		Schedule:   s,
+		RunAtStart: true,
+		Run: func(ctx context.Context) error {
+			_, _ = r.Run(ctx, p)
+			return nil
+		},
+	}
+}
+
+type Worker struct {
+	Jobs   []Job
+	Now    func() time.Time
+	Logger *slog.Logger
+}
+
+func (w *Worker) Start(ctx context.Context) {
+	for _, j := range w.Jobs {
+		if ctx.Err() != nil {
+			return
+		}
+		if j.RunAtStart {
+			w.runOnce(ctx, j)
+		}
+	}
+
+	var wg sync.WaitGroup
+	for _, j := range w.Jobs {
+		wg.Add(1)
+		go func(j Job) {
+			defer wg.Done()
+			w.loop(ctx, j)
+		}(j)
+	}
+	wg.Wait()
+}
+
+func (w *Worker) loop(ctx context.Context, j Job) {
+	for {
+		next := j.Schedule.Next(w.Now())
+		timer := time.NewTimer(time.Until(next))
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return
+		case <-timer.C:
+			w.runOnce(ctx, j)
+		}
+	}
+}
+
+func (w *Worker) runOnce(ctx context.Context, j Job) {
+	defer func() {
+		if p := recover(); p != nil {
+			w.Logger.Error("job panicked", "job", j.Name, "panic", p)
+		}
+	}()
+	if err := j.Run(ctx); err != nil && !errors.Is(err, ErrAlreadyRunning) && ctx.Err() == nil {
+		w.Logger.Error("job failed", "job", j.Name, "error", err)
+	}
+}

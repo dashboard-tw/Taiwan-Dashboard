@@ -1,0 +1,77 @@
+{
+ "UpdateTime": "2026-10-23T22:18:04+08:00",
+ "UpdateInterval": 30,
+ "SrcUpdateTime": "2026-10-23T22:18:00+08:00",
+ "SrcUpdateInterval": 60,
+ "AuthorityCode": "TRA",
+ "TrainLiveBoards": [
+  {
+   "TrainNo": "3348",
+   "TrainTypeID": "1131",
+   "TrainTypeCode": "6",
+   "TrainTypeName": {
+    "Zh_tw": "區間",
+    "En": "Local Train"
+   },
+   "StationID": "5120",
+   "StationName": {
+    "Zh_tw": "枋寮",
+    "En": "Fangliao"
+   },
+   "TrainStationStatus": 2,
+   "DelayTime": 0,
+   "UpdateTime": "2026-10-23T22:18:00+08:00"
+  },
+  {
+   "TrainNo": "3297",
+   "TrainTypeID": "1131",
+   "TrainTypeCode": "6",
+   "TrainTypeName": {
+    "Zh_tw": "區間",
+    "En": "Local Train"
+   },
+   "StationID": "3470",
+   "StationName": {
+    "Zh_tw": "斗六",
+    "En": "Douliu"
+   },
+   "TrainStationStatus": 2,
+   "DelayTime": 0,
+   "UpdateTime": "2026-10-23T22:17:58+08:00"
+  },
+  {
+   "TrainNo": "2728",
+   "TrainTypeID": "1132",
+   "TrainTypeCode": "10",
+   "TrainTypeName": {
+    "Zh_tw": "區間快",
+    "En": "Fast Local Train"
+   },
+   "StationID": "3430",
+   "StationName": {
+    "Zh_tw": "二水",
+    "En": "Ershui"
+   },
+   "TrainStationStatus": 2,
+   "DelayTime": 5,
+   "UpdateTime": "2026-10-23T22:17:26+08:00"
+  },
+  {
+   "TrainNo": "1263",
+   "TrainTypeID": "1131",
+   "TrainTypeCode": "6",
+   "TrainTypeName": {
+    "Zh_tw": "區間",
+    "En": "Local Train"
+   },
+   "StationID": "1130",
+   "StationName": {
+    "Zh_tw": "富岡",
+    "En": "Fugang"
+   },
+   "TrainStationStatus": 2,
+   "DelayTime": 5,
+   "UpdateTime": "2026-10-23T22:16:35+08:00"
+  }
+ ]
+}

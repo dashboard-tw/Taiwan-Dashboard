@@ -1,0 +1,13 @@
+# 所有文字檔在 repo 與工作目錄一律使用 LF，避免 Windows 開發、Linux 部署時的換行差異
+* text=auto eol=lf
+
+# PowerShell 腳本保留 CRLF，Windows PowerShell 5.1 讀起來最穩定
+*.ps1 text eol=crlf
+
+# 二進位檔
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
+*.gz binary
+*.pmtiles binary

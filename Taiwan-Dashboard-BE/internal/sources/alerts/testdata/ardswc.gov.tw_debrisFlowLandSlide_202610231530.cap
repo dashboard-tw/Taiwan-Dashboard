@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>ardswc.gov.tw_debrisFlowLandSlide_202610231530</identifier>
+  <sender>swcbfema@mail.ardswc.gov.tw</sender>
+  <sent>2026-10-23T15:30:00+08:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>zh-TW</language>
+    <category>Geo</category>
+    <event>土石流及大規模崩塌</event>
+    <responseType>Prepare</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <eventCode>
+      <valueName>profile:CAP-TWP:Event:1.0</valueName>
+      <value>debrisFlowLandSlide</value>
+    </eventCode>
+    <effective>2026-10-23T15:30:00+08:00</effective>
+    <expires>2026-10-23T18:30:00+08:00</expires>
+    <senderName>農業部農村發展及水土保持署</senderName>
+    <headline>宜蘭縣土石流及大規模崩塌黃色警戒</headline>
+    <description>依據中央氣象署風雨資料研判：計57條土石流潛勢溪流達黃色警戒(相關詳細土石流及大規模崩塌警戒資訊請上土石流及大規模崩塌防災資訊網( https://246.ardswc.gov.tw/ )查詢)</description>
+    <instruction>請隨時觀察環境變化，留意最新訊息，做好疏散避難準備及保持聯絡管道暢通，並與當地避難處所保持聯繫，有關當地避難處所相關聯絡資訊，請詳土石流疏散避難圖。</instruction>
+    <web>https://246.ardswc.gov.tw/Map/DebrisAlertList</web>
+    <parameter>
+      <valueName>alert_title</valueName>
+      <value>土石流及大規模崩塌黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>severity_level</valueName>
+      <value>黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>alert_color</valueName>
+      <value>黃色</value>
+    </parameter>
+    <parameter>
+      <valueName>debrisID</valueName>
+      <value>宜縣DF051,宜縣DF052,宜縣DF053,宜縣DF054,宜縣DF055,宜縣DF056,宜縣DF057,宜縣DF058,宜縣DF059,宜縣DF060,宜縣DF061,宜縣DF062,宜縣DF063,宜縣DF064,宜縣DF065,宜縣DF066,宜縣DF067,宜縣DF068,宜縣DF069,宜縣DF070,宜縣DF071,宜縣DF072,宜縣DF073,宜縣DF074,宜縣DF075,宜縣DF076,宜縣DF077,宜縣DF078,宜縣DF079,宜縣DF080,宜縣DF081,宜縣DF082,宜縣DF083,宜縣DF084,宜縣DF085,宜縣DF086,宜縣DF087,宜縣DF088,宜縣DF089,宜縣DF090,宜縣DF091,宜縣DF092,宜縣DF093,宜縣DF094,宜縣DF095,宜縣DF096,宜縣DF097,宜縣DF098,宜縣DF099,宜縣DF139,宜縣DF143,宜縣DF144,宜縣DF146,宜縣DF147,宜縣DF149,宜縣DF150,宜縣DF152</value>
+    </parameter>
+    <parameter>
+      <valueName>LandslideID</valueName>
+      <value />
+    </parameter>
+    <parameter>
+      <valueName>disaster_id</valueName>
+      <value>115L</value>
+    </parameter>
+    <area>
+      <areaDesc>宜蘭縣大同鄉太平村</areaDesc>
+      <geocode>
+        <valueName>Taiwan_Geocode_103</valueName>
+        <value>1000211-007</value>
+      </geocode>
+    </area>
+    <area>
+      <areaDesc>宜蘭縣大同鄉四季村</areaDesc>
+      <geocode>
+        <valueName>Taiwan_Geocode_103</valueName>
+        <value>1000211-008</value>
+      </geocode>
+    </area>
+    <area>
+      <areaDesc>宜蘭縣大同鄉松羅村</areaDesc>
+      <geocode>
+        <valueName>Taiwan_Geocode_103</valueName>
+        <value>1000211-003</value>
+      </geocode>
+    </area>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </info>
+  <info>
+    <language>zh-TW</language>
+    <category>Geo</category>
+    <event>土石流及大規模崩塌</event>
+    <responseType>Prepare</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <eventCode>
+      <valueName>profile:CAP-TWP:Event:1.0</valueName>
+      <value>debrisFlowLandSlide</value>
+    </eventCode>
+    <effective>2026-10-23T15:30:00+08:00</effective>
+    <expires>2026-10-23T18:30:00+08:00</expires>
+    <senderName>農業部農村發展及水土保持署</senderName>
+    <headline>桃園市土石流及大規模崩塌黃色警戒</headline>
+    <description>依據中央氣象署風雨資料研判：計31條土石流潛勢溪流、1處大規模崩塌潛勢區達黃色警戒(相關詳細土石流及大規模崩塌警戒資訊請上土石流及大規模崩塌防災資訊網( https://246.ardswc.gov.tw/ )查詢)</description>
+    <instruction>請隨時觀察環境變化，留意最新訊息，做好疏散避難準備及保持聯絡管道暢通，並與當地避難處所保持聯繫，有關當地避難處所相關聯絡資訊，請詳土石流疏散避難圖。</instruction>
+    <web>https://246.ardswc.gov.tw/Map/DebrisAlertList</web>
+    <parameter>
+      <valueName>alert_title</valueName>
+      <value>土石流及大規模崩塌黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>severity_level</valueName>
+      <value>黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>alert_color</valueName>
+      <value>黃色</value>
+    </parameter>
+    <parameter>
+      <valueName>debrisID</valueName>
+      <value>桃市DF022,桃市DF023,桃市DF024,桃市DF025,桃市DF026,桃市DF027,桃市DF028,桃市DF029,桃市DF030,桃市DF031,桃市DF032,桃市DF033,桃市DF034,桃市DF035,桃市DF036,桃市DF037,桃市DF038,桃市DF039,桃市DF040,桃市DF041,桃市DF042,桃市DF043,桃市DF044,桃市DF045,桃市DF046,桃市DF047,桃市DF048,桃市DF049,桃市DF050,桃市DF051,桃市DF053</value>
+    </parameter>
+    <parameter>
+      <valueName>LandslideID</valueName>
+      <value>桃市LL004</value>
+    </parameter>
+    <parameter>
+      <valueName>disaster_id</valueName>
+      <value>115L</value>
+    </parameter>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </info>
+  <info>
+    <language>zh-TW</language>
+    <category>Geo</category>
+    <event>土石流及大規模崩塌</event>
+    <responseType>Prepare</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <eventCode>
+      <valueName>profile:CAP-TWP:Event:1.0</valueName>
+      <value>debrisFlowLandSlide</value>
+    </eventCode>
+    <effective>2026-10-23T15:30:00+08:00</effective>
+    <expires>2026-10-23T18:30:00+08:00</expires>
+    <senderName>農業部農村發展及水土保持署</senderName>
+    <headline>新北市土石流及大規模崩塌黃色警戒</headline>
+    <description>依據中央氣象署風雨資料研判：計31條土石流潛勢溪流達黃色警戒(相關詳細土石流及大規模崩塌警戒資訊請上土石流及大規模崩塌防災資訊網( https://246.ardswc.gov.tw/ )查詢)</description>
+    <instruction>請隨時觀察環境變化，留意最新訊息，做好疏散避難準備及保持聯絡管道暢通，並與當地避難處所保持聯繫，有關當地避難處所相關聯絡資訊，請詳土石流疏散避難圖。</instruction>
+    <web>https://246.ardswc.gov.tw/Map/DebrisAlertList</web>
+    <parameter>
+      <valueName>alert_title</valueName>
+      <value>土石流及大規模崩塌黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>severity_level</valueName>
+      <value>黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>alert_color</valueName>
+      <value>黃色</value>
+    </parameter>
+    <parameter>
+      <valueName>debrisID</valueName>
+      <value>新北DF062,新北DF063,新北DF064,新北DF065,新北DF066,新北DF067,新北DF068,新北DF069,新北DF070,新北DF071,新北DF072,新北DF073,新北DF074,新北DF075,新北DF076,新北DF077,新北DF078,新北DF079,新北DF080,新北DF081,新北DF082,新北DF083,新北DF103,新北DF104,新北DF105,新北DF221,新北DF222,新北DF223,新北DF229,新北DF230,新北DF231</value>
+    </parameter>
+    <parameter>
+      <valueName>LandslideID</valueName>
+      <value />
+    </parameter>
+    <parameter>
+      <valueName>disaster_id</valueName>
+      <value>115L</value>
+    </parameter>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </info>
+  <info>
+    <language>zh-TW</language>
+    <category>Geo</category>
+    <event>土石流及大規模崩塌</event>
+    <responseType>Prepare</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <eventCode>
+      <valueName>profile:CAP-TWP:Event:1.0</valueName>
+      <value>debrisFlowLandSlide</value>
+    </eventCode>
+    <effective>2026-10-23T15:30:00+08:00</effective>
+    <expires>2026-10-23T18:30:00+08:00</expires>
+    <senderName>農業部農村發展及水土保持署</senderName>
+    <headline>新竹縣土石流及大規模崩塌黃色警戒</headline>
+    <description>依據中央氣象署風雨資料研判：計26條土石流潛勢溪流、2處大規模崩塌潛勢區達黃色警戒(相關詳細土石流及大規模崩塌警戒資訊請上土石流及大規模崩塌防災資訊網( https://246.ardswc.gov.tw/ )查詢)</description>
+    <instruction>請隨時觀察環境變化，留意最新訊息，做好疏散避難準備及保持聯絡管道暢通，並與當地避難處所保持聯繫，有關當地避難處所相關聯絡資訊，請詳土石流疏散避難圖。</instruction>
+    <web>https://246.ardswc.gov.tw/Map/DebrisAlertList</web>
+    <parameter>
+      <valueName>alert_title</valueName>
+      <value>土石流及大規模崩塌黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>severity_level</valueName>
+      <value>黃色警戒</value>
+    </parameter>
+    <parameter>
+      <valueName>alert_color</valueName>
+      <value>黃色</value>
+    </parameter>
+    <parameter>
+      <valueName>debrisID</valueName>
+      <value>竹縣DF050,竹縣DF051,竹縣DF052,竹縣DF053,竹縣DF054,竹縣DF055,竹縣DF056,竹縣DF057,竹縣DF058,竹縣DF059,竹縣DF060,竹縣DF061,竹縣DF062,竹縣DF063,竹縣DF064,竹縣DF065,竹縣DF066,竹縣DF067,竹縣DF068,竹縣DF069,竹縣DF070,竹縣DF071,竹縣DF072,竹縣DF073,竹縣DF074,竹縣DF075</value>
+    </parameter>
+    <parameter>
+      <valueName>LandslideID</valueName>
+      <value>竹縣LL005,竹縣LL004</value>
+    </parameter>
+    <parameter>
+      <valueName>disaster_id</valueName>
+      <value>115L</value>
+    </parameter>
+    
+    
+    
+    
+    
+    
+    
+  </info>
+</alert>

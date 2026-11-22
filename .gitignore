@@ -1,0 +1,35 @@
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# 作業系統
+.DS_Store
+Thumbs.db
+
+# 環境變數與個人設定（含密碼，不能 commit）
+.env
+.env.*
+!.env.example
+
+# Go
+backend/bin/
+*.exe
+*.test
+coverage.out
+
+# 前端
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# 其他
+*.log
+tmp/
+
+# 資料庫匯出檔
+*.dump
+
+
+# 本機產生的大量下載檔案（DOWNLOAD_DIR）
+/data/

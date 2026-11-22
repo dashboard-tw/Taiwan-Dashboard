@@ -1,0 +1,80 @@
+{
+ "responseCode": "OD-0101-S",
+ "responseMessage": "處理完成",
+ "totalPage": "1",
+ "totalDataSize": "5",
+ "page": "1",
+ "pageDataSize": "5",
+ "responseData": [
+  {
+   "statistic_yyymm": "11408",
+   "district_code": "65000010001",
+   "site_id": "新北市板橋區",
+   "village": "留侯里",
+   "birth_total": "2",
+   "birth_total_m": "1",
+   "birth_total_f": "1",
+   "death_total": "0",
+   "death_m": "0",
+   "death_f": "0",
+   "marry_pair": "0",
+   "divorce_pair": "0"
+  },
+  {
+   "statistic_yyymm": "11408",
+   "district_code": "65000010002",
+   "site_id": "新北市板橋區",
+   "village": "流芳里",
+   "birth_total": "0",
+   "birth_total_m": "0",
+   "birth_total_f": "0",
+   "death_total": "2",
+   "death_m": "1",
+   "death_f": "1",
+   "marry_pair": "0",
+   "divorce_pair": "0"
+  },
+  {
+   "statistic_yyymm": "11408",
+   "district_code": "65000010003",
+   "site_id": "新北市板橋區",
+   "village": "赤松里",
+   "birth_total": "0",
+   "birth_total_m": "0",
+   "birth_total_f": "0",
+   "death_total": "0",
+   "death_m": "0",
+   "death_f": "0",
+   "marry_pair": "0",
+   "divorce_pair": "0"
+  },
+  {
+   "statistic_yyymm": "11408",
+   "district_code": "63000010002",
+   "site_id": "臺北市松山區",
+   "village": "莊敬里",
+   "birth_total": "2",
+   "birth_total_m": "1",
+   "birth_total_f": "1",
+   "death_total": "4",
+   "death_m": "3",
+   "death_f": "1",
+   "marry_pair": "1",
+   "divorce_pair": "0"
+  },
+  {
+   "statistic_yyymm": "11408",
+   "district_code": "63000010003",
+   "site_id": "臺北市松山區",
+   "village": "東榮里",
+   "birth_total": "5",
+   "birth_total_m": "3",
+   "birth_total_f": "2",
+   "death_total": "4",
+   "death_m": "2",
+   "death_f": "2",
+   "marry_pair": "1",
+   "divorce_pair": "1"
+  }
+ ]
+}

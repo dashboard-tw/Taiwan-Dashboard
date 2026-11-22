@@ -1,0 +1,62 @@
+[
+  {
+    "SW_No": "11538035B13S0006",
+    "Date": "115年10月26日~115年10月31日",
+    "Time": "10:30~16:30",
+    "SW_Area": "新北市永和區竹林路66巷",
+    "Title": "新北市永和區竹林路66巷",
+    "Description": "新北市永和區竹林路66巷",
+    "MapUrl": "https://webs.water.gov.taipei/wateroff/xowb?SWNO=11538035B13S0006",
+    "PubDate": "115-10-22"
+  },
+  {
+    "SW_No": "11538035B13S0005",
+    "Date": "115年10月26日~115年10月31日",
+    "Time": "10:30~16:30",
+    "SW_Area": "新北市永和區中興街133巷",
+    "Title": "新北市永和區中興街133巷",
+    "Description": "新北市永和區中興街133巷",
+    "MapUrl": "https://webs.water.gov.taipei/wateroff/xowb?SWNO=11538035B13S0005",
+    "PubDate": "115-10-22"
+  },
+  {
+    "SW_No": "11538003B01S0018",
+    "Date": "115年10月27日~115年10月31日",
+    "Time": "10:00~16:00",
+    "SW_Area": "新北市永和區秀朗路二段148巷7弄、秀朗路二段176巷及得和路373巷16弄",
+    "Title": "新北市永和區秀朗路二段148巷7弄、秀朗路二段176巷及得和路373巷16弄",
+    "Description": "新北市永和區秀朗路二段148巷7弄、秀朗路二段176巷及得和路373巷16弄",
+    "MapUrl": "https://webs.water.gov.taipei/wateroff/xowb?SWNO=11538003B01S0018",
+    "PubDate": "115-10-22"
+  },
+  {
+    "SW_No": "TEST-ONE-DAY",
+    "Date": "115年10月23日",
+    "Time": "09:00~17:00",
+    "SW_Area": "新北市永和區竹林路66巷",
+    "Title": "新北市永和區竹林路66巷",
+    "Description": "新北市永和區竹林路66巷",
+    "MapUrl": "https://webs.water.gov.taipei/wateroff/xowb?SWNO=11538035B13S0006",
+    "PubDate": "115-10-22"
+  },
+  {
+    "SW_No": "TEST-NO-TIME",
+    "Date": "115年10月24日~115年10月25日",
+    "Time": "全日",
+    "SW_Area": "新北市永和區竹林路66巷",
+    "Title": "新北市永和區竹林路66巷",
+    "Description": "新北市永和區竹林路66巷",
+    "MapUrl": "https://webs.water.gov.taipei/wateroff/xowb?SWNO=11538035B13S0006",
+    "PubDate": "115-10-22"
+  },
+  {
+    "SW_No": "TEST-BAD-DATE",
+    "Date": "115年2月30日~115年3月1日",
+    "Time": "10:30~16:30",
+    "SW_Area": "新北市永和區竹林路66巷",
+    "Title": "新北市永和區竹林路66巷",
+    "Description": "新北市永和區竹林路66巷",
+    "MapUrl": "https://webs.water.gov.taipei/wateroff/xowb?SWNO=11538035B13S0006",
+    "PubDate": "115-10-22"
+  }
+]

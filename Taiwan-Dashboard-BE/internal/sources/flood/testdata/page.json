@@ -1,0 +1,221 @@
+{
+ "value": [
+  {
+   "name": "淹水深度",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     120.3534,
+     22.686167
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "cm",
+    "symbol": "cm",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "高雄市政府水利局",
+     "stationID": "0017fd6d-abbb-4644-b608-fa15e943a34e",
+     "stationCode": "3972500FL0007",
+     "stationName": "鳳仁路與澄觀路口",
+     "authority_type": "水利署（與縣市政府合建）"
+    }
+   },
+   "Observations@iot.count": 33,
+   "Observations": [
+    {
+     "phenomenonTime": "2026-10-23T20:33:00Z",
+     "result": 0
+    }
+   ]
+  },
+  {
+   "name": "淹水深度",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     120.93429,
+     24.839981
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "cm",
+    "symbol": "cm",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "新竹市政府消防局",
+     "stationID": "001e54c7-2502-4229-b5dc-2e4d77a3d68b",
+     "stationCode": "3765800FL00064",
+     "stationName": "中福路與中光路口",
+     "authority_type": "水利署（與縣市政府合建）"
+    }
+   },
+   "Observations@iot.count": 17,
+   "Observations": [
+    {
+     "phenomenonTime": "2026-10-23T20:13:00Z",
+     "result": 25
+    }
+   ]
+  },
+  {
+   "name": "淹水深度",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     120.18593,
+     23.372612
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "cm",
+    "symbol": "cm",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "嘉義縣政府水利處",
+     "stationID": "23c1cacd-3381-4eaf-93bf-306d8fa023f5",
+     "stationCode": "3765000FLCYC112",
+     "stationName": "CYC112 布袋鎮永安里永安社區",
+     "authority_type": "水利署（與縣市政府合建）"
+    }
+   },
+   "Observations@iot.count": 328,
+   "Observations": [
+    {
+     "phenomenonTime": "2026-10-23T20:42:51Z",
+     "result": 3
+    }
+   ]
+  },
+  {
+   "name": "淹水深度",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     120.0,
+     23.0
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "cm",
+    "symbol": "cm",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "第七河川分署",
+     "stationID": "38505796-1525-4c8b-9d5c-27fea47db00f",
+     "stationCode": "3132017FL9999",
+     "stationName": "路面淹水感知器",
+     "authority_type": "水利署"
+    }
+   },
+   "Observations@iot.count": 156,
+   "Observations": [
+    {
+     "phenomenonTime": "2026-10-23T20:40:31Z",
+     "result": 2406
+    }
+   ]
+  },
+  {
+   "name": "淹水深度",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     120.22477,
+     23.516394
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "cm",
+    "symbol": "cm",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "雲林縣政府水利處",
+     "stationID": "2174d600-3d93-438f-891e-5e57c8fa7d7a",
+     "stationCode": "3764900FL108YL30",
+     "stationName": "松西村_尼爾魔幻藝術",
+     "authority_type": "水利署（與縣市政府合建）"
+    }
+   },
+   "Observations@iot.count": 1,
+   "Observations": [
+    {
+     "phenomenonTime": "2026-10-23T02:52:00Z",
+     "result": 98.1
+    }
+   ]
+  },
+  {
+   "name": "視訊監測影格照片",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     121.60743,
+     23.991014
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "無",
+    "symbol": "無",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "花蓮縣政府水利科",
+     "stationID": "0054502d-685f-4de8-8cd6-95859537dd5e",
+     "stationCode": "3765500FL008",
+     "stationName": "國盛抽水站",
+     "authority_type": "水利署（與縣市政府合建）"
+    }
+   },
+   "Observations@iot.count": 1,
+   "Observations": [
+    {
+     "phenomenonTime": "2099-12-31T00:00:00Z",
+     "result": "https://iapi.wra.gov.tw/v3/api/Image/000a2bbc-b08f-4167-b5bc-af55da4f3d84"
+    }
+   ]
+  },
+  {
+   "name": "視訊監測影格照片",
+   "observedArea": {
+    "type": "Point",
+    "coordinates": [
+     121.60743,
+     23.991014
+    ]
+   },
+   "unitOfMeasurement": {
+    "name": "無",
+    "symbol": "無",
+    "definition": ""
+   },
+   "Thing": {
+    "properties": {
+     "authority": "花蓮縣政府水利科",
+     "stationID": "0054502d-685f-4de8-8cd6-95859537dd5e",
+     "stationCode": "3765500FL008",
+     "stationName": "國盛抽水站",
+     "authority_type": "水利署（與縣市政府合建）"
+    }
+   },
+   "Observations@iot.count": 1,
+   "Observations": [
+    {
+     "phenomenonTime": "2099-12-31T00:00:00Z",
+     "result": "https://iapi.wra.gov.tw/v3/api/Image/0008a142-ae7d-4d76-9049-32d661178c01"
+    }
+   ]
+  }
+ ]
+}

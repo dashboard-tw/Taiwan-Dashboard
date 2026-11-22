@@ -1,0 +1,15 @@
+-- +goose Up
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+CREATE SCHEMA IF NOT EXISTS ref;
+CREATE SCHEMA IF NOT EXISTS data;
+CREATE SCHEMA IF NOT EXISTS app;
+
+COMMENT ON SCHEMA ref IS '參考主檔：縣市、測站、水庫、發電機組';
+COMMENT ON SCHEMA data IS '觀測資料：由資料管線寫入';
+COMMENT ON SCHEMA app IS '系統資料：資料集狀態、元件設定、帳號';
+
+-- +goose Down
+DROP SCHEMA IF EXISTS app;
+DROP SCHEMA IF EXISTS data;
+DROP SCHEMA IF EXISTS ref;

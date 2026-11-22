@@ -1,0 +1,58 @@
+[
+ {
+  "AlertType": "D",
+  "DebrisNo": "新北DF231",
+  "LandslideID": "-",
+  "LandslideName": "",
+  "County": "新北市",
+  "Town": "烏來區",
+  "Vill": "信賢里",
+  "AlertLevel": "y",
+  "LastUpdateDate": "2026-10-24T00:19:00",
+  "CountyCode": "",
+  "AreaCode": "",
+  "LandslideNo": ""
+ },
+ {
+  "AlertType": "D",
+  "DebrisNo": "新北DF230",
+  "LandslideID": "-",
+  "LandslideName": "",
+  "County": "新北市",
+  "Town": "烏來區",
+  "Vill": "忠治里",
+  "AlertLevel": "y",
+  "LastUpdateDate": "2026-10-24T00:19:00",
+  "CountyCode": "",
+  "AreaCode": "",
+  "LandslideNo": ""
+ },
+ {
+  "AlertType": "D",
+  "DebrisNo": "新北DF229",
+  "LandslideID": "-",
+  "LandslideName": "",
+  "County": "新北市",
+  "Town": "烏來區",
+  "Vill": "忠治里",
+  "AlertLevel": "y",
+  "LastUpdateDate": "2026-10-24T00:19:00",
+  "CountyCode": "",
+  "AreaCode": "",
+  "LandslideNo": ""
+ },
+ {
+  "AlertType": "L",
+  "DebrisNo": "-",
+  "LandslideID": "DS194",
+  "LandslideName": "新竹縣-尖石鄉-T001(秀巒)",
+  "County": "新竹縣",
+  "Town": "尖石鄉",
+  "Vill": "",
+  "AlertLevel": "y",
+  "LastUpdateDate": "2026-10-24T00:19:00",
+  "CountyCode": "",
+  "AreaCode": "",
+  "LandslideNo": ""
+ }
+]

@@ -1,0 +1,101 @@
+[
+    {
+        "stationid": "1010H006",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1010H006_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "1.83"
+    },
+    {
+        "stationid": "1010H007",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1010H007_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "0.38"
+    },
+    {
+        "stationid": "1140H029",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1140H029_NBIOW",
+        "volt": "4.15",
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "0.7"
+    },
+    {
+        "stationid": "1140H052",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1140H052_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "0.78"
+    },
+    {
+        "stationid": "1140H053",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1140H053_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "0.77"
+    },
+    {
+        "stationid": "1140H117",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1140H117_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "0.7"
+    },
+    {
+        "stationid": "1140H173",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1140H173_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "0.47"
+    },
+    {
+        "stationid": "9999H999",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "9999H999_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": "1.83"
+    },
+    {
+        "stationid": "1010H006",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1010H006_API",
+        "volt": null,
+        "datetime": "2099-01-01T00:00:00",
+        "waterlevel": "1.83"
+    },
+    {
+        "stationid": "1010H007",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1010H007_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:20:00",
+        "waterlevel": null
+    },
+    {
+        "stationid": "1010H007",
+        "checkresult": "true",
+        "checkdesc": null,
+        "observatoryidentifier": "1010H007_API",
+        "volt": null,
+        "datetime": "2026-10-22T10:10:00",
+        "waterlevel": "0.65"
+    }
+]
