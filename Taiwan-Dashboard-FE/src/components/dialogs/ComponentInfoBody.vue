@@ -163,7 +163,7 @@ function hostname(link: string): string {
   .info-body {
     width: 720px;
     height: 410px;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   }
 }
 @media (min-width: 75em) {
