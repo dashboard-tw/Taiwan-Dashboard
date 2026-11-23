@@ -16,11 +16,12 @@ const DatasetChannel = "dataset_updated"
 var ErrAlreadyRunning = errors.New("pipeline already running")
 
 type Runner struct {
-	DB      *sql.DB
-	Fetch   *Fetcher
-	Now     func() time.Time
-	Logger  *slog.Logger
-	Timeout time.Duration // per run
+	DB       *sql.DB
+	Fetch    *Fetcher
+	Now      func() time.Time
+	Logger   *slog.Logger
+	Timeout  time.Duration // per run
+	OnFinish func(ctx context.Context, d Dataset, runErr error)
 }
 
 func (r *Runner) RegisterDatasets(ctx context.Context, pipelines []Pipeline) error {
@@ -84,6 +85,9 @@ func (r *Runner) Run(ctx context.Context, p Pipeline) (Result, error) {
 	defer saveCancel()
 	if err := r.finish(saveCtx, d, runID, res, runErr); err != nil {
 		return res, errors.Join(runErr, fmt.Errorf("record run result: %w", err))
+	}
+	if r.OnFinish != nil {
+		r.OnFinish(saveCtx, d, runErr)
 	}
 
 	if runErr != nil {

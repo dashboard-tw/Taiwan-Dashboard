@@ -17,6 +17,8 @@ const TABS = [
   { to: '/admin/apps', icon: 'apps', label: '應用審核' },
   { to: '/admin/api-usage', icon: 'query_stats', label: 'API 用量' },
   { to: '/admin/api-survey', icon: 'poll', label: 'API 使用調查' },
+  { to: '/admin/mail', icon: 'mail', label: '信件模板' },
+  { to: '/admin/channels', icon: 'campaign', label: '通知頻道' },
 ]
 </script>
 

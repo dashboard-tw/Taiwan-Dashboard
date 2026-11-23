@@ -35,25 +35,25 @@ func testPNG(t *testing.T, w, h int, alpha uint8) []byte {
 }
 
 func TestEncodeAppImage(t *testing.T) {
-	_, name, err := encodeAppImage(testPNG(t, 200, 100, 0xff))
+	_, name, err := encodeAppImage(testPNG(t, 200, 100, 0xff), logoImage)
 	if err != nil || !strings.HasSuffix(name, ".jpg") || !appImageName.MatchString(name) {
 		t.Errorf("opaque: %q %v", name, err)
 	}
-	_, name2, err := encodeAppImage(testPNG(t, 200, 100, 0x40))
+	_, name2, err := encodeAppImage(testPNG(t, 200, 100, 0x40), logoImage)
 	if err != nil || !strings.HasSuffix(name2, ".png") {
 		t.Errorf("transparent: %q %v", name2, err)
 	}
-	if _, again, _ := encodeAppImage(testPNG(t, 200, 100, 0xff)); again != name {
+	if _, again, _ := encodeAppImage(testPNG(t, 200, 100, 0xff), logoImage); again != name {
 		t.Errorf("names differ: %s %s", name, again)
 	}
 
-	out, _, err := encodeAppImage(testPNG(t, 2000, 500, 0xff))
+	out, _, err := encodeAppImage(testPNG(t, 2000, 500, 0xff), shotImage)
 	if err != nil {
 		t.Fatal(err)
 	}
 	cfg, err := jpeg.DecodeConfig(bytes.NewReader(out))
-	if err != nil || cfg.Width != 960 || cfg.Height != 240 {
-		t.Errorf("shrunk to %dx%d (%v), want 960x240", cfg.Width, cfg.Height, err)
+	if err != nil || cfg.Width != 1600 || cfg.Height != 400 {
+		t.Errorf("shrunk to %dx%d (%v), want 1600x400", cfg.Width, cfg.Height, err)
 	}
 
 	var g bytes.Buffer
@@ -66,7 +66,7 @@ func TestEncodeAppImage(t *testing.T) {
 		"gif":       g.Bytes(),
 		"truncated": testPNG(t, 50, 50, 0xff)[:60],
 	} {
-		if _, _, err := encodeAppImage(data); err != errBadImage {
+		if _, _, err := encodeAppImage(data, logoImage); err != errBadImage {
 			t.Errorf("%s: %v, want errBadImage", label, err)
 		}
 	}
@@ -152,10 +152,63 @@ func TestShowcaseImageUpload(t *testing.T) {
 		t.Error("the replaced image was kept")
 	}
 
+	shotReq := func(data []byte) *httptest.ResponseRecorder {
+		req := httptest.NewRequest("PUT", "/api/v1/me/apps/"+id+"/screenshot", bytes.NewReader(data))
+		req.Header.Set("Content-Type", "image/png")
+		req.Header.Set("Origin", testOrigin)
+		req.AddCookie(&http.Cookie{Name: "dtw_session", Value: a})
+		w := httptest.NewRecorder()
+		e.router.ServeHTTP(w, req)
+		return w
+	}
+	w = shotReq(testPNG(t, 1920, 1080, 0xff))
+	if w.Code != http.StatusOK {
+		t.Fatalf("screenshot: %d %s", w.Code, w.Body)
+	}
+	shot := decode[[]myApp](t, w)[0].Screenshot
+	if shot == "" {
+		t.Fatal("screenshot not saved")
+	}
+	appOnly := map[string]any{"category": "app", "name": "空品小幫手", "ios_url": "https://apps.apple.com/tw/app/id1",
+		"description": "每天早上推播住家附近的空品。", "topics": []string{"aqi"}, "show_author": true, "agree_rules": true}
+	w = e.send("PUT", "/api/v1/me/apps/"+id, a, appOnly)
+	if w.Code != http.StatusOK || decode[[]myApp](t, w)[0].Screenshot != "" {
+		t.Fatalf("switching to app should clear the screenshot: %d %s", w.Code, w.Body)
+	}
+	if w := shotReq(testPNG(t, 800, 600, 0xff)); w.Code != http.StatusConflict {
+		t.Errorf("screenshot on an app: %d, want 409", w.Code)
+	}
+
 	if w := e.send("DELETE", "/api/v1/me/apps/"+id, a, nil); w.Code != http.StatusNoContent {
 		t.Fatal(w.Code)
 	}
 	if _, err := os.Stat(filepath.Join(dir, appImageSubdir, second)); !os.IsNotExist(err) {
 		t.Error("the image of a withdrawn app was kept")
+	}
+}
+
+func TestAppAnnouncement(t *testing.T) {
+	logo, shot := strings.Repeat("a", 32)+".png", strings.Repeat("b", 32)+".jpg"
+	web := appContent{appFields: appFields{Category: "web", Name: "雨天出門提醒", Description: "說明", WebURL: "https://rain.example"},
+		Image: logo, Screenshot: shot}
+	m := appAnnouncement("https://dashboard.tw", web, "小明", "天氣、空氣品質")
+	if m.Thumbnail != "https://dashboard.tw/api/v1/app-images/"+logo || m.Image != "https://dashboard.tw/api/v1/app-images/"+shot {
+		t.Errorf("images = %q %q", m.Thumbnail, m.Image)
+	}
+	if len(m.Links) != 2 || m.Links[0].Label != "前往網站" || m.Links[1].URL != "https://dashboard.tw/showcase/web" {
+		t.Errorf("links = %+v", m.Links)
+	}
+	if len(m.Fields) != 3 || m.Fields[2].Value != "天氣、空氣品質" {
+		t.Errorf("fields = %+v", m.Fields)
+	}
+
+	app := appContent{appFields: appFields{Category: "app", Name: "A", IOSURL: "https://apps.apple.com/x", AndroidURL: "https://play.google.com/x"},
+		Image: logo, Screenshot: shot}
+	m = appAnnouncement("https://dashboard.tw", app, "", "")
+	if m.Image != "" || len(m.Fields) != 1 {
+		t.Errorf("app: screenshot or empty fields leaked: %+v", m)
+	}
+	if labels := []string{m.Links[0].Label, m.Links[1].Label, m.Links[2].Label}; strings.Join(labels, ",") != "App Store,Google Play,在臺灣儀表板查看" {
+		t.Errorf("app links = %v", labels)
 	}
 }

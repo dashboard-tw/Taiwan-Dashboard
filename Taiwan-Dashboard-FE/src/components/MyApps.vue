@@ -45,6 +45,8 @@ const editing = ref<number | null>(null)
 const form = ref<AppFields>(blank())
 const file = ref<File | null>(null)
 const preview = ref<string | null>(null)
+const shotFile = ref<File | null>(null)
+const shotPreview = ref<string | null>(null)
 const agreed = ref(false)
 const picked = ref(false)
 const busy = ref(false)
@@ -65,7 +67,9 @@ function start(a?: MyApp) {
       }
     : blank()
   setFile(null)
+  setShot(null)
   preview.value = a ? appImageUrl(a.image) : null
+  shotPreview.value = a ? appImageUrl(a.screenshot) : null
   picked.value = !!a
   agreed.value = false
   error.value = ''
@@ -73,6 +77,7 @@ function start(a?: MyApp) {
 function cancel() {
   editing.value = null
   setFile(null)
+  setShot(null)
 }
 
 function setFile(f: File | null) {
@@ -80,11 +85,16 @@ function setFile(f: File | null) {
   file.value = f
   preview.value = f ? URL.createObjectURL(f) : null
 }
-function pick(e: Event) {
+function setShot(f: File | null) {
+  if (shotPreview.value?.startsWith('blob:')) URL.revokeObjectURL(shotPreview.value)
+  shotFile.value = f
+  shotPreview.value = f ? URL.createObjectURL(f) : null
+}
+function pick(e: Event, which: 'logo' | 'shot' = 'logo') {
   const f = (e.target as HTMLInputElement).files?.[0] ?? null
   error.value = ''
   if (f && f.size > MAX_APP_IMAGE_BYTES) {
-    error.value = '圖片最大 1 MB'
+    error.value = '圖片最大 2 MB'
     ;(e.target as HTMLInputElement).value = ''
     return
   }
@@ -93,7 +103,8 @@ function pick(e: Event) {
     ;(e.target as HTMLInputElement).value = ''
     return
   }
-  setFile(f)
+  if (which === 'shot') setShot(f)
+  else setFile(f)
 }
 
 const FIELDS = {
@@ -102,21 +113,18 @@ const FIELDS = {
     desc: 'App 介紹',
     descHint: '這個 App 可以做什麼',
     image: 'App 圖示',
-    imageHint: '建議用正方形圖示',
   },
   web: {
     name: '網站名稱',
     desc: '網站介紹',
     descHint: '這個網站可以做什麼',
-    image: '網站截圖',
-    imageHint: '建議用橫向截圖',
+    image: '網站 Logo',
   },
   innovation: {
     name: '作品名稱',
     desc: '作品介紹',
     descHint: '這個作品的內容',
-    image: '封面圖片',
-    imageHint: '建議用橫向圖片',
+    image: '作品 Logo',
   },
 } as const
 const fields = computed(() => FIELDS[form.value.category])
@@ -169,11 +177,17 @@ async function submit() {
       id = list.find((a) => !before.has(a.id))?.id ?? 0
     }
     apps.value = list
-    if (file.value && id) {
+    const uploads: [File | null, 'image' | 'screenshot'][] = [
+      [file.value, 'image'],
+      [form.value.category === 'web' ? shotFile.value : null, 'screenshot'],
+    ]
+    for (const [f, kind] of uploads) {
+      if (!f || !id) continue
       try {
-        apps.value = await uploadAppImage(id, file.value)
+        apps.value = await uploadAppImage(id, f, kind)
       } catch (e) {
-        error.value = `圖片上傳失敗：${e instanceof ApiError ? e.message : '請再試一次'}`
+        const what = kind === 'image' ? 'Logo' : '截圖'
+        error.value = `${what}上傳失敗：${e instanceof ApiError ? e.message : '請再試一次'}`
         editing.value = id
         return
       }
@@ -320,7 +334,24 @@ function statusText(a: MyApp) {
               <input type="file" accept="image/png,image/jpeg,image/webp" @change="pick" />
             </label>
           </div>
-          <span class="muted small">{{ fields.imageHint }}，PNG、JPEG 或 WebP，1 MB 以內</span>
+          <span class="muted small">正方形，PNG、JPEG 或 WebP，2 MB 以內</span>
+        </div>
+
+        <div v-if="form.category === 'web'" class="field">
+          <span>網站截圖</span>
+          <div class="image-row">
+            <img v-if="shotPreview" :src="shotPreview" alt="" class="thumb wide" />
+            <label class="btn-plain upload">
+              <span class="mi" aria-hidden="true">image</span
+              >{{ shotPreview ? '更換截圖' : '選擇截圖' }}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                @change="pick($event, 'shot')"
+              />
+            </label>
+          </div>
+          <span class="muted small">一張橫向截圖，PNG、JPEG 或 WebP，2 MB 以內</span>
         </div>
 
         <fieldset class="field">
@@ -403,6 +434,10 @@ p {
   border-radius: 4px;
   object-fit: contain;
   background: var(--surface-muted);
+}
+.thumb.wide {
+  width: 96px;
+  height: 60px;
 }
 .thumb.empty {
   display: grid;

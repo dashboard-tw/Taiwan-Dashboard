@@ -171,7 +171,6 @@ function mb(bytes: number) {
           <span class="mi" aria-hidden="true">search</span>{{ searching ? '搜尋中' : '搜尋' }}
         </button>
       </form>
-      <p class="muted small">Email 會先在瀏覽器轉成雜湊值再送出，伺服器不會收到明文。</p>
 
       <p v-if="results && !results.length" class="muted">找不到使用這個 Email 的帳號。</p>
       <table v-else-if="results && results.length > 1">

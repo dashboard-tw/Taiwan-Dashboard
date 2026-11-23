@@ -14,6 +14,7 @@ const (
 	AuditRetention         = 365 * 24 * time.Hour
 	RunRetention           = 90 * 24 * time.Hour
 	DeletedClientRetention = 90 * 24 * time.Hour
+	MailRetention          = 30 * 24 * time.Hour
 )
 
 type Purged struct {
@@ -60,6 +61,21 @@ func Purge(ctx context.Context, sqlDB *sql.DB, now time.Time) (Purged, error) {
 		}
 		p.OAuthLogins, _ = res.RowsAffected()
 		if _, err = tx.ExecContext(ctx, `DELETE FROM app.identity_link WHERE expires_at < $1`, now); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `
+			DELETE FROM app.mail_queue
+			 WHERE (status IN ('sent', 'skipped') AND created_at < $1) OR (status = 'failed' AND created_at < $2)`,
+			now.Add(-MailRetention), now.Add(-RunRetention)); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `
+			DELETE FROM app.notify_outbox
+			 WHERE (status = 'sent' AND created_at < $1) OR (status = 'failed' AND created_at < $2)`,
+			now.Add(-MailRetention), now.Add(-RunRetention)); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `DELETE FROM app.api_usage_warning WHERE day < $1::date`, now.Add(-7*24*time.Hour)); err != nil {
 			return err
 		}
 		_, err = tx.ExecContext(ctx, `DELETE FROM app.api_token WHERE expires_at < $1`, now)

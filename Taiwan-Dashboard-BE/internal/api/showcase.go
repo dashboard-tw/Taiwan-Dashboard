@@ -1,10 +1,12 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"os"
@@ -21,6 +23,7 @@ import (
 
 	"dashboard.tw/backend/internal/auth"
 	"dashboard.tw/backend/internal/db"
+	"dashboard.tw/backend/internal/hooks"
 )
 
 var appCategories = []string{"app", "web", "innovation"}
@@ -38,7 +41,8 @@ type appFields struct {
 
 type appContent struct {
 	appFields
-	Image string `json:"image"`
+	Image      string `json:"image"`
+	Screenshot string `json:"screenshot"`
 }
 
 type myApp struct {
@@ -52,14 +56,14 @@ type myApp struct {
 	UpdatedAt   time.Time   `json:"updated_at"`
 }
 
-const appColumns = `id, category, name, description, web_url, ios_url, android_url, image, topics, show_author,
+const appColumns = `id, category, name, description, web_url, ios_url, android_url, image, screenshot, topics, show_author,
 	status, review_note, published, published_at, created_at, updated_at`
 
 func scanApp(row interface{ Scan(...any) error }, extra ...any) (*myApp, error) {
 	var a myApp
 	var published []byte
 	m := pgtype.NewMap()
-	dest := append([]any{&a.ID, &a.Category, &a.Name, &a.Description, &a.WebURL, &a.IOSURL, &a.AndroidURL, &a.Image,
+	dest := append([]any{&a.ID, &a.Category, &a.Name, &a.Description, &a.WebURL, &a.IOSURL, &a.AndroidURL, &a.Image, &a.Screenshot,
 		m.SQLScanner(&a.Topics), &a.ShowAuthor, &a.Status, &a.ReviewNote, &published, &a.PublishedAt, &a.CreatedAt, &a.UpdatedAt}, extra...)
 	if err := row.Scan(dest...); err != nil {
 		return nil, err
@@ -214,25 +218,29 @@ func (h meHandlers) createApp(c *gin.Context) {
 		return
 	}
 	u := h.user(c)
-	ctx := c.Request.Context()
-	err := h.asUser(c, func(tx *sql.Tx) error {
-		var hasClient bool
-		if err := tx.QueryRowContext(ctx,
-			`SELECT EXISTS (SELECT 1 FROM app.api_key WHERE revoked_at IS NULL)`).Scan(&hasClient); err != nil {
-			return err
-		}
-		if !hasClient {
-			return errNoClient
-		}
-		var id int64
-		if err := tx.QueryRowContext(ctx, `
+	ok, err := h.submit.run(c, func(ctx context.Context) error {
+		return h.asUser(c, func(tx *sql.Tx) error {
+			var hasClient bool
+			if err := tx.QueryRowContext(ctx,
+				`SELECT EXISTS (SELECT 1 FROM app.api_key WHERE revoked_at IS NULL)`).Scan(&hasClient); err != nil {
+				return err
+			}
+			if !hasClient {
+				return errNoClient
+			}
+			var id int64
+			if err := tx.QueryRowContext(ctx, `
 			INSERT INTO app.showcase_app (user_id, name, description, web_url, ios_url, android_url, topics, show_author, category)
 			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
-			u.ID, in.Name, in.Description, in.WebURL, in.IOSURL, in.AndroidURL, in.Topics, in.ShowAuthor, in.Category).Scan(&id); err != nil {
-			return err
-		}
-		return auth.AuditTx(ctx, tx, &u.ID, "app.submit", fmt.Sprintf("app:%d", id), nil, c.ClientIP())
+				u.ID, in.Name, in.Description, in.WebURL, in.IOSURL, in.AndroidURL, in.Topics, in.ShowAuthor, in.Category).Scan(&id); err != nil {
+				return err
+			}
+			return auth.AuditTx(ctx, tx, &u.ID, "app.submit", fmt.Sprintf("app:%d", id), nil, c.ClientIP())
+		})
 	})
+	if !ok {
+		return
+	}
 	if errors.Is(err, errNoClient) {
 		writeError(c, http.StatusConflict, "client_required", "請先建立 API 憑證")
 		return
@@ -241,6 +249,11 @@ func (h meHandlers) createApp(c *gin.Context) {
 		meFail(c, err)
 		return
 	}
+	h.auth.Notify.AppSubmitted(in.Name, u.DisplayName, false)
+	h.auth.Hooks.Emit(c.Request.Context(), hooks.EventAppSubmitted, hooks.Message{
+		Title: "有新投稿：" + in.Name, Level: hooks.LevelInfo, URL: siteOf(h.auth.Origins) + "/admin/apps",
+		Text: in.Description, Fields: []hooks.Field{{Name: "投稿者", Value: u.DisplayName}},
+	})
 	h.myApps(c)
 }
 
@@ -254,21 +267,26 @@ func (h meHandlers) updateApp(c *gin.Context) {
 		return
 	}
 	u := h.user(c)
-	ctx := c.Request.Context()
-	err := h.asUser(c, func(tx *sql.Tx) error {
-		res, err := tx.ExecContext(ctx, `
+	ok, err := h.submit.run(c, func(ctx context.Context) error {
+		return h.asUser(c, func(tx *sql.Tx) error {
+			res, err := tx.ExecContext(ctx, `
 			UPDATE app.showcase_app
 			   SET name = $2, description = $3, web_url = $4, ios_url = $5, android_url = $6,
-			       topics = $7, show_author = $8, category = $9, status = 'pending', review_note = '', updated_at = now()
+			       topics = $7, show_author = $8, category = $9, status = 'pending', review_note = '', updated_at = now(),
+			       screenshot = CASE WHEN $9 = 'web' THEN screenshot ELSE '' END
 			 WHERE id = $1`, id, in.Name, in.Description, in.WebURL, in.IOSURL, in.AndroidURL, in.Topics, in.ShowAuthor, in.Category)
-		if err != nil {
-			return err
-		}
-		if n, _ := res.RowsAffected(); n == 0 {
-			return sql.ErrNoRows
-		}
-		return auth.AuditTx(ctx, tx, &u.ID, "app.update", fmt.Sprintf("app:%d", id), nil, c.ClientIP())
+			if err != nil {
+				return err
+			}
+			if n, _ := res.RowsAffected(); n == 0 {
+				return sql.ErrNoRows
+			}
+			return auth.AuditTx(ctx, tx, &u.ID, "app.update", fmt.Sprintf("app:%d", id), nil, c.ClientIP())
+		})
 	})
+	if !ok {
+		return
+	}
 	if errors.Is(err, sql.ErrNoRows) {
 		writeError(c, http.StatusNotFound, "not_found", "找不到這個應用")
 		return
@@ -277,6 +295,11 @@ func (h meHandlers) updateApp(c *gin.Context) {
 		meFail(c, err)
 		return
 	}
+	h.auth.Notify.AppSubmitted(in.Name, u.DisplayName, true)
+	h.auth.Hooks.Emit(c.Request.Context(), hooks.EventAppSubmitted, hooks.Message{
+		Title: "應用修改待審查：" + in.Name, Level: hooks.LevelInfo, URL: siteOf(h.auth.Origins) + "/admin/apps",
+		Fields: []hooks.Field{{Name: "投稿者", Value: u.DisplayName}},
+	})
 	h.myApps(c)
 }
 
@@ -289,13 +312,14 @@ func (h meHandlers) deleteApp(c *gin.Context) {
 	ctx := c.Request.Context()
 	var images []string
 	err := h.asUser(c, func(tx *sql.Tx) error {
-		var draft string
-		var published sql.NullString
+		var draft, shot string
+		var published, publishedShot sql.NullString
 		if err := tx.QueryRowContext(ctx, `
-			DELETE FROM app.showcase_app WHERE id = $1 RETURNING image, published->>'image'`, id).Scan(&draft, &published); err != nil {
+			DELETE FROM app.showcase_app WHERE id = $1 RETURNING image, screenshot, published->>'image', published->>'screenshot'`, id).
+			Scan(&draft, &shot, &published, &publishedShot); err != nil {
 			return err
 		}
-		images = []string{draft, published.String}
+		images = []string{draft, shot, published.String, publishedShot.String}
 		return auth.AuditTx(ctx, tx, &u.ID, "app.delete", fmt.Sprintf("app:%d", id), nil, c.ClientIP())
 	})
 	if errors.Is(err, sql.ErrNoRows) {
@@ -310,7 +334,12 @@ func (h meHandlers) deleteApp(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (h meHandlers) uploadAppImage(c *gin.Context) {
+var errNotWeb = errors.New("screenshot is only for web apps")
+
+func (h meHandlers) uploadAppImage(c *gin.Context)      { h.uploadImage(c, logoImage) }
+func (h meHandlers) uploadAppScreenshot(c *gin.Context) { h.uploadImage(c, shotImage) }
+
+func (h meHandlers) uploadImage(c *gin.Context, k imageKind) {
 	id, ok := appParam(c)
 	if !ok {
 		return
@@ -321,38 +350,50 @@ func (h meHandlers) uploadAppImage(c *gin.Context) {
 	}
 	data, ok := readAppImage(c.Request.Body)
 	if !ok {
-		writeError(c, http.StatusRequestEntityTooLarge, "image_too_large", "圖片最大 1 MB")
+		writeError(c, http.StatusRequestEntityTooLarge, "image_too_large", "圖片最大 2 MB")
 		return
 	}
-	out, name, err := encodeAppImage(data)
+	u := h.user(c)
+	var old, name string
+	ok, err := h.submit.run(c, func(ctx context.Context) error {
+		out, n, err := encodeAppImage(data, k)
+		if err != nil {
+			return err
+		}
+		name = n
+		if err := saveAppImage(h.auth.ImageDir, name, out); err != nil {
+			return err
+		}
+		return h.asUser(c, func(tx *sql.Tx) error {
+			var category string
+			if err := tx.QueryRowContext(ctx, `SELECT `+k.column+`, category FROM app.showcase_app WHERE id = $1 FOR UPDATE`, id).
+				Scan(&old, &category); err != nil {
+				return err
+			}
+			if k == shotImage && category != "web" {
+				return errNotWeb
+			}
+			if _, err := tx.ExecContext(ctx, `
+			UPDATE app.showcase_app SET `+k.column+` = $2, status = 'pending', review_note = '', updated_at = now()
+			 WHERE id = $1`, id, name); err != nil {
+				return err
+			}
+			return auth.AuditTx(ctx, tx, &u.ID, "app."+k.column, fmt.Sprintf("app:%d", id), nil, c.ClientIP())
+		})
+	})
+	if !ok {
+		return
+	}
 	if errors.Is(err, errBadImage) {
 		writeError(c, http.StatusBadRequest, "invalid_image", "只能上傳 PNG、JPEG 或 WebP 圖片")
 		return
 	}
-	if err != nil {
-		meFail(c, err)
-		return
-	}
-	if err := saveAppImage(h.auth.ImageDir, name, out); err != nil {
-		meFail(c, err)
-		return
-	}
-	u := h.user(c)
-	ctx := c.Request.Context()
-	var old string
-	err = h.asUser(c, func(tx *sql.Tx) error {
-		if err := tx.QueryRowContext(ctx, `SELECT image FROM app.showcase_app WHERE id = $1 FOR UPDATE`, id).Scan(&old); err != nil {
-			return err
-		}
-		if _, err := tx.ExecContext(ctx, `
-			UPDATE app.showcase_app SET image = $2, status = 'pending', review_note = '', updated_at = now()
-			 WHERE id = $1`, id, name); err != nil {
-			return err
-		}
-		return auth.AuditTx(ctx, tx, &u.ID, "app.image", fmt.Sprintf("app:%d", id), nil, c.ClientIP())
-	})
-	if errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) || errors.Is(err, errNotWeb) {
 		dropUnusedImages(c, h.db, h.auth.ImageDir, name)
+		if errors.Is(err, errNotWeb) {
+			writeError(c, http.StatusConflict, "not_web", "只有網站可以上傳截圖")
+			return
+		}
 		writeError(c, http.StatusNotFound, "not_found", "找不到這個應用")
 		return
 	}
@@ -378,7 +419,8 @@ func dropUnusedImages(c *gin.Context, dbh *sql.DB, dir string, names ...string) 
 		var used bool
 		err := db.AsSystem(ctx, dbh, func(tx *sql.Tx) error {
 			return tx.QueryRowContext(ctx, `
-				SELECT EXISTS (SELECT 1 FROM app.showcase_app WHERE image = $1 OR published->>'image' = $1)`, name).Scan(&used)
+				SELECT EXISTS (SELECT 1 FROM app.showcase_app
+				                WHERE image = $1 OR screenshot = $1 OR published->>'image' = $1 OR published->>'screenshot' = $1)`, name).Scan(&used)
 		})
 		if err == nil && !used {
 			removeAppImage(dir, name)
@@ -487,7 +529,7 @@ func (h adminHandlers) reviewApp(c *gin.Context) {
 			   SET status = 'approved', review_note = '', reviewed_at = now(),
 			       published = jsonb_build_object('category', category, 'name', name, 'description', description,
 			                                      'web_url', web_url, 'ios_url', ios_url, 'android_url', android_url,
-			                                      'image', image, 'topics', to_jsonb(topics), 'show_author', show_author),
+			                                      'image', image, 'screenshot', screenshot, 'topics', to_jsonb(topics), 'show_author', show_author),
 			       published_at = COALESCE(published_at, now())
 			 WHERE id = $1 AND status = 'pending'`
 	case "reject":
@@ -512,10 +554,15 @@ func (h adminHandlers) reviewApp(c *gin.Context) {
 		return
 	}
 	ctx := c.Request.Context()
-	var oldImage sql.NullString
+	var oldImage, oldShot sql.NullString
+	var owner int64
+	var name string
+	var firstPublish bool
 	err := db.AsSystem(ctx, h.db, func(tx *sql.Tx) error {
 		if err := tx.QueryRowContext(ctx, `
-			SELECT published->>'image' FROM app.showcase_app WHERE id = $1 FOR UPDATE`, id).Scan(&oldImage); err != nil {
+			SELECT published->>'image', published->>'screenshot', user_id, name, published_at IS NULL
+			  FROM app.showcase_app WHERE id = $1 FOR UPDATE`, id).
+			Scan(&oldImage, &oldShot, &owner, &name, &firstPublish); err != nil {
 			return err
 		}
 		args := []any{id}
@@ -543,7 +590,11 @@ func (h adminHandlers) reviewApp(c *gin.Context) {
 		adminFail(c, err)
 		return
 	}
-	dropUnusedImages(c, h.db, h.imageDir, oldImage.String)
+	dropUnusedImages(c, h.db, h.imageDir, oldImage.String, oldShot.String)
+	h.notify.AppReviewed(owner, name, in.Action, in.Note)
+	if in.Action == "approve" && firstPublish {
+		h.announceApp(ctx, id)
+	}
 	c.Status(http.StatusNoContent)
 }
 
@@ -556,6 +607,7 @@ type publicApp struct {
 	IOSURL      string    `json:"ios_url"`
 	AndroidURL  string    `json:"android_url"`
 	ImageURL    *string   `json:"image_url"`
+	ScreenURL   *string   `json:"screenshot_url"`
 	Topics      []string  `json:"topics"`
 	Author      *string   `json:"author"`
 	PublishedAt time.Time `json:"published_at"`
@@ -592,6 +644,10 @@ func publicApps(dbh *sql.DB) gin.HandlerFunc {
 					u := "/api/v1/app-images/" + content.Image
 					p.ImageURL = &u
 				}
+				if content.Category == "web" && appImageName.MatchString(content.Screenshot) {
+					u := "/api/v1/app-images/" + content.Screenshot
+					p.ScreenURL = &u
+				}
 				if content.ShowAuthor {
 					p.Author = &author
 				}
@@ -606,4 +662,62 @@ func publicApps(dbh *sql.DB) gin.HandlerFunc {
 		c.Header("Cache-Control", "public, max-age=300")
 		writeData(c, http.StatusOK, list, nil)
 	}
+}
+
+var categoryNames = map[string]string{"app": "App", "web": "網站", "innovation": "創新應用"}
+
+func (h adminHandlers) announceApp(ctx context.Context, id int64) {
+	var raw []byte
+	var author sql.NullString
+	var topics string
+	err := db.AsSystem(ctx, h.db, func(tx *sql.Tx) error {
+		return tx.QueryRowContext(ctx, `
+			SELECT a.published, CASE WHEN a.show_author THEN u.display_name END,
+			       COALESCE((SELECT string_agg(COALESCE(d.name, t), '、' ORDER BY ord)
+			                   FROM unnest(a.topics) WITH ORDINALITY AS x(t, ord)
+			                   LEFT JOIN app.dashboard d ON d.slug = x.t), '')
+			  FROM app.showcase_app a JOIN app.users u ON u.id = a.user_id
+			 WHERE a.id = $1 AND a.published IS NOT NULL`, id).Scan(&raw, &author, &topics)
+	})
+	var p appContent
+	if err == nil {
+		err = json.Unmarshal(raw, &p)
+	}
+	if err != nil {
+		slog.Error("announce app", "app", id, "error", err)
+		return
+	}
+	h.hooks.Emit(ctx, hooks.EventAppPublished, appAnnouncement(h.site, p, author.String, topics))
+}
+
+func appAnnouncement(site string, p appContent, author, topics string) hooks.Message {
+	fields := []hooks.Field{{Name: "類別", Value: categoryNames[p.Category]}}
+	if author != "" {
+		fields = append(fields, hooks.Field{Name: "作者", Value: author})
+	}
+	if topics != "" {
+		fields = append(fields, hooks.Field{Name: "用到的資料", Value: topics})
+	}
+	m := hooks.Message{
+		Title: "新應用上架：" + p.Name, Text: p.Description, Level: hooks.LevelOK,
+		URL: site + "/showcase/" + p.Category, Fields: fields,
+	}
+	if appImageName.MatchString(p.Image) {
+		m.Thumbnail = site + "/api/v1/app-images/" + p.Image
+	}
+	if p.Category == "web" && appImageName.MatchString(p.Screenshot) {
+		m.Image = site + "/api/v1/app-images/" + p.Screenshot
+	}
+	webLabel := "前往網站"
+	if p.Category == "innovation" {
+		webLabel = "查看作品"
+	}
+	for _, l := range []hooks.Link{{Label: webLabel, URL: p.WebURL, Icon: "web"}, {Label: "App Store", URL: p.IOSURL, Icon: "ios"},
+		{Label: "Google Play", URL: p.AndroidURL, Icon: "android"}} {
+		if l.URL != "" {
+			m.Links = append(m.Links, l)
+		}
+	}
+	m.Links = append(m.Links, hooks.Link{Label: "在臺灣儀表板查看", URL: m.URL, Icon: "site"})
+	return m
 }

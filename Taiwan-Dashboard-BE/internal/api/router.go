@@ -67,10 +67,13 @@ func NewRouter(deps Deps) *gin.Engine {
 		registerMe(v1, deps.Auth)
 		registerAdmin(v1, deps.Auth, deps.Admin)
 		v1.GET("/apps", publicApps(deps.Auth.Store.DB))
+		if deps.Auth.MailWebhookToken != "" && deps.Auth.Notify.Enabled() {
+			v1.POST("/hooks/brevo", newLimiter(600, 300).middleware(), brevoWebhook(deps.Auth.Notify, deps.Auth.MailWebhookToken))
+		}
 		if deps.ImageDir != "" {
 			registerAppImages(v1, deps.ImageDir)
 		}
-		limits := &keyLimits{byTi: map[int]*limiter{}}
+		limits := &keyLimits{byTi: map[int]*limiter{}, notify: deps.Auth.Notify}
 		if deps.OpenData != nil {
 			free, partner := auth.Tiers[auth.TierFree], auth.Tiers[auth.TierPartner]
 			registerOpenData(v1, deps.Auth.Store, deps.OpenData, limits, opendata.SpecOptions{

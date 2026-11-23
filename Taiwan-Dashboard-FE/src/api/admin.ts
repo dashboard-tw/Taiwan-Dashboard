@@ -441,3 +441,161 @@ export async function reviewApp(
 ): Promise<void> {
   await sendJson('POST', `/admin/apps/${id}/review`, { action, note })
 }
+
+export interface MailVar {
+  key: string
+  label: string
+  sample: string
+}
+
+export interface MailTemplate {
+  key: string
+  name: string
+  subject: string
+  body: string
+  enabled: boolean
+  updated_at: string
+  updated_by: string | null
+  vars: MailVar[]
+}
+
+export interface MailTemplateInput {
+  subject: string
+  body: string
+  enabled?: boolean
+}
+
+export async function getMailTemplates(): Promise<{ sending: boolean; templates: MailTemplate[] }> {
+  return (await getJson<{ sending: boolean; templates: MailTemplate[] }>('/admin/mail-templates'))
+    .data
+}
+
+export async function saveMailTemplate(key: string, input: MailTemplateInput): Promise<void> {
+  await sendJson('PUT', `/admin/mail-templates/${key}`, input)
+}
+
+export async function previewMailTemplate(
+  key: string,
+  input: MailTemplateInput,
+): Promise<{ subject: string; body: string }> {
+  return (await sendJson<{ subject: string; body: string }>(
+    'POST',
+    `/admin/mail-templates/${key}/preview`,
+    input,
+  ))!
+}
+
+export async function testMailTemplate(key: string): Promise<string> {
+  return (await sendJson<{ to: string }>('POST', `/admin/mail-templates/${key}/test`))!.to
+}
+
+export interface QueuedMail {
+  id: number
+  template: string
+  name: string
+  status: 'pending' | 'sending' | 'sent' | 'failed' | 'skipped'
+  attempts: number
+  last_error: string
+  created_at: string
+  next_attempt_at: string
+  sent_at: string | null
+}
+
+export interface MailQueue {
+  sending: boolean
+  sandbox: boolean
+  counts: Record<QueuedMail['status'], number>
+  recent: QueuedMail[]
+  daily_limit: number
+  sent_today: number
+}
+
+export async function getMailQueue(): Promise<MailQueue> {
+  return (await getJson<MailQueue>('/admin/mail-queue')).data
+}
+
+export async function retryMail(id: number): Promise<void> {
+  await sendJson('POST', `/admin/mail-queue/${id}/retry`)
+}
+
+export interface MailSuppression {
+  id: number
+  reason: 'hard_bounce' | 'spam' | 'invalid_email' | 'blocked'
+  detail: string
+  user: string | null
+  created_at: string
+}
+
+export async function getMailSuppressions(): Promise<MailSuppression[]> {
+  return (await getJson<MailSuppression[]>('/admin/mail-suppressions')).data
+}
+
+export async function deleteMailSuppression(id: number): Promise<void> {
+  await sendJson('DELETE', `/admin/mail-suppressions/${id}`)
+}
+
+export type ChannelKind = 'discord' | 'slack' | 'telegram' | 'json'
+
+export interface NotifyChannel {
+  id: number
+  name: string
+  kind: ChannelKind
+  hint: string
+  events: string[]
+  enabled: boolean
+  updated_at: string
+  last_at: string | null
+  last_ok: boolean | null
+  last_error: string
+}
+
+export interface OutboxRow {
+  id: number
+  channel: string
+  event: string
+  title: string
+  status: 'pending' | 'sending' | 'sent' | 'failed'
+  attempts: number
+  last_error: string
+  created_at: string
+  sent_at: string | null
+}
+
+export interface ChannelList {
+  channels: NotifyChannel[]
+  recent: OutboxRow[]
+  events: { key: string; label: string }[]
+  kinds: ChannelKind[]
+  can_save: boolean
+}
+
+export interface ChannelInput {
+  name: string
+  kind: ChannelKind
+  url: string
+  token: string
+  chat: string
+  secret: string
+  events: string[]
+  enabled: boolean
+}
+
+export async function getChannels(): Promise<ChannelList> {
+  return (await getJson<ChannelList>('/admin/channels')).data
+}
+
+export async function createChannel(input: ChannelInput): Promise<void> {
+  await sendJson('POST', '/admin/channels', input)
+}
+
+export async function updateChannel(id: number, input: ChannelInput): Promise<void> {
+  await sendJson('PUT', `/admin/channels/${id}`, input)
+}
+
+export async function deleteChannel(id: number): Promise<void> {
+  await sendJson('DELETE', `/admin/channels/${id}`)
+}
+
+export async function testChannel(id: number): Promise<void> {
+  await sendJson('POST', `/admin/channels/${id}/test`)
+}

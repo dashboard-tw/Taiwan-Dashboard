@@ -68,9 +68,30 @@ function links(a: PublicApp) {
     <p v-else-if="shown && !shown.length" class="card empty">目前還沒有應用</p>
     <div v-else class="grid">
       <article v-for="a in shown" :key="a.id" class="card app">
-        <img v-if="a.image_url" :src="a.image_url" :alt="a.name" class="shot" loading="lazy" />
+        <img
+          v-if="a.screenshot_url"
+          :src="a.screenshot_url"
+          :alt="`${a.name}的網站截圖`"
+          class="shot"
+          loading="lazy"
+        />
+        <img
+          v-else-if="a.image_url"
+          :src="a.image_url"
+          :alt="a.name"
+          class="shot logo-only"
+          loading="lazy"
+        />
         <div v-else class="shot placeholder" aria-hidden="true">{{ a.name.slice(0, 1) }}</div>
-        <h2>{{ a.name }}</h2>
+        <h2>
+          <img
+            v-if="a.screenshot_url && a.image_url"
+            :src="a.image_url"
+            alt=""
+            class="logo"
+            loading="lazy"
+          />{{ a.name }}
+        </h2>
         <p class="desc">{{ a.description }}</p>
         <ul class="tags" aria-label="用到的資料">
           <li v-for="t in a.topics" :key="t">{{ TOPICS[t] ?? t }}</li>
@@ -159,6 +180,17 @@ function links(a: PublicApp) {
   border-radius: var(--radius);
   object-fit: contain;
   background: var(--surface-muted);
+}
+.shot.logo-only {
+  padding: 12%;
+}
+.app h2 .logo {
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 0.4em;
+  border-radius: 0.3em;
+  object-fit: cover;
+  vertical-align: -0.35em;
 }
 .placeholder {
   display: grid;

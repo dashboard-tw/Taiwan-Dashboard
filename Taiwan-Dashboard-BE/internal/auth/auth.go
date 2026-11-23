@@ -34,9 +34,10 @@ type User struct {
 func (u *User) IsAdmin() bool { return u != nil && u.Role == RoleAdmin }
 
 type Store struct {
-	DB     *sql.DB
-	Now    func() time.Time
-	Emails *EmailVault
+	DB      *sql.DB
+	Now     func() time.Time
+	Emails  *EmailVault
+	OnEvent func(Event)
 }
 
 func (s *Store) now() time.Time {
@@ -65,7 +66,14 @@ func (s *Store) CreateSession(ctx context.Context, userID int64, ip, userAgent s
 		return "", time.Time{}, err
 	}
 	expires := s.now().Add(SessionTTL)
+	newDevice := false
 	err = db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
+		if s.OnEvent != nil {
+			var err error
+			if newDevice, err = unseenDevice(ctx, tx, userID, userAgent); err != nil {
+				return err
+			}
+		}
 		if _, err := tx.ExecContext(ctx, `
 			INSERT INTO app.session (id_hash, user_id, expires_at, ip, user_agent, last_seen_at)
 			VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -78,7 +86,31 @@ func (s *Store) CreateSession(ctx context.Context, userID int64, ip, userAgent s
 	if err != nil {
 		return "", time.Time{}, err
 	}
+	if newDevice {
+		s.emit(Event{Kind: EventNewDevice, UserID: userID, IP: ip, UserAgent: userAgent})
+	}
 	return token, expires, nil
+}
+
+func unseenDevice(ctx context.Context, tx *sql.Tx, userID int64, userAgent string) (bool, error) {
+	rows, err := tx.QueryContext(ctx, `
+		SELECT DISTINCT COALESCE(user_agent, '') FROM app.session WHERE user_id = $1`, userID)
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+	name, any := DeviceName(userAgent), false
+	for rows.Next() {
+		var ua string
+		if err := rows.Scan(&ua); err != nil {
+			return false, err
+		}
+		if DeviceName(ua) == name {
+			return false, nil
+		}
+		any = true
+	}
+	return any, rows.Err()
 }
 
 func (s *Store) Lookup(ctx context.Context, token string) (*User, error) {

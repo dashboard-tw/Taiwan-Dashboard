@@ -76,7 +76,8 @@ function changes(a: AdminApp) {
   if (p.description !== a.description) out.push('介紹')
   if (p.web_url !== a.web_url || p.ios_url !== a.ios_url || p.android_url !== a.android_url)
     out.push('連結')
-  if (p.image !== a.image) out.push('圖片')
+  if (p.image !== a.image) out.push('Logo')
+  if ((p.screenshot ?? '') !== (a.screenshot ?? '')) out.push('截圖')
   if (p.topics.join() !== a.topics.join()) out.push('用到的資料')
   if (p.show_author !== a.show_author) out.push('是否顯示作者')
   return out
@@ -110,8 +111,16 @@ function time(iso: string) {
     <p v-if="empty" class="muted">沒有符合的申請</p>
 
     <section v-for="a in apps ?? []" :key="a.id" class="card block app">
-      <img v-if="a.image" :src="appImageUrl(a.image)!" alt="" class="shot" />
-      <div v-else class="shot empty mi" aria-hidden="true">apps</div>
+      <div class="pics">
+        <img v-if="a.image" :src="appImageUrl(a.image)!" alt="Logo" class="shot" />
+        <div v-else class="shot empty mi" aria-hidden="true">apps</div>
+        <img
+          v-if="a.screenshot"
+          :src="appImageUrl(a.screenshot)!"
+          alt="網站截圖"
+          class="shot wide"
+        />
+      </div>
       <div class="body">
         <h2>
           {{ a.name }}
@@ -200,6 +209,16 @@ function time(iso: string) {
   border-radius: var(--radius);
   object-fit: contain;
   background: var(--surface-muted);
+}
+.pics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.pics .shot:not(.wide) {
+  width: 120px;
+  height: 120px;
 }
 .shot.empty {
   display: grid;

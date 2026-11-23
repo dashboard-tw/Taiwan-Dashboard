@@ -164,6 +164,7 @@ func (s *Store) CreateClient(ctx context.Context, userID int64, name, ip string)
 	if err != nil {
 		return nil, "", err
 	}
+	s.emit(Event{Kind: EventAPIKeyCreated, UserID: userID, IP: ip, Key: name, ClientID: clientID})
 	return &c, secret, nil
 }
 
@@ -190,9 +191,15 @@ func (s *Store) Clients(ctx context.Context, userID int64) ([]APIClient, error) 
 }
 
 func (s *Store) changeClient(ctx context.Context, userID, id int64, action, ip string, fn func(tx *sql.Tx) error) error {
-	return db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
+	_, err := s.changeClientNamed(ctx, userID, id, action, ip, fn)
+	return err
+}
+
+func (s *Store) changeClientNamed(ctx context.Context, userID, id int64, action, ip string, fn func(tx *sql.Tx) error) (name [2]string, err error) {
+	err = db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
 		var found int64
-		err := tx.QueryRowContext(ctx, `SELECT id FROM app.api_key WHERE id = $1 AND revoked_at IS NULL FOR UPDATE`, id).Scan(&found)
+		err := tx.QueryRowContext(ctx, `SELECT id, name, prefix FROM app.api_key WHERE id = $1 AND revoked_at IS NULL FOR UPDATE`, id).
+			Scan(&found, &name[0], &name[1])
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrClientNotFound
 		}
@@ -207,6 +214,7 @@ func (s *Store) changeClient(ctx context.Context, userID, id int64, action, ip s
 		}
 		return audit(ctx, tx, &userID, action, fmt.Sprintf("api_key:%d", id), nil, ip)
 	})
+	return name, err
 }
 
 func (s *Store) RotateClientSecret(ctx context.Context, userID, id int64, ip string) (string, error) {
@@ -227,19 +235,27 @@ func (s *Store) SetClientEnabled(ctx context.Context, userID, id int64, enabled 
 	if enabled {
 		action = "client.enable"
 	}
-	return s.changeClient(ctx, userID, id, action, ip, func(tx *sql.Tx) error {
+	name, err := s.changeClientNamed(ctx, userID, id, action, ip, func(tx *sql.Tx) error {
 		_, err := tx.ExecContext(ctx, `
 			UPDATE app.api_key SET disabled_at = CASE WHEN $2 THEN NULL ELSE coalesce(disabled_at, now()) END
 			 WHERE id = $1`, id, enabled)
 		return err
 	})
+	if err == nil && !enabled {
+		s.emit(Event{Kind: EventAPIKeyDisabled, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
+	}
+	return err
 }
 
 func (s *Store) DeleteClient(ctx context.Context, userID, id int64, ip string) error {
-	return s.changeClient(ctx, userID, id, "client.delete", ip, func(tx *sql.Tx) error {
+	name, err := s.changeClientNamed(ctx, userID, id, "client.delete", ip, func(tx *sql.Tx) error {
 		_, err := tx.ExecContext(ctx, `UPDATE app.api_key SET revoked_at = now() WHERE id = $1`, id)
 		return err
 	})
+	if err == nil {
+		s.emit(Event{Kind: EventAPIKeyDeleted, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
+	}
+	return err
 }
 
 func (s *Store) IssueToken(ctx context.Context, clientID, secret string) (string, time.Time, error) {
@@ -395,6 +411,21 @@ func (s *Store) AddTraffic(ctx context.Context, o *KeyOwner, bytes int64) error 
 			ON CONFLICT (api_key_id, day) DO UPDATE SET bytes = u.bytes + EXCLUDED.bytes`, o.KeyID, s.taipeiDay(), bytes)
 		return err
 	})
+}
+
+func (s *Store) MarkUsageWarned(ctx context.Context, userID int64) (bool, error) {
+	var n int64
+	err := db.AsSystem(ctx, s.DB, func(tx *sql.Tx) error {
+		res, err := tx.ExecContext(ctx, `
+			INSERT INTO app.api_usage_warning (user_id, day) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+			userID, s.taipeiDay())
+		if err != nil {
+			return err
+		}
+		n, err = res.RowsAffected()
+		return err
+	})
+	return n == 1, err
 }
 
 func (s *Store) RejectAPIKey(ctx context.Context, o *KeyOwner) error {

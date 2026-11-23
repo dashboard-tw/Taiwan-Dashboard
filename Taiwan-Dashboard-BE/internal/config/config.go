@@ -42,6 +42,21 @@ type Config struct {
 	ImageProxyURL                      string
 	WebDir                             string
 	SiteIndexable                      bool
+	Mail                               Mail
+}
+
+type Mail struct {
+	Mode         string // smtp 或 brevo
+	From         string
+	FromName     string
+	SMTPHost     string
+	SMTPPort     int
+	SMTPUser     string
+	SMTPPassword string
+	BrevoAPIKey  string
+	DailyLimit   int
+	Sandbox      bool
+	WebhookToken string
 }
 
 var ErrDevLoginInProduction = errors.New("AUTH_DEV_LOGIN must not be enabled when APP_ENV=production")
@@ -115,6 +130,10 @@ func load(getenv func(string) string) (Config, error) {
 		cfg.EmailKey = key
 	}
 
+	if cfg.Mail, err = loadMail(getenv); err != nil {
+		return Config{}, err
+	}
+
 	if cfg.Env == EnvProduction && cfg.AuthDevLogin {
 		return Config{}, ErrDevLoginInProduction
 	}
@@ -123,6 +142,59 @@ func load(getenv func(string) string) (Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func loadMail(getenv func(string) string) (Mail, error) {
+	m := Mail{
+		Mode:         strings.ToLower(strings.TrimSpace(getenv("MAIL_MODE"))),
+		From:         withDefault(getenv("MAIL_FROM"), "noreply@dashboard.tw"),
+		FromName:     withDefault(getenv("MAIL_FROM_NAME"), "臺灣儀表板"),
+		SMTPHost:     getenv("SMTP_HOST"),
+		SMTPUser:     getenv("SMTP_USER"),
+		SMTPPassword: getenv("SMTP_PASSWORD"),
+		BrevoAPIKey:  getenv("BREVO_API_KEY"),
+		WebhookToken: strings.TrimSpace(getenv("BREVO_WEBHOOK_TOKEN")),
+	}
+	sandbox, err := parseBool(getenv("MAIL_SANDBOX"))
+	if err != nil {
+		return Mail{}, fmt.Errorf("MAIL_SANDBOX: %w", err)
+	}
+	m.Sandbox = sandbox
+	if m.WebhookToken != "" && len(m.WebhookToken) < 32 {
+		return Mail{}, errors.New("BREVO_WEBHOOK_TOKEN must be at least 32 characters")
+	}
+	m.DailyLimit = 295
+	if v := getenv("MAIL_DAILY_LIMIT"); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 0 {
+			return Mail{}, fmt.Errorf("MAIL_DAILY_LIMIT must be 0 or more, got %q", v)
+		}
+		m.DailyLimit = n
+	}
+	if p := getenv("SMTP_PORT"); p != "" {
+		n, err := strconv.Atoi(p)
+		if err != nil || n <= 0 || n > 65535 {
+			return Mail{}, fmt.Errorf("SMTP_PORT must be a port number, got %q", p)
+		}
+		m.SMTPPort = n
+	}
+	switch m.Mode {
+	case "":
+	case "smtp":
+		if m.SMTPHost == "" {
+			return Mail{}, errors.New("MAIL_MODE=smtp needs SMTP_HOST")
+		}
+		if m.Sandbox {
+			return Mail{}, errors.New("MAIL_SANDBOX only works with MAIL_MODE=brevo")
+		}
+	case "brevo":
+		if m.BrevoAPIKey == "" {
+			return Mail{}, errors.New("MAIL_MODE=brevo needs BREVO_API_KEY")
+		}
+	default:
+		return Mail{}, fmt.Errorf("MAIL_MODE must be smtp or brevo, got %q", m.Mode)
+	}
+	return m, nil
 }
 
 func (c Config) RequireDatabase() error {

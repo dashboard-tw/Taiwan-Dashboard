@@ -22,6 +22,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"dashboard.tw/backend/internal/auth"
+	"dashboard.tw/backend/internal/notify"
 	"dashboard.tw/backend/internal/opendata"
 )
 
@@ -33,8 +34,9 @@ var (
 )
 
 type keyLimits struct {
-	mu   sync.Mutex
-	byTi map[int]*limiter
+	mu     sync.Mutex
+	byTi   map[int]*limiter
+	notify *notify.Notifier
 }
 
 func (k *keyLimits) allow(owner *auth.KeyOwner) (bool, time.Duration) {
@@ -112,11 +114,13 @@ func requireKey(store *auth.Store, limits *keyLimits) gin.HandlerFunc {
 		}
 		c.Set(ownerKey, owner)
 		c.Next()
-		if n := c.Writer.Size(); n > 0 {
+		n := max(c.Writer.Size(), 0)
+		if n > 0 {
 			if err := store.AddTraffic(context.WithoutCancel(ctx), owner, int64(n)); err != nil {
 				slog.Error("count api traffic", "error", err)
 			}
 		}
+		limits.notify.UsageHigh(owner.UserID, auth.Usage{Requests: used.Requests, Bytes: used.Bytes + int64(n)}, owner.Tier)
 	}
 }
 

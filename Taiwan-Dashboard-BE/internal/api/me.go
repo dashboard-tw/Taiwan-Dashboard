@@ -19,13 +19,14 @@ import (
 )
 
 type meHandlers struct {
-	db    *sql.DB
-	store *auth.Store
-	auth  AuthDeps
+	db     *sql.DB
+	store  *auth.Store
+	auth   AuthDeps
+	submit *submitGate
 }
 
 func registerMe(v1 *gin.RouterGroup, a AuthDeps) {
-	h := meHandlers{db: a.Store.DB, store: a.Store, auth: a}
+	h := meHandlers{db: a.Store.DB, store: a.Store, auth: a, submit: newSubmitGate()}
 	me := v1.Group("/me", private(), a.sameOrigin(), a.session(), requireUser())
 	me.GET("", func(c *gin.Context) {
 		writeData(c, http.StatusOK, currentUser(c), nil)
@@ -44,6 +45,7 @@ func registerMe(v1 *gin.RouterGroup, a AuthDeps) {
 	me.POST("/apps", h.createApp)
 	me.PUT("/apps/:id", h.updateApp)
 	me.PUT("/apps/:id/image", h.uploadAppImage)
+	me.PUT("/apps/:id/screenshot", h.uploadAppScreenshot)
 	me.DELETE("/apps/:id", h.deleteApp)
 	me.GET("/devices", h.devices)
 	me.DELETE("/devices", h.signOutOthers)
@@ -215,6 +217,7 @@ func (h meHandlers) deleteAccount(c *gin.Context) {
 		return
 	}
 	ctx := c.Request.Context()
+	sendGoodbye := h.auth.Notify.AccountDeleting(ctx, u.ID)
 	err := h.asUser(c, func(tx *sql.Tx) error {
 		if err := auth.AuditTx(ctx, tx, nil, "account.delete", "user:"+strconv.FormatInt(u.ID, 10), nil, c.ClientIP()); err != nil {
 			return err
@@ -226,6 +229,7 @@ func (h meHandlers) deleteAccount(c *gin.Context) {
 		meFail(c, err)
 		return
 	}
+	sendGoodbye()
 	h.auth.clearCookie(c)
 	c.Status(http.StatusNoContent)
 }

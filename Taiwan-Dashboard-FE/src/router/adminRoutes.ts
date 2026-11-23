@@ -48,6 +48,16 @@ export const adminRoute: RouteRecordRaw = {
       component: () => import('../views/admin/AdminSurveyView.vue'),
     },
     {
+      path: 'channels',
+      name: 'admin-channels',
+      component: () => import('../views/admin/AdminChannelsView.vue'),
+    },
+    {
+      path: 'mail',
+      name: 'admin-mail',
+      component: () => import('../views/admin/AdminMailView.vue'),
+    },
+    {
       path: 'reservoirs',
       name: 'admin-reservoirs',
       component: () => import('../views/admin/AdminReservoirsView.vue'),

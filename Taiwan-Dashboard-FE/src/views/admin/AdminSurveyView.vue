@@ -40,13 +40,12 @@ function date(iso: string) {
     <h1 class="page-title">
       <span class="mi" aria-hidden="true">poll</span>API 使用調查
       <span v-if="data" class="tools muted"
-        >{{ data.respondents }} 人填寫（{{ data.active_respondents }} 人仍有使用中的 key）</span
+        >{{ data.respondents }} 人填寫・仍有 key {{ data.active_respondents }} 人</span
       >
     </h1>
     <p class="legend small">
       <span><i :style="{ background: statusColor('active') }"></i>仍有 key</span>
       <span><i :style="{ background: statusColor('revoked') }"></i>已停用 key</span>
-      <span class="muted">調查跟著帳號：停用 key 後答案仍保留，刪除帳號時才會刪除</span>
     </p>
     <p v-if="error" class="notice bad" role="alert">{{ error }}</p>
 

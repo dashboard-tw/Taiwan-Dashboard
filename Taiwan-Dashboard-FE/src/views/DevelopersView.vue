@@ -485,7 +485,7 @@ const HEADERS = [
                   每天 {{ PER_DAY }} 次、{{ MB_PER_DAY }} MB 流量，每分鐘
                   {{ PER_MINUTE }} 次，每天午夜歸零。應用上架到<RouterLink to="/showcase/app"
                     >應用活化</RouterLink
-                  >後，每天可用 {{ PARTNER_PER_DAY }} 次。
+                  >後，每天可用 {{ PARTNER_PER_DAY }} 次。用量超過八成時會寄信提醒，一天一封。
                 </p>
               </div>
               <div class="card">
@@ -498,8 +498,8 @@ const HEADERS = [
           <section class="sec">
             <h2>取得 Access Token</h2>
             <p class="sec-lead">
-              每個帳號最多 3 組憑證，額度共用。token 有效 24 小時，請重複使用，過期再重新取得。
-              參數與回應見
+              每個帳號最多 3 組憑證，額度共用。建立、停用或刪除憑證時會寄信通知。token 有效 24
+              小時，請重複使用，過期再重新取得。 參數與回應見
               <RouterLink to="/developers/endpoints/token">取得 Access Token</RouterLink>。
             </p>
           </section>

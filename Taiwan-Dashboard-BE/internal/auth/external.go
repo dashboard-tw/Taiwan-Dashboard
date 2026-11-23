@@ -180,7 +180,11 @@ func (s *Store) createExternal(ctx context.Context, provider string, id Identity
 	if err := audit(ctx, tx, &u.ID, "account.create", fmt.Sprintf("user:%d", u.ID), map[string]any{"provider": provider}, ""); err != nil {
 		return nil, err
 	}
-	return &u, tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+	s.emit(Event{Kind: EventSignup, UserID: u.ID, Provider: provider})
+	return &u, nil
 }
 
 func isUniqueViolation(err error) bool {

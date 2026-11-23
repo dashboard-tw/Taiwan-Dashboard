@@ -19,18 +19,26 @@ import (
 )
 
 const (
-	MaxAppImageBytes  = 1 << 20
-	appImageMaxW      = 960
-	appImageMaxH      = 600
-	appImageMaxPixels = 5000 * 5000
+	MaxAppImageBytes  = 2 << 20
+	appImageMaxPixels = 6000 * 6000
 	appImageSubdir    = "apps"
+)
+
+type imageKind struct {
+	column, label string
+	maxW, maxH    int
+}
+
+var (
+	logoImage = imageKind{column: "image", label: "logo", maxW: 512, maxH: 512}
+	shotImage = imageKind{column: "screenshot", label: "截圖", maxW: 1600, maxH: 1000}
 )
 
 var appImageName = regexp.MustCompile(`^[0-9a-f]{32}\.(png|jpg)$`)
 
 var errBadImage = errors.New("not a supported image")
 
-func encodeAppImage(data []byte) ([]byte, string, error) {
+func encodeAppImage(data []byte, k imageKind) ([]byte, string, error) {
 	cfg, format, err := image.DecodeConfig(bytes.NewReader(data))
 	if err != nil || (format != "png" && format != "jpeg" && format != "webp") {
 		return nil, "", errBadImage
@@ -45,8 +53,8 @@ func encodeAppImage(data []byte) ([]byte, string, error) {
 
 	b := src.Bounds()
 	w, h := b.Dx(), b.Dy()
-	if w > appImageMaxW || h > appImageMaxH {
-		scale := min(float64(appImageMaxW)/float64(w), float64(appImageMaxH)/float64(h))
+	if w > k.maxW || h > k.maxH {
+		scale := min(float64(k.maxW)/float64(w), float64(k.maxH)/float64(h))
 		w, h = max(1, int(float64(w)*scale)), max(1, int(float64(h)*scale))
 	}
 	dst := image.NewNRGBA(image.Rect(0, 0, w, h))

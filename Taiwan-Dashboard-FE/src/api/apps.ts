@@ -15,6 +15,7 @@ export interface AppFields {
 
 export interface AppContent extends AppFields {
   image: string
+  screenshot: string
 }
 
 export type AppStatus = 'pending' | 'approved' | 'rejected' | 'removed'
@@ -38,6 +39,7 @@ export interface PublicApp {
   ios_url: string
   android_url: string
   image_url: string | null
+  screenshot_url: string | null
   topics: string[]
   author: string | null
   published_at: string
@@ -58,7 +60,7 @@ export function categoryLabel(c: string): string {
   return APP_CATEGORIES.find((x) => x.value === c)?.label ?? c
 }
 
-export const MAX_APP_IMAGE_BYTES = 1024 * 1024
+export const MAX_APP_IMAGE_BYTES = 2 * 1024 * 1024
 
 export const APP_STATUS: Record<AppStatus, string> = {
   pending: '審核中',
@@ -92,8 +94,12 @@ export async function deleteApp(id: number): Promise<void> {
   await sendJson('DELETE', `/me/apps/${id}`)
 }
 
-export async function uploadAppImage(id: number, file: Blob): Promise<MyApp[]> {
-  const res = await fetch(`${API_BASE}/me/apps/${id}/image`, {
+export async function uploadAppImage(
+  id: number,
+  file: Blob,
+  kind: 'image' | 'screenshot' = 'image',
+): Promise<MyApp[]> {
+  const res = await fetch(`${API_BASE}/me/apps/${id}/${kind}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',

@@ -402,7 +402,7 @@ async function loadVersion(v: ComponentVersion) {
   try {
     const r = await getVersion(props.slug, v.id)
     load(r.spec)
-    message.value = { ok: true, text: `已載入版本 #${v.id}，儲存後會成為新版本` }
+    message.value = { ok: true, text: `已載入版本 #${v.id}` }
   } catch (e) {
     fail(e, '版本暫時無法取得')
   }
@@ -410,7 +410,7 @@ async function loadVersion(v: ComponentVersion) {
 
 async function restore(v: ComponentVersion) {
   if (!props.slug) return
-  if (!window.confirm(`把版本 #${v.id} 還原成最新版本？目前的設定會保留在版本紀錄裡。`)) return
+  if (!window.confirm(`還原版本 #${v.id}？`)) return
   busy.value = 'restore'
   message.value = null
   try {
@@ -489,7 +489,7 @@ function time(iso: string) {
           <h2>基本資料</h2>
           <div class="grid">
             <label class="field">
-              <span>代碼（網址用，小寫英數與連字號）</span>
+              <span>代碼</span>
               <input
                 v-model="spec.slug"
                 class="input"
@@ -516,11 +516,11 @@ function time(iso: string) {
             </label>
           </div>
           <label class="field">
-            <span>簡短說明（卡片上的一句話）</span>
+            <span>簡短說明</span>
             <input v-model="spec.short_desc" class="input" />
           </label>
           <label class="field">
-            <span>詳細說明（組件資訊）</span>
+            <span>詳細說明</span>
             <textarea v-model="spec.long_desc" rows="3"></textarea>
           </label>
           <label class="field">
@@ -532,7 +532,7 @@ function time(iso: string) {
         <section class="card block">
           <h2>顯示</h2>
           <div class="field">
-            <span>圖表類型（第一個是預設）</span>
+            <span>圖表類型</span>
             <div class="checks">
               <label v-for="(label, t) in CHART_TYPES" :key="t" class="check">
                 <input
@@ -553,21 +553,18 @@ function time(iso: string) {
               <input v-model.number="spec.decimals" class="input" type="number" min="0" max="6" />
             </label>
             <label class="field">
-              <span>顏色（逗號分隔，可留空）</span>
+              <span>顏色</span>
               <input v-model="colorText" class="input" placeholder="#5a9cf8, #f5c26b" />
             </label>
           </div>
           <label class="field">
-            <span>相關連結（一行一個）</span>
+            <span>相關連結</span>
             <textarea v-model="linkText" rows="2"></textarea>
           </label>
         </section>
 
         <section class="card block">
           <h2>資料來源</h2>
-          <p class="muted small">
-            勾選元件用到的資料集：會顯示在來源說明，資料更新時也會清除這個元件的快取。
-          </p>
           <div class="checks">
             <label v-for="d in datasets" :key="d.id" class="check">
               <input
@@ -609,7 +606,7 @@ function time(iso: string) {
               <textarea v-model="q.chart_sql" class="sql" spellcheck="false" required></textarea>
             </label>
             <label class="field">
-              <span>歷史查詢 history_sql（可留空；格式固定為 time）</span>
+              <span>歷史查詢 history_sql</span>
               <textarea v-model="q.history_sql" class="sql" spellcheck="false"></textarea>
             </label>
           </div>
@@ -622,9 +619,7 @@ function time(iso: string) {
               <span class="mi" aria-hidden="true">add</span>新增圖層
             </button>
           </h2>
-          <p v-if="!spec.map_layers.length" class="muted small">
-            沒有圖層的元件不會出現在地圖模式。
-          </p>
+          <p v-if="!spec.map_layers.length" class="muted small">還沒有圖層。</p>
           <div v-for="(l, i) in spec.map_layers" :key="i" class="query">
             <h3>
               圖層 {{ i + 1 }}
@@ -652,7 +647,7 @@ function time(iso: string) {
               </label>
             </div>
             <label v-if="l.source_type === 'query'" class="field">
-              <span>geojson_sql（要有 geometry 欄位，用 ST_AsGeoJSON）</span>
+              <span>geojson_sql</span>
               <textarea v-model="l.geojson_sql" class="sql" spellcheck="false"></textarea>
             </label>
             <div class="grid">
@@ -675,7 +670,7 @@ function time(iso: string) {
             </div>
           </div>
           <label class="field">
-            <span>圖表與地圖連動 chart_map_link（JSON，可留空）</span>
+            <span>圖表與地圖連動 chart_map_link</span>
             <textarea v-model="mapLinkText" class="sql short" spellcheck="false"></textarea>
           </label>
         </section>
@@ -689,7 +684,7 @@ function time(iso: string) {
             v-model="note"
             class="input note"
             maxlength="200"
-            placeholder="這次修改的說明（會記在版本紀錄）"
+            placeholder="修改說明"
             aria-label="修改說明"
           />
           <button type="submit" class="btn-highlight" :disabled="!!busy || (!dirty && !isNew)">
@@ -712,10 +707,7 @@ function time(iso: string) {
             </button>
           </h2>
           <p v-if="previewError" class="notice bad" role="alert">{{ previewError }}</p>
-          <p v-else-if="!preview" class="muted small">
-            用目前的資料執行每一段查詢，檢查欄位並預覽圖表。儲存時也會做一樣的檢查。
-          </p>
-          <template v-else>
+          <template v-else-if="preview">
             <p :class="failed ? 'bad' : 'ok'" class="small">
               {{ failed ? `${failed} 段查詢有問題` : '每一段查詢都通過' }}
             </p>

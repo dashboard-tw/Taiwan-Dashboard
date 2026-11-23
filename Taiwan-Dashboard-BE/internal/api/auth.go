@@ -10,17 +10,22 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"dashboard.tw/backend/internal/auth"
+	"dashboard.tw/backend/internal/hooks"
+	"dashboard.tw/backend/internal/notify"
 )
 
 type AuthDeps struct {
-	Store      *auth.Store
-	ImageDir   string
-	Providers  []auth.Provider
-	Origins    []string
-	Secure     bool
-	OAuth      []*auth.OAuthProvider
-	HTTPClient *http.Client
-	oauthStore oauthStore
+	Store            *auth.Store
+	ImageDir         string
+	Providers        []auth.Provider
+	Origins          []string
+	Secure           bool
+	OAuth            []*auth.OAuthProvider
+	HTTPClient       *http.Client
+	Notify           *notify.Notifier
+	Hooks            *hooks.Dispatcher
+	MailWebhookToken string
+	oauthStore       oauthStore
 }
 
 const userKey = "dtw.user"

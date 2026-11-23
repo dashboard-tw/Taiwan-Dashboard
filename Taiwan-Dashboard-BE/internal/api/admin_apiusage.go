@@ -208,15 +208,37 @@ func (h adminHandlers) revokeUserKey(c *gin.Context) {
 		return
 	}
 	ctx := c.Request.Context()
+	var names []string
 	err = db.AsSystem(ctx, h.db, func(tx *sql.Tx) error {
-		var keyID int64
-		if err := tx.QueryRowContext(ctx, `
-			UPDATE app.api_key SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL RETURNING id`, id).
-			Scan(&keyID); err != nil {
+		rows, err := tx.QueryContext(ctx, `
+			UPDATE app.api_key SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL RETURNING id, name`, id)
+		if err != nil {
 			return err
 		}
-		return auth.AuditTx(ctx, tx, &u.ID, "admin.apikey.revoke", fmt.Sprintf("api_key:%d", keyID),
-			map[string]any{"user": id}, c.ClientIP())
+		var ids []int64
+		for rows.Next() {
+			var keyID int64
+			var name string
+			if err := rows.Scan(&keyID, &name); err != nil {
+				rows.Close()
+				return err
+			}
+			ids, names = append(ids, keyID), append(names, name)
+		}
+		rows.Close()
+		if err := rows.Err(); err != nil {
+			return err
+		}
+		if len(ids) == 0 {
+			return sql.ErrNoRows
+		}
+		for _, keyID := range ids {
+			if err := auth.AuditTx(ctx, tx, &u.ID, "admin.apikey.revoke", fmt.Sprintf("api_key:%d", keyID),
+				map[string]any{"user": id}, c.ClientIP()); err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 	if errors.Is(err, sql.ErrNoRows) {
 		writeError(c, http.StatusNotFound, "not_found", "這個帳號沒有使用中的 API 憑證")
@@ -226,5 +248,6 @@ func (h adminHandlers) revokeUserKey(c *gin.Context) {
 		adminFail(c, err)
 		return
 	}
+	h.notify.APIKeysRevoked(id, names)
 	c.Status(http.StatusNoContent)
 }

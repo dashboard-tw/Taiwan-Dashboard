@@ -445,5 +445,6 @@ func newRunner(ctx context.Context, version string) (*pipeline.Runner, func(), e
 		Logger:  slog.Default(),
 		Timeout: 5 * time.Minute,
 	}
+	r.OnFinish = pipelineNotifier(sqlDB)
 	return r, func() { _ = db.Close(gdb) }, nil
 }

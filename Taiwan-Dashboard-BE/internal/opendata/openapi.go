@@ -466,7 +466,7 @@ func OpenAPI(o SpecOptions) obj {
 				"- **驗證**：OAuth 2.0 Client Credentials。登入後在「我的 API 憑證」建立 Client Id 與 Client Secret，"+
 				"呼叫 `POST /auth/token` 換取 Access Token（有效 %d 小時），放在 `Authorization: Bearer <Access Token>` 標頭\n"+
 				"- **額度**：每天 %d 次、%d MB 流量，每分鐘 %d 次，臺灣時間午夜重設。流量以回應內容的大小計算。"+
-				"應用上架到應用活化後，提高為每天 %d 次、%d MB 流量，每分鐘 %d 次\n"+
+				"應用上架到應用活化後，提高為每天 %d 次、%d MB 流量，每分鐘 %d 次。當天用量超過八成時，會寄一封提醒信到帳號的 Email\n"+
 				"- **ETag**：帶上 `If-None-Match`，資料沒變會回應 304，不帶內容。304 仍算一次，但不算流量\n"+
 				"- **時間**：一律是臺灣時間（+08:00）\n"+
 				"- **授權**：資料依各來源機關的授權條款（多為政府資料開放授權條款－第 1 版），使用時請標示來源\n\n"+

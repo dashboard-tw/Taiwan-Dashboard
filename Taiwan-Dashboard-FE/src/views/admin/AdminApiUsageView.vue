@@ -203,9 +203,7 @@ function time(iso: string | null) {
             </li>
           </ul>
           <p class="muted small">
-            使用中：最近 {{ data.idle_days }} 天有呼叫；閒置：有 key 但
-            {{ data.idle_days }} 天沒有呼叫（其中
-            {{ data.accounts.never_used }} 個從未使用）；已停用：目前沒有 key。
+            閒置：{{ data.idle_days }} 天沒呼叫。從沒用過：{{ data.accounts.never_used }} 個。
           </p>
         </template>
         <span v-else class="skeleton" style="display: block; height: 7rem"></span>

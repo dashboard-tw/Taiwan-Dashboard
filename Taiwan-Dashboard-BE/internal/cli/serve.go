@@ -22,6 +22,9 @@ import (
 	"dashboard.tw/backend/internal/component"
 	"dashboard.tw/backend/internal/config"
 	"dashboard.tw/backend/internal/db"
+	"dashboard.tw/backend/internal/hooks"
+	"dashboard.tw/backend/internal/mail"
+	"dashboard.tw/backend/internal/notify"
 	"dashboard.tw/backend/internal/opendata"
 	"dashboard.tw/backend/internal/pipeline"
 	"dashboard.tw/backend/internal/screen"
@@ -110,6 +113,7 @@ func newServeCmd(version string) *cobra.Command {
 				Logger:  slog.Default(),
 				Timeout: 5 * time.Minute,
 			}
+			runner.OnFinish = pipelineNotifier(appDB)
 			runDataset := func(ctx context.Context, id string) (pipeline.Result, error) {
 				p, ok := pipelines[id]
 				if !ok {
@@ -148,17 +152,47 @@ func newServeCmd(version string) *cobra.Command {
 				imageProxy = u
 				slog.Info("serving weather images from another server", "url", u.Redacted())
 			}
+			store := &auth.Store{DB: appDB, Emails: emails}
+			notifier, err := newNotifier(cfg, store)
+			if err != nil {
+				return err
+			}
+			var sealer hooks.Sealer
+			if emails != nil {
+				sealer = emails
+			}
+			if v := os.Getenv("DISCORD_LINK_EMOJIS"); v != "" {
+				emojis, err := hooks.ParseEmojis(v)
+				if err != nil {
+					return err
+				}
+				hooks.DiscordEmojis = emojis
+			}
+			dispatcher := hooks.NewDispatcher(appDB, sealer)
+			if notifier != nil {
+				notifier.Hooks = dispatcher
+			}
+			defer func() {
+				stop()
+				notifier.Wait()
+				dispatcher.Wait()
+			}()
+			notifier.Start(ctx)
+			dispatcher.Start(ctx)
 			router := api.NewRouter(api.Deps{
 				DB:             gormPinger{gdb},
 				Version:        version,
 				Screen:         svc,
 				ClientIPHeader: cfg.ClientIPHeader,
 				Auth: api.AuthDeps{
-					Store:     &auth.Store{DB: appDB, Emails: emails},
-					Providers: auth.Providers(cfg.AuthDevLogin, cfg.Env == config.EnvProduction, oauth...),
-					OAuth:     oauth,
-					Origins:   cfg.Origins,
-					Secure:    cfg.Env == config.EnvProduction,
+					Store:            store,
+					Notify:           notifier,
+					Hooks:            dispatcher,
+					MailWebhookToken: cfg.Mail.WebhookToken,
+					Providers:        auth.Providers(cfg.AuthDevLogin, cfg.Env == config.EnvProduction, oauth...),
+					OAuth:            oauth,
+					Origins:          cfg.Origins,
+					Secure:           cfg.Env == config.EnvProduction,
 				},
 				Admin:       api.AdminDeps{RunDataset: runDataset, RunOrder: runOrder, Reader: reader.Query},
 				OpenData:    &opendata.Service{DB: appDB},
@@ -217,4 +251,43 @@ type gormPinger struct{ gdb *gorm.DB }
 
 func (p gormPinger) Ping(ctx context.Context) error {
 	return db.Ping(ctx, p.gdb, 2*time.Second)
+}
+
+func newNotifier(cfg config.Config, store *auth.Store) (*notify.Notifier, error) {
+	site := "https://dashboard.tw"
+	if len(cfg.Origins) > 0 {
+		site = cfg.Origins[0]
+	}
+	m := cfg.Mail
+	var sender mail.Sender
+	switch m.Mode {
+	case "smtp":
+		s, err := mail.NewSMTP(mail.Config{Host: m.SMTPHost, Port: m.SMTPPort, User: m.SMTPUser, Password: m.SMTPPassword, From: m.From, FromName: m.FromName})
+		if err != nil {
+			return nil, err
+		}
+		sender = s
+	case "brevo":
+		b, err := mail.NewBrevo(m.BrevoAPIKey, m.From, m.FromName)
+		if err != nil {
+			return nil, err
+		}
+		b.Sandbox = m.Sandbox
+		sender = b
+	default:
+		slog.Info("MAIL_MODE is not set: notification emails are off")
+		return nil, nil
+	}
+	if store.Emails == nil {
+		slog.Warn("MAIL_MODE is set but EMAIL_KEY is not: there are no addresses to send to")
+	}
+	n := notify.New(sender, store, site)
+	n.DailyLimit = m.DailyLimit
+	n.Sandbox = m.Sandbox
+	store.OnEvent = n.OnEvent
+	slog.Info("notification emails are on", "mode", m.Mode, "from", m.From, "daily_limit", m.DailyLimit, "sandbox", m.Sandbox)
+	if m.Sandbox {
+		slog.Warn("MAIL_SANDBOX is on: Brevo checks each request but sends nothing")
+	}
+	return n, nil
 }

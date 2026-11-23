@@ -135,7 +135,11 @@ func (s *Store) LinkIdentity(ctx context.Context, userID int64, provider, subjec
 	if err := audit(ctx, tx, &userID, "identity.link", fmt.Sprintf("user:%d", userID), map[string]any{"provider": provider}, ip); err != nil {
 		return err
 	}
-	return tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	s.emit(Event{Kind: EventLink, UserID: userID, Provider: provider, IP: ip})
+	return nil
 }
 
 func (s *Store) UnlinkIdentity(ctx context.Context, userID int64, provider, ip string) error {
@@ -179,5 +183,9 @@ func (s *Store) UnlinkIdentity(ctx context.Context, userID int64, provider, ip s
 	if err := audit(ctx, tx, &userID, "identity.unlink", fmt.Sprintf("user:%d", userID), map[string]any{"provider": provider}, ip); err != nil {
 		return err
 	}
-	return tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	s.emit(Event{Kind: EventUnlink, UserID: userID, Provider: provider, IP: ip})
+	return nil
 }

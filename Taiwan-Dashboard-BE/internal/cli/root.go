@@ -13,6 +13,8 @@ import (
 
 	"dashboard.tw/backend/internal/config"
 	"dashboard.tw/backend/internal/db"
+	"dashboard.tw/backend/internal/hooks"
+	"dashboard.tw/backend/internal/pipeline"
 )
 
 func NewRoot(version string) *cobra.Command {
@@ -65,4 +67,14 @@ func openDatabase(ctx context.Context) (*sql.DB, *gorm.DB, error) {
 		return nil, nil, err
 	}
 	return sqlDB, gdb, nil
+}
+
+func pipelineNotifier(sqlDB *sql.DB) func(context.Context, pipeline.Dataset, error) {
+	site := "https://dashboard.tw"
+	if cfg, err := config.Load(); err == nil && len(cfg.Origins) > 0 {
+		site = cfg.Origins[0]
+	}
+	return func(ctx context.Context, d pipeline.Dataset, runErr error) {
+		hooks.PipelineFinished(ctx, sqlDB, site, d.ID, d.Name, runErr)
+	}
 }

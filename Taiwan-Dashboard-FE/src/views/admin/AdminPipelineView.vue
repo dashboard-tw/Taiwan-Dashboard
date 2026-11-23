@@ -149,7 +149,7 @@ async function run(id: string) {
   delete results.value[id]
   try {
     const r = await runDataset(id)
-    const warn = r.warnings.length ? `；${r.warnings.join('；')}` : ''
+    const warn = r.warnings.length ? `。${r.warnings.join('。')}` : ''
     results.value[id] = {
       ok: true,
       text: `完成：抓到 ${r.rows_fetched} 筆，寫入 ${r.rows_inserted} 筆${warn}`,
@@ -210,10 +210,7 @@ function duration(r: PipelineRun): string {
           {{ all?.running ? '更新中…' : '全部更新一次' }}
         </button>
       </h2>
-      <p class="muted">
-        依 worker 啟動時的順序（參考主檔先於觀測資料）把每個資料管線各執行一次，需要幾分鐘；TDX
-        的資料受每分鐘 5 次的限制會比較慢。worker 正在抓的資料集會略過。關掉這頁也會繼續跑完。
-      </p>
+      <p class="muted">大約要幾分鐘。</p>
       <p v-if="allError" class="bad" role="alert">{{ allError }}</p>
       <template v-if="all && all.total">
         <div
@@ -359,7 +356,7 @@ function duration(r: PipelineRun): string {
             <td>{{ duration(r) }}</td>
             <td class="error-cell">
               <template v-if="r.error">{{ r.error }}</template>
-              <template v-else>{{ r.warnings.join('；') }}</template>
+              <template v-else>{{ r.warnings.join('。') }}</template>
             </td>
           </tr>
           <tr v-if="runs.length === 0">

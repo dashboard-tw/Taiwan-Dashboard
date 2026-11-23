@@ -150,7 +150,7 @@ async function save() {
     })
     await load()
     if (selected.value) select(selected.value)
-    message.value = { ok: true, text: '已儲存，前台的水庫資料會在幾秒內更新' }
+    message.value = { ok: true, text: '已儲存' }
   } catch (e) {
     message.value = { ok: false, text: e instanceof ApiError ? e.message : '儲存失敗，請稍後再試' }
   } finally {
@@ -202,9 +202,7 @@ function clearPoint() {
           />
         </div>
         <p v-if="filter === 'odd'" class="muted hint">
-          列出有回報蓄水量卻沒有有效容量，或蓄水率超過 {{ OVERFULL }}%
-          的水庫。攔河堰只回報水位，不需要有效容量。 水位略高於滿水位時，蓄水率稍微超過 100%
-          是正常的。
+          沒有有效容量，或蓄水率超過 {{ OVERFULL }}% 的水庫。
         </p>
         <table>
           <thead>
@@ -292,7 +290,7 @@ function clearPoint() {
             </div>
           </div>
           <p v-if="previewPct !== null" class="muted small">
-            以新容量計算，目前蓄水率會變成 {{ formatNumber(previewPct, 1) }}%
+            新的蓄水率：{{ formatNumber(previewPct, 1) }}%
           </p>
           <label class="check">
             <input v-model="form.is_major" type="checkbox" />主要水庫（首頁與水情摘要會優先列出）
@@ -304,7 +302,7 @@ function clearPoint() {
               <span>{{ form.lat?.toFixed(5) }}, {{ form.lon.toFixed(5) }}</span>
               <button type="button" class="btn" @click="clearPoint">清除</button>
             </template>
-            <span v-else class="bad">尚未標註，在地圖上點選水庫的位置</span>
+            <span v-else class="bad">在地圖上點選位置</span>
             <span v-if="suggested && suggested.code !== form.county_code" class="suggest">
               這個位置在{{ suggested.name }}
               <button type="button" class="btn" @click="form.county_code = suggested.code">
@@ -333,10 +331,7 @@ function clearPoint() {
             </button>
           </div>
         </template>
-        <p v-else class="muted empty">
-          從左邊的清單選一座水庫。缺縣市的水庫不會出現在縣市頁面；蓄水率超過 100%
-          通常是有效容量過時，可以在這裡修正並鎖定。
-        </p>
+        <p v-else class="muted empty">從左邊選一座水庫。</p>
       </section>
     </div>
   </div>

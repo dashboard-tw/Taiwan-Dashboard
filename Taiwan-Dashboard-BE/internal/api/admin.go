@@ -13,6 +13,8 @@ import (
 
 	"dashboard.tw/backend/internal/auth"
 	"dashboard.tw/backend/internal/component"
+	"dashboard.tw/backend/internal/hooks"
+	"dashboard.tw/backend/internal/notify"
 	"dashboard.tw/backend/internal/pipeline"
 )
 
@@ -25,8 +27,21 @@ type AdminDeps struct {
 func registerAdmin(v1 *gin.RouterGroup, a AuthDeps, ad AdminDeps) {
 	g := v1.Group("/admin", private(), a.sameOrigin(), a.session(), requireAdmin())
 	h := adminHandlers{db: a.Store.DB, store: a.Store, run: ad.RunDataset, query: ad.Reader, order: ad.RunOrder,
-		all: &runAll{}, imageDir: a.ImageDir}
+		all: &runAll{}, imageDir: a.ImageDir, notify: a.Notify, hooks: a.Hooks, sealer: sealerOf(a.Store), site: siteOf(a.Origins)}
 	g.GET("/overview", h.overview)
+	g.GET("/mail-templates", h.mailTemplates)
+	g.PUT("/mail-templates/:key", h.updateMailTemplate)
+	g.POST("/mail-templates/:key/preview", h.previewMailTemplate)
+	g.POST("/mail-templates/:key/test", h.testMailTemplate)
+	g.GET("/mail-queue", h.mailQueue)
+	g.POST("/mail-queue/:id/retry", h.retryMail)
+	g.GET("/mail-suppressions", h.mailSuppressions)
+	g.GET("/channels", h.channels)
+	g.POST("/channels", h.createChannel)
+	g.PUT("/channels/:id", h.updateChannel)
+	g.DELETE("/channels/:id", h.deleteChannel)
+	g.POST("/channels/:id/test", h.testChannel)
+	g.DELETE("/mail-suppressions/:id", h.deleteSuppression)
 	g.GET("/datasets", h.datasets)
 	g.GET("/datasets/run-all", h.runAllStatus)
 	g.POST("/datasets/run-all", h.startRunAll)
@@ -63,6 +78,10 @@ type adminHandlers struct {
 	order    []string
 	all      *runAll
 	imageDir string
+	notify   *notify.Notifier
+	hooks    *hooks.Dispatcher
+	sealer   hooks.Sealer
+	site     string
 }
 
 type datasetHealth struct {
