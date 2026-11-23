@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '../../stores/auth'
 import { useDialogs } from '../../stores/dialog'
 import { cycleTheme, themeChoice } from '../../theme'
-import TaiwanLogo from './TaiwanLogo.vue'
+import BrandMark from './BrandMark.vue'
 
 defineProps<{ sidebarOpen?: boolean }>()
 defineEmits<{ toggleSidebar: [] }>()
@@ -73,7 +73,7 @@ const themeLabel = computed(
     </button>
 
     <RouterLink to="/" class="brand">
-      <TaiwanLogo class="logo" />
+      <BrandMark class="logo" />
       <span class="names">
         <span class="name-zh">{{ t('site.title') }}</span>
         <span class="name-en">{{ t('site.nameEn') }}</span>
@@ -211,8 +211,8 @@ const themeLabel = computed(
   text-decoration: none;
 }
 .logo {
-  width: 22px;
-  height: 40px;
+  width: 2.125rem;
+  height: 2.125rem;
 }
 .names {
   display: flex;

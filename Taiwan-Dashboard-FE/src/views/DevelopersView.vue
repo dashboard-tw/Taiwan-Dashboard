@@ -6,7 +6,7 @@ import CodeBlock from '../components/developers/CodeBlock.vue'
 import DatasetDetail from '../components/developers/DatasetDetail.vue'
 import EndpointDoc from '../components/developers/EndpointDoc.vue'
 import UrlBar from '../components/developers/UrlBar.vue'
-import TaiwanLogo from '../components/layout/TaiwanLogo.vue'
+import BrandMark from '../components/layout/BrandMark.vue'
 import { usePageTitle } from '../composables/usePageTitle'
 import { ENDPOINTS, endpointBySlug } from '../lib/apiReference'
 import { formatFreq } from '../lib/format'
@@ -279,7 +279,7 @@ const HEADERS = [
         </button>
         <div class="brand">
           <RouterLink to="/" class="brand-home" aria-label="回到 dashboard.tw 首頁">
-            <TaiwanLogo class="logo" />
+            <BrandMark class="logo" />
             <span class="brand-name">dashboard.tw</span>
           </RouterLink>
           <span class="brand-sep" aria-hidden="true">/</span>
@@ -742,8 +742,8 @@ code {
   white-space: nowrap;
 }
 .logo {
-  width: 13px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   color: var(--text-primary);
 }
 .brand-name {

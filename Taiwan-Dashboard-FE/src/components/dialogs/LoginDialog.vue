@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useDialogs } from '../../stores/dialog'
-import TaiwanLogo from '../layout/TaiwanLogo.vue'
+import BrandMark from '../layout/BrandMark.vue'
 import LoginPanel from '../LoginPanel.vue'
 import DialogContainer from './DialogContainer.vue'
 
@@ -15,7 +15,7 @@ const dialogs = useDialogs()
         <span class="mi" aria-hidden="true">close</span>
       </button>
       <header class="brand">
-        <TaiwanLogo class="logo" />
+        <BrandMark class="logo" />
         <div>
           <p class="name">臺灣儀表板</p>
           <p class="name-en">Taiwan Dashboard</p>
@@ -72,8 +72,8 @@ const dialogs = useDialogs()
   gap: 10px;
 }
 .logo {
-  width: 20px;
-  height: 37px;
+  width: 2.25rem;
+  height: 2.25rem;
   color: var(--text-primary);
 }
 .name {
