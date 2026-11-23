@@ -261,6 +261,10 @@ function openInfo() {
     height: 23.125rem;
   }
 }
+.mode-default {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 20.625rem;
+}
 @media (min-width: 118.75em) {
   .component-card {
     height: 25rem;

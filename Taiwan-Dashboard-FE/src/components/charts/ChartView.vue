@@ -348,10 +348,14 @@ const boxHeight = ref(0)
 const measured = ref(false)
 let resize: ResizeObserver | null = null
 onMounted(() => {
-  if (root.value) boxHeight.value = root.value.clientHeight
-  measured.value = true
-  if (!root.value || typeof ResizeObserver === 'undefined') return
-  resize = new ResizeObserver(([e]) => (boxHeight.value = e?.contentRect.height ?? 0))
+  if (!root.value || typeof ResizeObserver === 'undefined') {
+    measured.value = true
+    return
+  }
+  resize = new ResizeObserver(([e]) => {
+    boxHeight.value = e?.contentRect.height ?? 0
+    measured.value = true
+  })
   resize.observe(root.value)
 })
 onBeforeUnmount(() => resize?.disconnect())

@@ -163,6 +163,11 @@ button {
   font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
   user-select: none;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1em;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 .visually-hidden {
