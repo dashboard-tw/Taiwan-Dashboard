@@ -21,6 +21,7 @@
 | `docs/brand/logo-mark-white.svg`、`logo-mark-white-1024.png` | 向量、1024 × 1024 | 無背景、白色臺灣，放在深色背景上 |
 | `docs/brand/logo-mark-dark.svg`、`logo-mark-dark-1024.png` | 向量、1024 × 1024 | 無背景、深藍色臺灣，放在淺色背景上 |
 | `docs/brand/social-preview.jpg` | 2560 × 1280 | GitHub 倉庫的 Social preview，用網站實際畫面製作 |
+| `docs/brand/screenshots/` | 2400 × 1500 | 網站實際畫面：首頁、地圖模式、臺北市、電力、天氣、API 文件，用於應用登錄與介紹 |
 
 ## 規格
 
