@@ -762,18 +762,20 @@ defineExpose({ pngDataUrl })
 .numbers {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  align-content: center;
-  gap: 12px;
+  align-content: safe center;
+  gap: 8px 12px;
   height: 100%;
   margin: 0;
   padding: 4px 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
   list-style: none;
 }
 .numbers li {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-left: 3px solid var(--border-strong);
 }
 .numbers.single {
