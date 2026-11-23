@@ -132,7 +132,7 @@ describe('weather levels', () => {
   it('picks temperature, wind and rain-chance scales', () => {
     expect(levelsFor('temp-by-county', 'weather', '°C')).toBe(TEMP_LEVELS)
     expect(levelsFor('county-forecast', 'weather', '°C')).toBe(TEMP_LEVELS)
-    expect(levelsFor('wind-top', 'weather', '公尺／秒')).toBe(WIND_LEVELS)
+    expect(levelsFor('wind-top', 'weather', '公尺/秒')).toBe(WIND_LEVELS)
     expect(levelsFor('forecast-rain-chance', 'weather', '%')).toBe(RAIN_CHANCE_LEVELS)
   })
   it.each([
@@ -154,7 +154,7 @@ describe('alert and traffic levels', () => {
     expect(levelsFor('work-closure-by-county', 'warning', '')).toBe(CLOSURE_LEVELS)
     expect(levelsFor('work-closure-tomorrow', 'warning', '')).toBe(CLOSURE_LEVELS)
     expect(levelsFor('debris-flow-alert', 'warning', '處')).toBe(DEBRIS_LEVELS)
-    expect(levelsFor('freeway-speed-by-county', 'traffic', '公里／小時')).toBe(SPEED_LEVELS)
+    expect(levelsFor('freeway-speed-by-county', 'traffic', '公里/小時')).toBe(SPEED_LEVELS)
   })
   it('labels closures with words on the map', () => {
     expect(levelIn(CLOSURE_LEVELS, 2).short).toBe('停')

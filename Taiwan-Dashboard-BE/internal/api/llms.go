@@ -59,6 +59,8 @@ func llmsTxt(svc *screen.Service, base string) gin.HandlerFunc {
 		link("API 說明", "/developers", "登入後可以免費申請 API 憑證")
 		link("OpenAPI 規格", "/api/v1/openapi.json", "")
 		link("資料集清單", "/api/v1/catalog", "")
+		link("MCP 伺服器", "/mcp", "AI 工具連接後可以查詢資料與 API 文件，支援 OAuth 登入授權")
+		link("MCP 連接說明", "/developers/mcp", "")
 		line("")
 
 		line("## 其他")

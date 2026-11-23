@@ -164,8 +164,8 @@ func (h adminHandlers) apiSurvey(c *gin.Context) {
 	err := db.AsSystem(ctx, h.db, func(tx *sql.Tx) error {
 		var total, active, keys int
 		if err := tx.QueryRowContext(ctx, `
-			SELECT count(*), count(*) FILTER (WHERE EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL)),
-			       (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL)
+			SELECT count(*), count(*) FILTER (WHERE EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL AND k.kind = 'client')),
+			       (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client')
 			  FROM app.api_survey s`).Scan(&total, &active, &keys); err != nil {
 			return err
 		}
@@ -200,7 +200,7 @@ func (h adminHandlers) apiSurvey(c *gin.Context) {
 		}
 		rows, err := tx.QueryContext(ctx, `
 			SELECT s.updated_at, s.identity, s.purpose, s.topics, s.app_name, s.app_url, s.suggestion,
-			       EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL)
+			       EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL AND k.kind = 'client')
 			  FROM app.api_survey s
 			 WHERE s.app_name <> '' OR s.app_url <> '' OR s.suggestion <> ''
 			 ORDER BY s.updated_at DESC LIMIT 100`)
@@ -234,7 +234,7 @@ func surveyCounts(column string) string {
 		topics = "CROSS JOIN LATERAL unnest(s.topics) t"
 	}
 	return `SELECT ` + column + `, count(*),
-	               count(*) FILTER (WHERE EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL))
+	               count(*) FILTER (WHERE EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL AND k.kind = 'client'))
 	          FROM app.api_survey s
 	          ` + topics + `
 	         GROUP BY 1 ORDER BY 2 DESC, 1`

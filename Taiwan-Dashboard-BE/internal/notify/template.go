@@ -23,7 +23,7 @@ var common = []Var{
 
 var Vars = map[string][]Var{
 	"signup":          {{"Provider", "登入方式", "GitHub"}},
-	"new_device":      {{"Time", "登入時間", "2026/11/23 21:05"}, {"Device", "裝置", "Chrome／Windows"}, {"IP", "IP", "203.0.113.8"}},
+	"new_device":      {{"Time", "登入時間", "2026/11/23 21:05"}, {"Device", "裝置", "Chrome/Windows"}, {"IP", "IP", "203.0.113.8"}},
 	"link":            {{"Provider", "登入方式", "Google"}, {"Time", "時間", "2026/11/23 21:05"}},
 	"unlink":          {{"Provider", "登入方式", "Google"}, {"Time", "時間", "2026/11/23 21:05"}},
 	"account_deleted": {{"Time", "刪除時間", "2026/11/23 21:05"}},

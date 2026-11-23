@@ -239,7 +239,7 @@ export const FACILITY_LEVELS: Record<string, Level[]> = {
   'shelter-by-county': countLevels(150, 250, 400, '處'),
   'medical-per-10k': countLevels(8, 10, 13, '家', FACILITY_RAMP, true),
   'population-by-county': countLevels(50, 100, 200, '萬人', FACILITY_RAMP, true),
-  'population-density': countLevels(300, 1000, 3000, '人／km²'),
+  'population-density': countLevels(300, 1000, 3000, '人/km²'),
   'attraction-by-county': countLevels(150, 250, 400, '處', RAIN_RAMP),
   'hotel-by-county': countLevels(200, 500, 1000, '家', RAIN_RAMP),
   'accident-a1-by-county': countLevels(20, 50, 100, '人', OUTAGE_RAMP),
@@ -252,7 +252,7 @@ export const FACILITY_LEVELS: Record<string, Level[]> = {
   'residential-power-per-household': countLevels(500, 600, 700, '度', OUTAGE_RAMP),
   'waste-per-capita': countLevels(1.2, 1.4, 1.6, '公斤', RAIN_RAMP, true),
   'fire-by-county': countLevels(500, 1000, 2000, '件', OUTAGE_RAMP),
-  'housing-price-by-county': countLevels(20, 25, 40, '萬元／坪', WARNING_RAMP, true),
+  'housing-price-by-county': countLevels(20, 25, 40, '萬元/坪', WARNING_RAMP, true),
   'fuel-station-by-county': countLevels(30, 80, 150, '站', RAIN_RAMP),
   'dengue-by-county': countLevels(5, 20, 50, '例', OUTAGE_RAMP),
   'ili-by-county': countLevels(1, 2, 3, '%', OUTAGE_RAMP, true),
@@ -308,8 +308,8 @@ export function levelsFor(slug: string, topic: string, unit: string): Level[] | 
   if (slug === 'shelter-open') return SHELTER_PEOPLE_LEVELS
   if (slug === 'river-quality-by-county' || slug === 'river-quality-worst') return RPI_LEVELS
   if (slug === 'debris-flow-alert') return DEBRIS_LEVELS
-  if (unit === '公里／小時') return SPEED_LEVELS
-  if (unit === '公尺／秒') return WIND_LEVELS
+  if (unit === '公里/小時') return SPEED_LEVELS
+  if (unit === '公尺/秒') return WIND_LEVELS
   if (topic === 'earthquake' && unit === '次') return QUAKE_COUNT_LEVELS
   if (slug.startsWith('pm25')) return PM25_LEVELS
   if (unit === 'UVI') return UV_LEVELS

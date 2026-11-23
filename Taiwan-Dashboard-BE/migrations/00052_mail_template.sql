@@ -61,8 +61,8 @@ $$),
 
 您的開放資料 API 今天的用量快到上限了。
 
-呼叫次數：{{.Requests}}／{{.RequestLimit}} 次
-流量：{{.TrafficMB}}／{{.TrafficLimitMB}} MB
+呼叫次數：{{.Requests}}/{{.RequestLimit}} 次
+流量：{{.TrafficMB}}/{{.TrafficLimitMB}} MB
 
 任一項用完後，當天的請求會回傳 429，臺灣時間午夜重新計算。
 用量明細可以在會員中心查看：

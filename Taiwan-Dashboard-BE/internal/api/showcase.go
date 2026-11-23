@@ -222,7 +222,7 @@ func (h meHandlers) createApp(c *gin.Context) {
 		return h.asUser(c, func(tx *sql.Tx) error {
 			var hasClient bool
 			if err := tx.QueryRowContext(ctx,
-				`SELECT EXISTS (SELECT 1 FROM app.api_key WHERE revoked_at IS NULL)`).Scan(&hasClient); err != nil {
+				`SELECT EXISTS (SELECT 1 FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client')`).Scan(&hasClient); err != nil {
 				return err
 			}
 			if !hasClient {

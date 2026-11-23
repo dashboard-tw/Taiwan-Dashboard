@@ -12,7 +12,7 @@ import (
 const (
 	siteName    = "臺灣儀表板"
 	defaultDesc = "整合政府開放資料，即時呈現全臺各縣市的生活、環境與防災資訊。"
-	defaultHead = "臺灣全國儀表板｜dashboard.tw"
+	defaultHead = "臺灣儀表板｜dashboard.tw"
 	metaMarker  = "<!--page-meta-->"
 )
 

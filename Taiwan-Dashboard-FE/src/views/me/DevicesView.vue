@@ -5,6 +5,7 @@ import { ApiError } from '../../api/client'
 import { getDevices, signOutDevice, signOutOtherDevices, type Device } from '../../api/me'
 import { usePageTitle } from '../../composables/usePageTitle'
 import { describeUserAgent } from '../../lib/userAgent'
+import OAuthApps from '../../components/OAuthApps.vue'
 import { useAuth } from '../../stores/auth'
 
 usePageTitle('登入裝置')
@@ -138,6 +139,8 @@ async function signOutOthers() {
       <span class="mi" aria-hidden="true">phonelink_erase</span
       >{{ busy === 'others' ? '登出中' : '登出其他所有裝置' }}
     </button>
+
+    <OAuthApps />
 
     <p class="muted small">
       登入紀錄會在登出 30 天後刪除。<RouterLink to="/privacy">隱私權政策</RouterLink>

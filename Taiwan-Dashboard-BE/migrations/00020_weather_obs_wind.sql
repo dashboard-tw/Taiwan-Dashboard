@@ -33,7 +33,7 @@ CREATE TABLE data.weather_obs_history (
     humidity_pct  numeric,
     pressure_hpa  numeric,
     wind_dir_deg  numeric,                          -- 風從哪裡吹來，0 是北風、90 是東風
-    wind_ms       numeric,                          -- 10 分鐘平均風速（公尺／秒）
+    wind_ms       numeric,                          -- 10 分鐘平均風速（公尺/秒）
     gust_ms       numeric,                          -- 本日最大陣風
     high_c        numeric,                          -- 本日最高溫
     low_c         numeric,                          -- 本日最低溫

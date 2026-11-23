@@ -89,6 +89,7 @@ export interface ApiClientsState {
   clients: ApiClient[]
   max_clients: number
   used_today: { requests: number; bytes: number }
+  mcp_calls_today: number
   usage: DayUsage[]
   tier: 'free' | 'partner'
   limits: { PerDay: number; PerMinute: number; BytesPerDay: number }
@@ -134,4 +135,37 @@ export async function setClientEnabled(id: number, enabled: boolean): Promise<vo
 
 export async function deleteApiClient(id: number): Promise<void> {
   await sendJson('DELETE', `/me/api-clients/${id}`)
+}
+
+export interface OAuthApp {
+  id: number
+  name: string
+  client_uri: string
+  created_at: string
+  last_used_at: string | null
+}
+
+export async function getOAuthApps(): Promise<OAuthApp[]> {
+  return (await getJson<OAuthApp[]>('/me/oauth-apps')).data
+}
+
+export async function revokeOAuthApp(id: number): Promise<void> {
+  await sendJson('DELETE', `/me/oauth-apps/${id}`)
+}
+
+export interface OAuthRequestInfo {
+  error?: string
+  message?: string
+  redirect?: string
+  client?: { name: string; uri: string; verified_host: string }
+  redirect_host?: string
+}
+
+export async function getOAuthRequest(query: string): Promise<OAuthRequestInfo> {
+  return (await getJson<OAuthRequestInfo>(`/oauth/authorize${query}`)).data
+}
+
+export async function decideOAuth(query: string, approve: boolean): Promise<string> {
+  const r = await sendJson<{ redirect: string }>('POST', '/oauth/authorize', { query, approve })
+  return r!.redirect
 }

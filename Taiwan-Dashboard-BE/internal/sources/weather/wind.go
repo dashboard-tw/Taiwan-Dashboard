@@ -59,7 +59,7 @@ func RenderWind(u, v *gribField) ([]byte, int, int, error) {
 		}
 	}
 	if valid < w*h/2 {
-		return nil, 0, 0, fmt.Errorf("只有 %d／%d 個格點有風的資料", valid, w*h)
+		return nil, 0, 0, fmt.Errorf("只有 %d/%d 個格點有風的資料", valid, w*h)
 	}
 	var buf bytes.Buffer
 	if err := (&png.Encoder{CompressionLevel: png.BestCompression}).Encode(&buf, img); err != nil {

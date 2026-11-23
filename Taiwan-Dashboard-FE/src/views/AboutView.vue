@@ -27,13 +27,13 @@ const sources = [
     name: '水庫即時水情、水庫基本資料與每日營運狀況',
     agency: '經濟部水利署',
     url: 'https://data.gov.tw/dataset/45501',
-    freq: '每小時／每天',
+    freq: '每小時/每天',
   },
   {
     name: '即時水位資料、河川水位測站站況（含警戒水位）',
     agency: '經濟部水利署',
     url: 'https://data.gov.tw/dataset/25768',
-    freq: '每 10 分鐘／每天',
+    freq: '每 10 分鐘/每天',
   },
   {
     name: '停水資訊',
@@ -303,7 +303,7 @@ const sources = [
     name: '過去電力供需資訊、未來二個月電力供需預估',
     agency: '台灣電力公司',
     url: 'https://data.gov.tw/dataset/19995',
-    freq: '每月／約每 10 天',
+    freq: '每月/約每 10 天',
   },
 ]
 

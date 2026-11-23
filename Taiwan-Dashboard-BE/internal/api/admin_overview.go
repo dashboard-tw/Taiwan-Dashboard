@@ -68,7 +68,7 @@ func (h adminHandlers) overview(c *gin.Context) {
 		}
 		if err := tx.QueryRowContext(ctx, `
 			WITH today AS (SELECT (now() AT TIME ZONE 'Asia/Taipei')::date AS d)
-			SELECT (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL),
+			SELECT (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client'),
 			       (SELECT count(DISTINCT user_id) FROM app.api_key WHERE revoked_at IS NULL AND disabled_at IS NULL),
 			       coalesce(sum(u.requests) FILTER (WHERE u.day = today.d), 0),
 			       coalesce(sum(u.bytes) FILTER (WHERE u.day = today.d), 0),

@@ -15,6 +15,8 @@ const (
 	RunRetention           = 90 * 24 * time.Hour
 	DeletedClientRetention = 90 * 24 * time.Hour
 	MailRetention          = 30 * 24 * time.Hour
+
+	UnusedOAuthClientRetention = 30 * 24 * time.Hour
 )
 
 type Purged struct {
@@ -76,6 +78,22 @@ func Purge(ctx context.Context, sqlDB *sql.DB, now time.Time) (Purged, error) {
 			return err
 		}
 		if _, err = tx.ExecContext(ctx, `DELETE FROM app.api_usage_warning WHERE day < $1::date`, now.Add(-7*24*time.Hour)); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `DELETE FROM app.oauth_code WHERE expires_at < $1`, now); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `DELETE FROM app.oauth_refresh WHERE expires_at < $1`, now); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `DELETE FROM app.api_token WHERE expires_at < $1`, now); err != nil {
+			return err
+		}
+		if _, err = tx.ExecContext(ctx, `
+			DELETE FROM app.oauth_client c
+			 WHERE coalesce(c.last_used_at, c.created_at) < $1
+			   AND NOT EXISTS (SELECT 1 FROM app.api_key k WHERE k.oauth_client_id = c.id)`,
+			now.Add(-UnusedOAuthClientRetention)); err != nil {
 			return err
 		}
 		_, err = tx.ExecContext(ctx, `DELETE FROM app.api_token WHERE expires_at < $1`, now)

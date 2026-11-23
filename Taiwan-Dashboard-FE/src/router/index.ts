@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '../views/DashboardView.vue'
 import EmbedView from '../views/EmbedView.vue'
 import { EXTRA_DASHBOARDS, TOPICS } from '../lib/topics'
+import { isChunkError, reloadForNewBuild } from '../lib/staleBuild'
 
 const topic = `:topic(${[...TOPICS.map((t) => t.slug), ...EXTRA_DASHBOARDS].join('|')})`
 const county = ':county(\\d{5})'
@@ -130,6 +131,11 @@ export const router = createRouter({
       component: () => import('../views/me/ApiKeyView.vue'),
       meta: { auth: true },
     },
+    {
+      path: '/oauth/authorize',
+      name: 'oauth-authorize',
+      component: () => import('../views/OAuthAuthorizeView.vue'),
+    },
     { path: '/about', name: 'about', component: () => import('../views/AboutView.vue') },
     {
       path: '/showcase/:category(app|web|innovation)',
@@ -202,4 +208,8 @@ router.beforeEach(async (to, from) => {
   await auth.load()
   if (auth.me) return true
   return openLogin(to.fullPath, undefined, hasCurrentPage)
+})
+
+router.onError((err, to) => {
+  if (isChunkError(err)) reloadForNewBuild(to.fullPath)
 })

@@ -65,7 +65,7 @@ function time(iso: string | null) {
         近七天：排隊 {{ queue.counts.pending + queue.counts.sending }}・已寄出
         {{ queue.counts.sent }}・失敗 {{ queue.counts.failed }}・略過 {{ queue.counts.skipped
         }}<template v-if="queue.daily_limit"
-          >・今天 {{ queue.sent_today }}／{{ queue.daily_limit }} 封</template
+          >・今天 {{ queue.sent_today }}/{{ queue.daily_limit }} 封</template
         >
       </p>
       <table>
@@ -75,7 +75,7 @@ function time(iso: string | null) {
             <th>狀態</th>
             <th class="num">嘗試</th>
             <th>建立</th>
-            <th>寄出／下次嘗試</th>
+            <th>寄出/下次嘗試</th>
             <th>原因</th>
             <th><span class="visually-hidden">操作</span></th>
           </tr>

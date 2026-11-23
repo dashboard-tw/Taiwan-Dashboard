@@ -71,7 +71,7 @@ func webHandler(dir, base string, catalog catalogFunc) gin.HandlerFunc {
 			cat = catalog(c.Request.Context())
 		}
 		c.Header("Cache-Control", "no-cache")
-		c.Data(http.StatusOK, "text/html; charset=utf-8", renderIndex(page, lookupPage(cat, p), base, p))
+		c.Data(http.StatusOK, "text/html; charset=utf-8", injectBody(renderIndex(page, lookupPage(cat, p), base, p), root, p, cat))
 	}
 }
 

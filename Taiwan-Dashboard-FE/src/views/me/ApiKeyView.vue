@@ -6,6 +6,7 @@ import {
   createApiClient,
   deleteApiClient,
   getApiClients,
+  getOAuthApps,
   rotateClientSecret,
   saveApiSurvey,
   setClientEnabled,
@@ -15,7 +16,7 @@ import {
 } from '../../api/me'
 import ApiSurveyForm from '../../components/ApiSurveyForm.vue'
 import ApiTerms from '../../components/ApiTerms.vue'
-import ApexChart from '../../components/charts/ApexChart.vue'
+import ApiUsageCard from '../../components/ApiUsageCard.vue'
 import FillableCommand, { type CommandPart } from '../../components/FillableCommand.vue'
 import { usePageTitle } from '../../composables/usePageTitle'
 import { IDENTITIES, PURPOSES, PUSH, topicNames } from '../../lib/apiSurvey'
@@ -36,6 +37,15 @@ async function load() {
   }
 }
 onMounted(load)
+
+const aiTools = ref<number | null>(null)
+onMounted(async () => {
+  try {
+    aiTools.value = (await getOAuthApps()).length
+  } catch {
+    aiTools.value = null
+  }
+})
 
 const clients = computed(() => state.value?.clients ?? [])
 const limits = computed(
@@ -353,6 +363,15 @@ const downloadMonth: CommandPart[] = [
             @submit="agree"
           />
         </section>
+        <ApiUsageCard
+          v-if="aiTools"
+          :partner="state.tier === 'partner'"
+          :meters="meters"
+          :mcp-calls="state.mcp_calls_today ?? 0"
+          :ai-tools="aiTools"
+          :series="usageSeries"
+          :options="usageOptions"
+        />
       </div>
     </div>
 
@@ -496,39 +515,14 @@ const downloadMonth: CommandPart[] = [
         </section>
       </div>
       <div class="col">
-        <section class="card block">
-          <h2>
-            用量
-            <RouterLink v-if="state.tier === 'partner'" to="/me/showcase" class="badge partner"
-              >合作額度</RouterLink
-            >
-          </h2>
-          <p class="muted small">所有憑證共用，每天午夜歸零。</p>
-          <div class="meters">
-            <div v-for="m in meters" :key="m.label" class="meter">
-              <div class="meter-head">
-                <span>今日{{ m.label }}</span>
-                <span
-                  ><strong>{{ m.used }}</strong> / {{ m.limit }} {{ m.unit }}</span
-                >
-              </div>
-              <div
-                class="bar"
-                role="progressbar"
-                :aria-label="`今日${m.label}`"
-                :aria-valuenow="m.pct"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                <span :style="{ width: `${m.pct}%` }" :class="{ high: m.pct >= 80 }"></span>
-              </div>
-            </div>
-          </div>
-          <h3>近 30 天</h3>
-          <div class="chart">
-            <ApexChart type="bar" :series="usageSeries" :options="usageOptions" height="100%" />
-          </div>
-        </section>
+        <ApiUsageCard
+          :partner="state.tier === 'partner'"
+          :meters="meters"
+          :mcp-calls="state.mcp_calls_today ?? 0"
+          :ai-tools="aiTools"
+          :series="usageSeries"
+          :options="usageOptions"
+        />
         <section class="card block">
           <h2>
             使用資料
@@ -612,37 +606,6 @@ h3 {
   color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: normal;
-}
-.meters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 0.75rem 1.25rem;
-}
-.meter-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
-  font-size: 0.875rem;
-}
-.meter-head strong {
-  font-size: var(--font-ms);
-}
-.bar {
-  height: 6px;
-  overflow: hidden;
-  border-radius: 3px;
-  background: var(--border);
-}
-.bar span {
-  display: block;
-  height: 100%;
-  border-radius: 3px;
-  background: var(--accent);
-  transition: width 0.4s ease;
-}
-.bar span.high {
-  background: var(--danger-text);
 }
 h2 {
   display: flex;
@@ -736,9 +699,6 @@ code {
 .btn-highlight .mi {
   font-size: 1.1em;
 }
-.chart {
-  height: 220px;
-}
 .line {
   display: block;
   width: 40%;
@@ -809,10 +769,6 @@ code {
   background: var(--accent-soft);
   color: var(--accent);
   font-size: var(--font-s);
-}
-.badge.partner {
-  font-weight: 400;
-  text-decoration: none;
 }
 .badge.off {
   background: var(--surface-muted);

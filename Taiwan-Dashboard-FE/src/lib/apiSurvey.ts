@@ -2,7 +2,7 @@ import { TOPIC_TITLES } from './topics'
 
 export const IDENTITIES: Record<string, string> = {
   individual: '一般民眾',
-  student: '學生／研究人員',
+  student: '學生/研究人員',
   media: '新聞媒體',
   government: '政府機關',
   nonprofit: '非營利組織',

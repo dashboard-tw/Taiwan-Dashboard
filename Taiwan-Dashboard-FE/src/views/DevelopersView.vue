@@ -46,6 +46,7 @@ const topicName = (id: string) => topics.value.find((t) => t.id === id)?.name ??
 const GUIDES = [
   { slug: '', label: '快速開始', icon: 'rocket_launch' },
   { slug: 'auth', label: '驗證與額度', icon: 'key' },
+  { slug: 'mcp', label: 'MCP 連接 AI 工具', icon: 'smart_toy' },
   { slug: 'paging', label: '分頁與減少流量', icon: 'layers' },
   { slug: 'errors', label: '錯誤', icon: 'error' },
   { slug: 'license', label: '授權與引用', icon: 'gavel' },
@@ -253,6 +254,41 @@ const ERRORS = [
   { code: 429, name: 'traffic_exceeded', text: '今天的流量已用完，午夜後恢復' },
 ]
 
+const MCP_URL = `${origin}/mcp`
+const mcpSetup = computed(() => ({
+  'Claude Code': `claude mcp add --transport http dashboard-tw ${MCP_URL}`,
+  'VS Code': `// .vscode/mcp.json
+{
+  "servers": {
+    "dashboard-tw": { "type": "http", "url": "${MCP_URL}" }
+  }
+}`,
+  Cursor: `// ~/.cursor/mcp.json
+{
+  "mcpServers": {
+    "dashboard-tw": { "url": "${MCP_URL}" }
+  }
+}`,
+  'API 憑證': `// 不支援 OAuth 的工具，可直接帶 API 憑證
+{
+  "url": "${MCP_URL}",
+  "headers": { "Authorization": "Bearer <Client ID>:<Client Secret>" }
+}`,
+}))
+const MCP_TOOLS = [
+  { name: 'search', text: '用關鍵字找資料集，中英文都可以', paid: false },
+  { name: 'list_datasets', text: '列出所有資料集', paid: false },
+  { name: 'describe_dataset', text: '資料集的欄位、更新頻率與來源', paid: false },
+  { name: 'list_sites', text: '查測站、水庫等地點的代碼', paid: false },
+  { name: 'get_api_overview', text: 'API 的驗證方式與額度', paid: false },
+  { name: 'list_api_endpoints', text: '列出 API 端點', paid: false },
+  { name: 'get_api_endpoint', text: '單一端點的參數與回應格式', paid: false },
+  { name: 'get_openapi_spec', text: 'OpenAPI 文件', paid: false },
+  { name: 'get_latest', text: '最新資料', paid: true },
+  { name: 'get_history', text: '歷史資料', paid: true },
+  { name: 'get_component', text: '網站上圖表元件的資料', paid: true },
+  { name: 'fetch', text: '讀取 search 找到的項目', paid: true },
+]
 const HEADERS = [
   { name: 'X-RateLimit-Limit', text: '每天可呼叫的次數' },
   { name: 'X-RateLimit-Remaining', text: '今天剩下的次數' },
@@ -510,6 +546,46 @@ const HEADERS = [
               <li v-for="h in HEADERS" :key="h.name" class="row-2">
                 <code class="path">{{ h.name }}</code>
                 <span class="muted">{{ h.text }}</span>
+              </li>
+            </ul>
+          </section>
+        </template>
+
+        <template v-else-if="page === 'guide' && section === 'mcp'">
+          <h1 class="page-h1">MCP 連接 AI 工具</h1>
+          <section class="sec">
+            <p class="sec-lead">
+              Claude、Claude Code、ChatGPT、Cursor、Windsurf、VS Code、Cline 等支援 MCP 的 AI
+              工具，可以直接查詢這裡的資料與 API 文件。伺服器網址是 <code>{{ MCP_URL }}</code
+              >。如果工具連不上，可以改用 <code>{{ MCP_URL }}/sse</code>。
+            </p>
+          </section>
+          <section class="sec">
+            <h2>連接方式</h2>
+            <div class="split">
+              <div>
+                <p class="sec-lead">
+                  在 AI 工具新增 MCP 伺服器並填入網址，按下連接後登入 dashboard.tw
+                  並授權即可。claude.ai 與 ChatGPT 在連接器設定中新增，其他工具的設定見範例。
+                </p>
+                <p class="sec-lead">
+                  已授權的工具可以在
+                  <RouterLink to="/me/devices">登入裝置</RouterLink>
+                  查看或取消。不支援登入授權的工具，可改帶 API 憑證。
+                </p>
+              </div>
+              <CodeBlock :code="mcpSetup" label="設定" />
+            </div>
+          </section>
+          <section class="sec">
+            <h2>工具與額度</h2>
+            <p class="sec-lead">
+              獲取資料的工具每呼叫一次即算一次 API 請求與流量。搜尋與文件類工具則不算額度。
+            </p>
+            <ul class="rows">
+              <li v-for="t in MCP_TOOLS" :key="t.name" class="row-2">
+                <code class="path">{{ t.name }}</code>
+                <span class="muted">{{ t.text }}{{ t.paid ? '・算額度' : '' }}</span>
               </li>
             </ul>
           </section>

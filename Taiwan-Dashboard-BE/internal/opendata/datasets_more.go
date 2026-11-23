@@ -384,7 +384,7 @@ var moreDatasets = []Dataset{
 			{"trade_date", "date", "", "交易日期"},
 			{"category", "string", "", "vegetable 蔬菜、fruit 水果、flower 花卉"},
 			{"crop", "string", "", "作物名稱（不分品種）"},
-			{"avg_price", "number", "元／公斤（花卉為元／把）", "平均價"},
+			{"avg_price", "number", "元/公斤（花卉為元/把）", "平均價"},
 			{"volume", "number", "公斤（花卉為把）", "交易量"},
 			{"markets", "integer", "", "有交易的市場數"},
 		},
@@ -398,14 +398,14 @@ var moreDatasets = []Dataset{
 	},
 	{
 		ID:          "poultry_price",
-		Description: "農業部的家禽交易行情：雞蛋與白肉雞每天的價格（元／台斤）。latest 是最新一天。",
+		Description: "農業部的家禽交易行情：雞蛋與白肉雞每天的價格（元/台斤）。latest 是最新一天。",
 		Fields: []Field{
 			{"day", "date", "", "日期"},
-			{"egg_farm", "number", "元／台斤", "雞蛋產地價"},
-			{"egg_transport", "number", "元／台斤", "雞蛋大運輸價"},
-			{"broiler_large", "number", "元／台斤", "白肉雞 2.0 公斤以上"},
-			{"broiler_small", "number", "元／台斤", "白肉雞 1.75–1.95 公斤"},
-			{"broiler_retail", "number", "元／台斤", "白肉雞門市價（高屏）"},
+			{"egg_farm", "number", "元/台斤", "雞蛋產地價"},
+			{"egg_transport", "number", "元/台斤", "雞蛋大運輸價"},
+			{"broiler_large", "number", "元/台斤", "白肉雞 2.0 公斤以上"},
+			{"broiler_small", "number", "元/台斤", "白肉雞 1.75–1.95 公斤"},
+			{"broiler_retail", "number", "元/台斤", "白肉雞門市價（高屏）"},
 		},
 		LatestSQL: `
 			SELECT s.day, s.egg_farm::float8, s.egg_transport::float8, s.broiler_large::float8, s.broiler_small::float8, s.broiler_retail::float8
@@ -421,7 +421,7 @@ var moreDatasets = []Dataset{
 			{"day", "date", "", "日期"},
 			{"market", "string", "", "肉品市場"},
 			{"head", "integer", "頭", "成交頭數"},
-			{"price", "number", "元／公斤", "規格豬平均價格"},
+			{"price", "number", "元/公斤", "規格豬平均價格"},
 			{"weight_kg", "number", "公斤", "規格豬平均重量"},
 		},
 		LatestSQL: `
@@ -470,7 +470,7 @@ var moreDatasets = []Dataset{
 			{"building_type", "string", "", "建物型態，例如住宅大樓"},
 			{"main_use", "string", "", "主要用途，例如住家用"},
 			{"total_price", "integer", "元", "總價（租賃為每月租金）"},
-			{"unit_price", "number", "元／平方公尺", "單價"},
+			{"unit_price", "number", "元/平方公尺", "單價"},
 			{"area_m2", "number", "平方公尺", "建物移轉（租賃）總面積"},
 			{"rooms", "integer", "", "房數"},
 			{"special", "boolean", "", "特殊關係交易"},

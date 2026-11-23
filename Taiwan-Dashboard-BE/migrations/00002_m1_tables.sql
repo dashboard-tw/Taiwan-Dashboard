@@ -3,7 +3,7 @@
 CREATE TABLE ref.county (
     code        char(5)  PRIMARY KEY,               -- 內政部縣市代碼，例如 63000
     name        text     NOT NULL UNIQUE,           -- 臺北市
-    short_name  text     NOT NULL,                  -- 臺北（新竹縣／市、嘉義縣／市保留全名）
+    short_name  text     NOT NULL,                  -- 臺北（新竹縣/市、嘉義縣/市保留全名）
     name_en     text     NOT NULL,                  -- Taipei City
     aliases     text[]   NOT NULL DEFAULT '{}',     -- 台北市 等來源不一致的寫法
     boundary    geometry(MultiPolygon, 4326) NOT NULL,

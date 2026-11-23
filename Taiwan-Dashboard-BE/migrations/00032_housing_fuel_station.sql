@@ -22,7 +22,7 @@ CREATE TABLE data.real_estate_deal (
     building_type  text,                            -- 建物型態，例如住宅大樓
     main_use       text,                            -- 主要用途，例如住家用
     total_price    bigint,                          -- 元（租賃是每月租金）
-    unit_price     numeric(12, 1),                  -- 元／平方公尺
+    unit_price     numeric(12, 1),                  -- 元/平方公尺
     area_m2        numeric(12, 2),                  -- 建物移轉（租賃）總面積
     rooms          smallint,
     special        boolean NOT NULL DEFAULT false,  -- 備註有親友、員工等特殊關係，價格統計不列入

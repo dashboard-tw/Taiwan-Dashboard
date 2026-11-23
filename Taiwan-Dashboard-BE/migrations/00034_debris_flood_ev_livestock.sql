@@ -95,7 +95,7 @@ CREATE TABLE data.hog_trade (
     day           date NOT NULL,
     market        text NOT NULL,
     head          integer NOT NULL,               -- 成交頭數
-    price         numeric(7, 2),                  -- 規格豬平均價格（元／公斤）
+    price         numeric(7, 2),                  -- 規格豬平均價格（元/公斤）
     weight_kg     numeric(6, 2),                  -- 規格豬平均重量
     PRIMARY KEY (day, market)
 );

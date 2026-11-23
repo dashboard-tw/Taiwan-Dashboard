@@ -39,7 +39,7 @@ const TYPE_LABELS: Record<string, string> = {
   string: '文字',
   integer: '整數',
   number: '數字',
-  boolean: '是／否',
+  boolean: '是/否',
   timestamp: '時間',
   date: '日期',
 }

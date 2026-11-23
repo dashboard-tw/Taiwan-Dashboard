@@ -40,6 +40,8 @@ func registerMe(v1 *gin.RouterGroup, a AuthDeps) {
 	me.POST("/api-clients/:id/secret", h.rotateSecret)
 	me.PATCH("/api-clients/:id", h.updateClient)
 	me.DELETE("/api-clients/:id", h.deleteClient)
+	me.GET("/oauth-apps", listOAuthApps(a))
+	me.DELETE("/oauth-apps/:id", revokeOAuthApp(a))
 	me.PUT("/api-survey", h.saveSurvey)
 	me.GET("/apps", h.myApps)
 	me.POST("/apps", h.createApp)
@@ -257,6 +259,11 @@ func (h meHandlers) apiClients(c *gin.Context) {
 		meFail(c, err)
 		return
 	}
+	mcpCalls, err := h.store.MCPCallsToday(ctx, uid)
+	if err != nil {
+		meFail(c, err)
+		return
+	}
 	var s *survey
 	if err := h.asUser(c, func(tx *sql.Tx) (err error) {
 		s, err = loadSurvey(tx, c)
@@ -266,7 +273,7 @@ func (h meHandlers) apiClients(c *gin.Context) {
 		return
 	}
 	writeData(c, http.StatusOK, gin.H{
-		"clients": clients, "max_clients": auth.MaxClients, "used_today": used,
+		"clients": clients, "max_clients": auth.MaxClients, "used_today": used, "mcp_calls_today": mcpCalls,
 		"usage": usage, "tier": tier, "limits": auth.Tiers[tier], "partner_limits": auth.Tiers[auth.TierPartner], "token_ttl": int(auth.TokenTTL.Seconds()),
 		"survey": s, "terms_version": APITermsVersion,
 	}, nil)

@@ -76,13 +76,19 @@ func NewRouter(deps Deps) *gin.Engine {
 		limits := &keyLimits{byTi: map[int]*limiter{}, notify: deps.Auth.Notify}
 		if deps.OpenData != nil {
 			free, partner := auth.Tiers[auth.TierFree], auth.Tiers[auth.TierPartner]
-			registerOpenData(v1, deps.Auth.Store, deps.OpenData, limits, opendata.SpecOptions{
+			spec := opendata.SpecOptions{
 				Version: deps.Version, PerDay: free.PerDay, PerMinute: free.PerMinute,
 				MBPerDay: int(free.BytesPerDay >> 20), TokenHours: int(auth.TokenTTL.Hours()),
 				PartnerPerDay: partner.PerDay, PartnerPerMinute: partner.PerMinute,
 				PartnerMBPerDay: int(partner.BytesPerDay >> 20),
 				Downloads:       deps.DownloadDir != "",
-			})
+			}
+			registerOpenData(v1, deps.Auth.Store, deps.OpenData, limits, spec)
+			if deps.Screen != nil {
+				site := siteOf(deps.Auth.Origins)
+				registerMCPOAuth(r, v1, deps.Auth, site)
+				registerMCP(r, deps.Auth.Store, deps.OpenData, deps.Screen, limits, spec, site, deps.Version)
+			}
 		}
 		if deps.DownloadDir != "" {
 			registerDownloads(r, deps.Auth.Store, deps.DownloadDir, limits)

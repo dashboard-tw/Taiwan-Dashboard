@@ -69,9 +69,11 @@ type APIClient struct {
 }
 
 type KeyOwner struct {
-	KeyID  int64
-	UserID int64
-	Tier   Tier
+	KeyID   int64
+	UserID  int64
+	Tier    Tier
+	OAuth   bool
+	Expires time.Time
 }
 
 var idEncoding = base32.StdEncoding.WithPadding(base32.NoPadding)
@@ -148,7 +150,7 @@ func (s *Store) CreateClient(ctx context.Context, userID int64, name, ip string)
 			return err
 		}
 		var n int
-		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL`).Scan(&n); err != nil {
+		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client'`).Scan(&n); err != nil {
 			return err
 		}
 		if n >= MaxClients {
@@ -173,7 +175,7 @@ func (s *Store) Clients(ctx context.Context, userID int64) ([]APIClient, error) 
 	err := db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
 		rows, err := tx.QueryContext(ctx, `
 			SELECT id, name, prefix, coalesce(secret_hint, ''), disabled_at IS NULL, created_at, last_used_at
-			  FROM app.api_key WHERE revoked_at IS NULL ORDER BY id`)
+			  FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client' ORDER BY id`)
 		if err != nil {
 			return err
 		}
@@ -198,7 +200,7 @@ func (s *Store) changeClient(ctx context.Context, userID, id int64, action, ip s
 func (s *Store) changeClientNamed(ctx context.Context, userID, id int64, action, ip string, fn func(tx *sql.Tx) error) (name [2]string, err error) {
 	err = db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
 		var found int64
-		err := tx.QueryRowContext(ctx, `SELECT id, name, prefix FROM app.api_key WHERE id = $1 AND revoked_at IS NULL FOR UPDATE`, id).
+		err := tx.QueryRowContext(ctx, `SELECT id, name, prefix FROM app.api_key WHERE id = $1 AND revoked_at IS NULL AND kind = 'client' FOR UPDATE`, id).
 			Scan(&found, &name[0], &name[1])
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrClientNotFound
@@ -273,7 +275,7 @@ func (s *Store) IssueToken(ctx context.Context, clientID, secret string) (string
 		err := tx.QueryRowContext(ctx, `
 			SELECT k.id, k.key_hash
 			  FROM app.api_key k JOIN app.users u ON u.id = k.user_id
-			 WHERE k.prefix = $1 AND k.revoked_at IS NULL AND k.disabled_at IS NULL AND u.status = 'active'`,
+			 WHERE k.prefix = $1 AND k.kind = 'client' AND k.revoked_at IS NULL AND k.disabled_at IS NULL AND u.status = 'active'`,
 			clientID).Scan(&id, &stored)
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrInvalidClient
@@ -299,6 +301,14 @@ func (s *Store) IssueToken(ctx context.Context, clientID, secret string) (string
 }
 
 func (s *Store) LookupToken(ctx context.Context, token string) (*KeyOwner, error) {
+	return s.lookupToken(ctx, token, false)
+}
+
+func (s *Store) LookupMCPToken(ctx context.Context, token string) (*KeyOwner, error) {
+	return s.lookupToken(ctx, token, true)
+}
+
+func (s *Store) lookupToken(ctx context.Context, token string, oauth bool) (*KeyOwner, error) {
 	if token == "" || len(token) > 100 {
 		return nil, ErrNoKey
 	}
@@ -306,13 +316,13 @@ func (s *Store) LookupToken(ctx context.Context, token string) (*KeyOwner, error
 	var tier string
 	err := db.AsSystem(ctx, s.DB, func(tx *sql.Tx) error {
 		return tx.QueryRowContext(ctx, `
-			SELECT k.id, k.user_id, `+tierSQL("k.user_id")+`
+			SELECT k.id, k.user_id, `+tierSQL("k.user_id")+`, k.kind = 'oauth', t.expires_at
 			  FROM app.api_token t
 			  JOIN app.api_key k ON k.id = t.api_key_id
 			  JOIN app.users u ON u.id = k.user_id
-			 WHERE t.token_hash = $1 AND t.expires_at > $2
+			 WHERE t.token_hash = $1 AND t.expires_at > $2 AND (k.kind = 'client' OR $3)
 			   AND k.revoked_at IS NULL AND k.disabled_at IS NULL AND u.status = 'active'`,
-			hashOf(token), s.now()).Scan(&o.KeyID, &o.UserID, &tier)
+			hashOf(token), s.now(), oauth).Scan(&o.KeyID, &o.UserID, &tier, &o.OAuth, &o.Expires)
 	})
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, ErrNoKey
@@ -435,4 +445,63 @@ func (s *Store) RejectAPIKey(ctx context.Context, o *KeyOwner) error {
 			ON CONFLICT (api_key_id, day) DO UPDATE SET rejected = u.rejected + 1`, o.KeyID, s.taipeiDay())
 		return err
 	})
+}
+
+func (s *Store) CountMCPCall(ctx context.Context, userID int64, tool string) error {
+	return db.AsSystem(ctx, s.DB, func(tx *sql.Tx) error {
+		_, err := tx.ExecContext(ctx, `
+			INSERT INTO app.mcp_usage_daily AS u (user_id, day, tool, calls) VALUES ($1, $2, left($3, 60), 1)
+			ON CONFLICT (user_id, day, tool) DO UPDATE SET calls = u.calls + 1`, userID, s.taipeiDay(), tool)
+		return err
+	})
+}
+
+func (s *Store) LookupClient(ctx context.Context, clientID, secret string) (*KeyOwner, error) {
+	if clientID == "" || secret == "" || len(clientID) > 100 || len(secret) > 200 {
+		return nil, ErrInvalidClient
+	}
+	var o KeyOwner
+	var stored []byte
+	var tier string
+	err := db.AsSystem(ctx, s.DB, func(tx *sql.Tx) error {
+		return tx.QueryRowContext(ctx, `
+			SELECT k.id, k.user_id, k.key_hash, `+tierSQL("k.user_id")+`
+			  FROM app.api_key k JOIN app.users u ON u.id = k.user_id
+			 WHERE k.prefix = $1 AND k.kind = 'client' AND k.revoked_at IS NULL AND k.disabled_at IS NULL AND u.status = 'active'`,
+			clientID).Scan(&o.KeyID, &o.UserID, &stored, &tier)
+	})
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrInvalidClient
+	}
+	if err != nil {
+		return nil, err
+	}
+	if subtle.ConstantTimeCompare(stored, hashOf(secret)) != 1 {
+		return nil, ErrInvalidClient
+	}
+	t, ok := Tiers[tier]
+	if !ok {
+		t = Tiers[TierFree]
+	}
+	o.Tier = t
+	return &o, nil
+}
+
+func (s *Store) TouchKey(ctx context.Context, keyID int64) error {
+	return db.AsSystem(ctx, s.DB, func(tx *sql.Tx) error {
+		_, err := tx.ExecContext(ctx, `
+			UPDATE app.api_key SET last_used_at = now()
+			 WHERE id = $1 AND (last_used_at IS NULL OR last_used_at < now() - interval '5 minutes')`, keyID)
+		return err
+	})
+}
+
+func (s *Store) MCPCallsToday(ctx context.Context, userID int64) (int, error) {
+	var n int
+	err := db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
+		return tx.QueryRowContext(ctx, `
+			SELECT COALESCE(sum(calls), 0)::int FROM app.mcp_usage_daily WHERE user_id = $1 AND day = $2`,
+			userID, s.taipeiDay()).Scan(&n)
+	})
+	return n, err
 }

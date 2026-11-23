@@ -41,7 +41,8 @@ function toggleCollapsed() {
 
 const dialogs = useDialogs()
 onMounted(() => {
-  if (bare.value || route.path.startsWith('/admin')) return
+  const path = window.location.pathname
+  if (bare.value || path.startsWith('/admin') || path.startsWith('/oauth/')) return
   dialogs.showIntroOnce()
 })
 

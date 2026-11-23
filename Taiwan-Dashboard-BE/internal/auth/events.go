@@ -71,7 +71,7 @@ func DeviceName(ua string) string {
 	}
 	switch {
 	case browser != "" && os != "":
-		return browser + "／" + os
+		return browser + "/" + os
 	case browser != "" || os != "":
 		return browser + os
 	case ua == "":

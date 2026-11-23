@@ -26,7 +26,7 @@ const TOC = [
     <h1 class="page-title"><span class="mi" aria-hidden="true">privacy_tip</span>隱私權政策</h1>
 
     <div class="doc">
-      <p class="updated">制定日期：2026 年 11 月 21 日，修訂日期：2026 年 11 月 23 日</p>
+      <p class="updated">制定日期：2026 年 11 月 21 日，修訂日期：2026 年 11 月 24 日</p>
       <p>
         dashboard.tw（以下稱「本站」）由雲際科技工作室經營，重視您的隱私。本政策依《個人資料保護法》（以下稱「個資法」）說明本站如何蒐集、處理、利用及保護您的個人資料。使用本站即表示您已閱讀並同意本政策。
       </p>
@@ -79,6 +79,11 @@ const TOC = [
             <td>其他：服務使用紀錄</td>
           </tr>
           <tr>
+            <td>AI 工具授權</td>
+            <td>已授權的 AI 工具名稱、授權與最後使用時間，MCP 每日呼叫次數</td>
+            <td>其他：服務使用紀錄</td>
+          </tr>
+          <tr>
             <td>使用調查</td>
             <td>身分類別、資料用途、關注的資料、應用名稱與連結、建議</td>
             <td>其他：問卷回覆</td>
@@ -90,7 +95,7 @@ const TOC = [
           </tr>
           <tr>
             <td>操作紀錄</td>
-            <td>登入、登出、API 憑證異動、刪除帳號等事件與當時的 IP 位址</td>
+            <td>登入、登出、API 憑證異動、AI 工具授權與取消、刪除帳號等事件與當時的 IP 位址</td>
             <td>其他：系統稽核紀錄</td>
           </tr>
         </tbody>
@@ -99,7 +104,19 @@ const TOC = [
         三、本站不會向 GitHub 或 Google
         索取上述以外的資料，也不保存這兩個平台發給本站的登入憑證。本站不設密碼。
       </p>
-      <p>四、「用我的位置找縣市」只在您的瀏覽器內計算，位置不會傳到本站伺服器。</p>
+      <p>
+        四、使用 Google 登入時，本站只要求 openid、email 與 profile 權限，取得 Google
+        帳號代碼、名稱與已驗證的 Email。帳號代碼用來辨識登入身分，名稱顯示在網站上，Email
+        用來寄送帳號與服務通知。這些資料不會用於廣告，不會出售，除第五條列出的服務外也不會提供給他人。解除
+        Google 綁定時，本站會刪除 Google 帳號代碼。刪除帳號時，名稱與 Email 也一併刪除。本站使用
+        Google API 取得的資料，遵守
+        <a
+          href="https://developers.google.com/terms/api-services-user-data-policy"
+          target="_blank"
+          rel="noopener"
+          >Google API 服務使用者資料政策</a
+        >，包括有限使用規定。
+      </p>
 
       <h2 id="p3">第三條　蒐集目的與利用方式</h2>
       <p>本站蒐集個人資料的特定目的如下：</p>
@@ -192,7 +209,8 @@ const TOC = [
       <ul>
         <li>全站使用 HTTPS 加密連線。</li>
         <li>
-          登入憑證、Client Secret 與 Access Token 只保存雜湊值，資料庫外洩也無法用來登入或呼叫 API。
+          登入憑證、Client Secret、Access Token 與 Refresh Token
+          只保存雜湊值，資料庫外洩也無法用來登入或呼叫 API。
         </li>
         <li>Email 以 AES-256-GCM 加密保存，金鑰與資料庫分開存放。</li>
         <li>資料庫依帳號隔離存取權限，管理功能需另外授權。</li>
@@ -211,11 +229,11 @@ const TOC = [
         </thead>
         <tbody>
           <tr>
-            <td>帳號資料、Email、API 使用資料、使用調查</td>
+            <td>帳號資料、Email、API 使用資料、AI 工具授權、使用調查</td>
             <td>至您刪除帳號為止</td>
           </tr>
           <tr>
-            <td>已刪除的 API 憑證與其用量紀錄</td>
+            <td>已刪除的 API 憑證、已取消的 AI 工具授權與其用量紀錄</td>
             <td>刪除後 90 天</td>
           </tr>
           <tr>

@@ -301,8 +301,8 @@ var coreDatasets = []Dataset{
 		"台灣自來水公司的停水資訊：每件停水的影響縣市、行政區、地區、原因、影響戶數與起訖時間。本站每 30 分鐘抓一次，"+
 			"公告結束或取消後保留在這裡。last_seen_at 是最後一次出現在來源清單的時間。歷史資料依停水開始時間查詢。"),
 	waterOutageDataset("water_outage_taipei", "taipei",
-		"臺北自來水事業處的停水公告。公告是「期間內每天幾點到幾點」：starts_at／ends_at 是第一天的開始與最後一天的結束，"+
-			"daily_from／daily_to 是每天的時段。來源沒有影響戶數與案件類型。歷史資料依停水開始時間查詢。"),
+		"臺北自來水事業處的停水公告。公告是「期間內每天幾點到幾點」：starts_at/ends_at 是第一天的開始與最後一天的結束，"+
+			"daily_from/daily_to 是每天的時段。來源沒有影響戶數與案件類型。歷史資料依停水開始時間查詢。"),
 	{
 		ID:          "power_outage",
 		Months:      `SELECT to_char(observed_at AT TIME ZONE 'Asia/Taipei', 'YYYY-MM'), count(*) FROM data.power_outage_history GROUP BY 1 ORDER BY 1`,
@@ -511,8 +511,8 @@ var coreDatasets = []Dataset{
 			{"humidity_pct", "number", "%", "相對濕度"},
 			{"pressure_hpa", "number", "百帕", "氣壓"},
 			{"wind_dir_deg", "number", "度", "風向：風從哪裡吹來，0 是北風、90 是東風"},
-			{"wind_ms", "number", "公尺／秒", "10 分鐘平均風速"},
-			{"gust_ms", "number", "公尺／秒", "本日最大陣風"},
+			{"wind_ms", "number", "公尺/秒", "10 分鐘平均風速"},
+			{"gust_ms", "number", "公尺/秒", "本日最大陣風"},
 			{"high_c", "number", "°C", "本日最高溫"},
 			{"low_c", "number", "°C", "本日最低溫"},
 		},

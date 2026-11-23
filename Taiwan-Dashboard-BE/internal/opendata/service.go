@@ -174,6 +174,11 @@ func (s *Service) Sites(ctx context.Context, d *Dataset, county *string) (Table,
 }
 
 func (s *Service) Latest(ctx context.Context, d *Dataset, county, site *string, cursorText string) (Table, string, error) {
+	return s.LatestPage(ctx, d, county, site, cursorText, PageSize)
+}
+
+func (s *Service) LatestPage(ctx context.Context, d *Dataset, county, site *string, cursorText string, limit int) (Table, string, error) {
+	limit = pageLimit(limit)
 	fields := d.LatestRowFields()
 	if !d.LatestPaged {
 		rows, err := s.query(ctx, fields, 0, d.LatestSQL, county, site)
@@ -187,13 +192,13 @@ func (s *Service) Latest(ctx context.Context, d *Dataset, county, site *string, 
 		}
 		key = &c.K
 	}
-	rows, err := s.query(ctx, fields, 1, d.LatestSQL, county, site, key, PageSize+1)
+	rows, err := s.query(ctx, fields, 1, d.LatestSQL, county, site, key, limit+1)
 	if err != nil {
 		return Table{}, "", err
 	}
 	next := ""
-	if len(rows) > PageSize {
-		rows = rows[:PageSize]
+	if len(rows) > limit {
+		rows = rows[:limit]
 		next = encodeCursor(cursor{T: listCursorTime, K: fmt.Sprint(rows[len(rows)-1][len(fields)])})
 	}
 	for i, r := range rows {
@@ -208,6 +213,14 @@ type HistoryQuery struct {
 	County, Site *string
 	From, To     time.Time
 	Cursor       string
+	Limit        int
+}
+
+func pageLimit(n int) int {
+	if n <= 0 || n > PageSize {
+		return PageSize
+	}
+	return n
 }
 
 func (s *Service) History(ctx context.Context, d *Dataset, q HistoryQuery) (Table, string, error) {
@@ -220,13 +233,14 @@ func (s *Service) History(ctx context.Context, d *Dataset, q HistoryQuery) (Tabl
 		}
 		ct, ck = &c.T, c.K
 	}
-	rows, err := s.query(ctx, d.Fields, 2, d.HistorySQL, q.County, q.Site, q.From, q.To, ct, ck, PageSize+1)
+	limit := pageLimit(q.Limit)
+	rows, err := s.query(ctx, d.Fields, 2, d.HistorySQL, q.County, q.Site, q.From, q.To, ct, ck, limit+1)
 	if err != nil {
 		return Table{}, "", err
 	}
 	next := ""
-	if len(rows) > PageSize {
-		rows = rows[:PageSize]
+	if len(rows) > limit {
+		rows = rows[:limit]
 		last := rows[len(rows)-1]
 		next = encodeCursor(cursor{T: last[len(d.Fields)].(time.Time), K: fmt.Sprint(last[len(d.Fields)+1])})
 	}

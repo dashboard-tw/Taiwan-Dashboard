@@ -4,10 +4,14 @@ import App from './App.vue'
 import { i18n } from './i18n'
 import { handleAuthPopup } from './lib/authPopup'
 import { router } from './router'
+import { reloadForNewBuild } from './lib/staleBuild'
 import { initTheme } from './theme'
 import './style.css'
 
 initTheme()
+window.addEventListener('vite:preloadError', (e) => {
+  if (reloadForNewBuild()) e.preventDefault()
+})
 if (!handleAuthPopup()) {
   const app = createApp(App).use(createPinia()).use(router).use(i18n)
   void router.isReady().then(() => app.mount('#app'))
