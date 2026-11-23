@@ -374,6 +374,17 @@ const shown = computed(() => {
         >使用。地圖上的動態雲圖來自 NASA GIBS
         提供的向日葵衛星影像，縣市界線來自內政部國土測繪中心。每張圖表下方都有標示來源機關。
       </p>
+      <p class="credit">
+        <span>臺鐵、高鐵、YouBike、電動車充電站與航班資料介接「交通部TDX平臺」</span>
+        <a href="https://tdx.transportdata.tw/" rel="noopener" class="credit-logo">
+          <img
+            src="/partners/tdx-logo.png"
+            alt="交通部TDX運輸資料流通服務"
+            width="184"
+            height="34"
+          />
+        </a>
+      </p>
     </div>
 
     <section class="card sources" aria-label="資料來源清單">
@@ -449,6 +460,23 @@ const shown = computed(() => {
 </template>
 
 <style scoped>
+.credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+.credit-logo {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+.credit-logo img {
+  display: block;
+  height: 34px;
+  width: auto;
+}
 #sources {
   scroll-margin-top: calc(var(--header-h) + 1rem);
 }
