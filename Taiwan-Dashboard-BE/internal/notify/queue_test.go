@@ -36,7 +36,7 @@ func drain(t *testing.T, n *Notifier) {
 	t.Helper()
 	ctx := context.Background()
 	for range 50 {
-		worked, err := n.sendNext(ctx)
+		worked, err := n.sendNext(ctx, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -214,5 +214,29 @@ func TestQueueSkipsSuppressed(t *testing.T) {
 	var c int
 	if err := store.DB.QueryRow(`SELECT count(*) FROM app.mail_suppression`).Scan(&c); err != nil || c != 1 {
 		t.Errorf("suppression rows = %d, %v; an unrelated event was stored", c, err)
+	}
+}
+
+func TestQueueSecurityFirst(t *testing.T) {
+	n, f, store := setup(t)
+	ctx := context.Background()
+	u, _, err := store.SignInExternal(ctx, "github", auth.Identity{Subject: "9", Name: "Octo", Email: "octo@example.com"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	n.toUser("new_device", u.ID, Sample("new_device"))
+
+	if worked, err := n.sendNext(ctx, false); err != nil || !worked || f.sent[0].Tag != "new_device" {
+		t.Fatalf("security mail should go first: worked=%v err=%v sent=%+v", worked, err, f.sent)
+	}
+	n.toUser("new_device", u.ID, Sample("new_device"))
+	if worked, err := n.sendNext(ctx, true); err != nil || !worked || f.sent[1].Tag != "new_device" {
+		t.Fatalf("reserved quota should still send security mail: worked=%v err=%v", worked, err)
+	}
+	if worked, err := n.sendNext(ctx, true); err != nil || worked {
+		t.Fatalf("reserved quota sent a welcome mail: worked=%v err=%v", worked, err)
+	}
+	if worked, err := n.sendNext(ctx, false); err != nil || !worked || f.sent[2].Tag != "signup" {
+		t.Fatalf("welcome mail after the reserve: worked=%v err=%v", worked, err)
 	}
 }

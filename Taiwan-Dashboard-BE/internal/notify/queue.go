@@ -129,28 +129,24 @@ func (n *Notifier) run(ctx context.Context) {
 	if interval <= 0 {
 		interval = 2 * time.Second
 	}
-	capped := false
+	level := 0
 	for {
 		if err := n.release(ctx); err != nil && ctx.Err() == nil {
 			slog.Error("mail queue: release stale", "error", err)
 		}
-		over, err := n.overLimit(ctx)
+		now, err := n.limitLevel(ctx)
 		if err != nil && ctx.Err() == nil {
 			slog.Error("mail queue: daily count", "error", err)
 		}
-		if over != capped {
-			capped = over
-			if over {
-				slog.Warn("mail queue: daily limit reached, waiting until tomorrow", "limit", n.DailyLimit)
-				n.Hooks.Emit(ctx, hooks.EventMailFailed, hooks.Message{
-					Title: "今天的寄信額度用完了", Level: hooks.LevelWarn, URL: n.Site + "/admin/mail",
-					Text: fmt.Sprintf("已經寄了 %d 封，剩下的信明天再寄。", n.DailyLimit),
-				})
+		if now != level {
+			if now > level {
+				n.warnLimit(ctx, now)
 			}
+			level = now
 		}
 		worked := false
-		if !over && err == nil {
-			worked, err = n.sendNext(ctx)
+		if now < 2 && err == nil {
+			worked, err = n.sendNext(ctx, now == 1)
 			if err != nil && ctx.Err() == nil {
 				slog.Error("mail queue", "error", err)
 			}
@@ -193,12 +189,38 @@ func (n *Notifier) exec(ctx context.Context, q string, args ...any) error {
 	})
 }
 
-func (n *Notifier) overLimit(ctx context.Context) (bool, error) {
+var securityTemplates = []string{
+	"new_device", "link", "unlink", "account_deleted",
+	"api_key_created", "api_key_rotated", "api_key_disabled", "api_key_deleted", "api_key_revoked",
+}
+
+func (n *Notifier) reserve() int {
+	return min(30, n.DailyLimit/10)
+}
+
+func (n *Notifier) limitLevel(ctx context.Context) (int, error) {
 	if n.DailyLimit <= 0 {
-		return false, nil
+		return 0, nil
 	}
 	sent, err := n.SentToday(ctx)
-	return sent >= n.DailyLimit, err
+	switch {
+	case sent >= n.DailyLimit:
+		return 2, err
+	case sent >= n.DailyLimit-n.reserve():
+		return 1, err
+	}
+	return 0, err
+}
+
+func (n *Notifier) warnLimit(ctx context.Context, level int) {
+	msg := hooks.Message{Title: "今天的寄信額度用完了", Level: hooks.LevelWarn, URL: n.Site + "/admin/mail",
+		Text: fmt.Sprintf("已經寄了 %d 封，剩下的信明天再寄。", n.DailyLimit)}
+	if level == 1 {
+		msg.Title = "今天的一般信件先暫停"
+		msg.Text = fmt.Sprintf("已經寄了 %d 封，剩下 %d 封只寄安全通知，其他信明天再寄。", n.DailyLimit-n.reserve(), n.reserve())
+	}
+	slog.Warn("mail queue: daily limit", "level", level, "limit", n.DailyLimit)
+	n.Hooks.Emit(ctx, hooks.EventMailFailed, msg)
 }
 
 func (n *Notifier) SentToday(ctx context.Context) (int, error) {
@@ -212,7 +234,7 @@ func (n *Notifier) SentToday(ctx context.Context) (int, error) {
 	return c, err
 }
 
-func (n *Notifier) sendNext(ctx context.Context) (bool, error) {
+func (n *Notifier) sendNext(ctx context.Context, securityOnly bool) (bool, error) {
 	var (
 		j        job
 		raw      []byte
@@ -223,8 +245,9 @@ func (n *Notifier) sendNext(ctx context.Context) (bool, error) {
 		UPDATE app.mail_queue SET status = 'sending', locked_at = now(), attempts = attempts + 1
 		 WHERE id = (SELECT id FROM app.mail_queue
 		              WHERE status = 'pending' AND next_attempt_at <= now()
-		              ORDER BY next_attempt_at, id LIMIT 1 FOR UPDATE SKIP LOCKED)
-		RETURNING id, template, user_id, email_enc, data, attempts`).
+		                AND (NOT $1 OR template = ANY($2))
+		              ORDER BY template = ANY($2) DESC, next_attempt_at, id LIMIT 1 FOR UPDATE SKIP LOCKED)
+		RETURNING id, template, user_id, email_enc, data, attempts`, securityOnly, securityTemplates).
 			Scan(&j.id, &j.template, &j.userID, &j.emailEnc, &raw, &attempts)
 	})
 	if errors.Is(err, sql.ErrNoRows) {
