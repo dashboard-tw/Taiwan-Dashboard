@@ -14,7 +14,7 @@
 
 用政府開放資料，看全臺各縣市的即時狀況。
 
-[網站](https://dashboard.tw) ｜ [開放資料 API](https://dashboard.tw/developers) ｜ [應用活化](https://dashboard.tw/showcase/app) ｜ [Discord](https://discord.gg/gU5gndueZH)
+[網站](https://dashboard.tw) ｜ [開放資料 API](https://dashboard.tw/developers) ｜ [MCP](https://dashboard.tw/developers/mcp) ｜ [應用活化](https://dashboard.tw/showcase/app) ｜ [Discord](https://discord.gg/gU5gndueZH)
 
 ## 簡介
 
@@ -30,6 +30,8 @@
 - 地圖模式：雷達回波、衛星雲圖、風場、測站與設施
 - 歷史資料：多數元件可以查過去的數值
 - 開放資料 API：最新資料、歷史資料、每月大量下載，附 OpenAPI 文件
+- MCP 伺服器：Claude、ChatGPT、Cursor 等 AI 工具可以直接查詢資料與 API 文件，支援 OAuth 登入授權
+- 通知：註冊、新裝置登入、API 用量等通知信，支援 Brevo 與 SMTP，以及 Discord、Slack、Telegram 的管理通知
 - 應用活化：展示使用本站 API 的作品
 
 ## 技術
