@@ -21,23 +21,39 @@ var common = []Var{
 	{"Site", "網站網址", "https://dashboard.tw"},
 }
 
+var clientInfo = []Var{
+	{"Time", "時間", "2026/11/23 21:05"},
+	{"Location", "地點", "臺灣・Taipei"},
+	{"IP", "IP", "203.0.113.8"},
+	{"DeviceType", "裝置", "桌機"},
+	{"OS", "作業系統", "Windows"},
+	{"Browser", "瀏覽器", "Chrome 131"},
+	{"Device", "裝置與瀏覽器", "Chrome/Windows"},
+}
+
+func withClient(vars ...Var) []Var {
+	return append(vars, clientInfo...)
+}
+
 var Vars = map[string][]Var{
 	"signup":          {{"Provider", "登入方式", "GitHub"}},
-	"new_device":      {{"Time", "登入時間", "2026/11/23 21:05"}, {"Device", "裝置", "Chrome/Windows"}, {"IP", "IP", "203.0.113.8"}},
-	"link":            {{"Provider", "登入方式", "Google"}, {"Time", "時間", "2026/11/23 21:05"}},
-	"unlink":          {{"Provider", "登入方式", "Google"}, {"Time", "時間", "2026/11/23 21:05"}},
+	"new_device":      withClient(),
+	"link":            withClient(Var{"Provider", "登入方式", "Google"}),
+	"unlink":          withClient(Var{"Provider", "登入方式", "Google"}),
 	"account_deleted": {{"Time", "刪除時間", "2026/11/23 21:05"}},
 	"api_usage": {
 		{"Requests", "今日呼叫次數", "4,012"}, {"RequestLimit", "每日次數上限", "5,000"},
 		{"TrafficMB", "今日流量（MB）", "120.5"}, {"TrafficLimitMB", "每日流量上限（MB）", "500"},
 	},
-	"api_key_created":  {{"Key", "憑證名稱", "我的天氣 App"}, {"ClientID", "Client ID", "dtw_3f9a…"}, {"Time", "時間", "2026/11/23 21:05"}},
-	"api_key_disabled": {{"Key", "憑證名稱", "我的天氣 App"}, {"ClientID", "Client ID", "dtw_3f9a…"}, {"Time", "時間", "2026/11/23 21:05"}},
-	"api_key_deleted":  {{"Key", "憑證名稱", "我的天氣 App"}, {"ClientID", "Client ID", "dtw_3f9a…"}, {"Time", "時間", "2026/11/23 21:05"}},
+	"api_key_created":  withClient(Var{"Key", "憑證名稱", "我的天氣 App"}, Var{"ClientID", "Client ID", "dtw_3f9a…"}),
+	"api_key_rotated":  withClient(Var{"Key", "憑證名稱", "我的天氣 App"}, Var{"ClientID", "Client ID", "dtw_3f9a…"}),
+	"api_key_disabled": withClient(Var{"Key", "憑證名稱", "我的天氣 App"}, Var{"ClientID", "Client ID", "dtw_3f9a…"}),
+	"api_key_deleted":  withClient(Var{"Key", "憑證名稱", "我的天氣 App"}, Var{"ClientID", "Client ID", "dtw_3f9a…"}),
 	"api_key_revoked":  {{"Key", "憑證名稱", "我的天氣 App"}, {"Time", "時間", "2026/11/23 21:05"}},
 	"app_approved":     {{"App", "應用名稱", "雨天出門提醒"}},
 	"app_rejected":     {{"App", "應用名稱", "雨天出門提醒"}, {"Note", "退回原因", "網址無法開啟"}},
 	"app_removed":      {{"App", "應用名稱", "雨天出門提醒"}, {"Note", "下架原因", "網站已停止服務"}},
+	"app_received":     {{"App", "應用名稱", "雨天出門提醒"}},
 	"app_submitted":    {{"App", "應用名稱", "雨天出門提醒"}, {"Author", "投稿者", "王小明"}},
 	"app_resubmitted":  {{"App", "應用名稱", "雨天出門提醒"}, {"Author", "投稿者", "王小明"}},
 	"footer":           {},
@@ -108,7 +124,18 @@ func load(ctx context.Context, db *sql.DB, key string) (*stored, error) {
 	return &t, nil
 }
 
+type Rendered struct {
+	Subject string
+	Text    string
+	HTML    string
+}
+
 func (t *stored) render(data map[string]string) (subject, body string, err error) {
+	r, err := t.renderAll(data)
+	return r.Subject, r.Text, err
+}
+
+func (t *stored) renderAll(data map[string]string) (Rendered, error) {
 	parts := []struct{ name, text string }{{"subject", t.subject}, {"body", t.body}, {"footer", t.footer}}
 	out := make([]string, len(parts))
 	for i, p := range parts {
@@ -120,35 +147,42 @@ func (t *stored) render(data map[string]string) (subject, body string, err error
 			out[i], err = execute(tmpl, data)
 		}
 		if err != nil {
-			return "", "", fmt.Errorf("mail template %s %s: %w", t.key, p.name, err)
+			return Rendered{}, fmt.Errorf("mail template %s %s: %w", t.key, p.name, err)
 		}
 	}
-	body = strings.TrimRight(out[1], "\n")
+	subject := strings.TrimSpace(out[0])
+	body := strings.TrimRight(out[1], "\n")
+	text := body
 	if out[2] != "" {
-		body += "\n\n" + out[2]
+		text += "\n\n" + out[2]
 	}
-	return strings.TrimSpace(out[0]), body, nil
+	return Rendered{Subject: subject, Text: text, HTML: renderHTML(subject, body, out[2], data["Site"])}, nil
 }
 
 func Render(ctx context.Context, db *sql.DB, key string, data map[string]string) (subject, body string, err error) {
-	t, err := load(ctx, db, key)
-	if err != nil {
-		return "", "", err
-	}
-	if !t.enabled {
-		return "", "", ErrDisabled
-	}
-	return t.render(data)
+	r, err := RenderMail(ctx, db, key, data)
+	return r.Subject, r.Text, err
 }
 
-func Preview(ctx context.Context, db *sql.DB, key, subject, body, site string) (string, string, error) {
+func RenderMail(ctx context.Context, db *sql.DB, key string, data map[string]string) (Rendered, error) {
+	t, err := load(ctx, db, key)
+	if err != nil {
+		return Rendered{}, err
+	}
+	if !t.enabled {
+		return Rendered{}, ErrDisabled
+	}
+	return t.renderAll(data)
+}
+
+func Preview(ctx context.Context, db *sql.DB, key, subject, body, site string) (Rendered, error) {
 	t := stored{key: key, subject: subject, body: body}
 	if key != "footer" {
 		if err := db.QueryRowContext(ctx, `SELECT body FROM app.mail_template WHERE key = 'footer'`).Scan(&t.footer); err != nil && !errors.Is(err, sql.ErrNoRows) {
-			return "", "", err
+			return Rendered{}, err
 		}
 	}
 	data := Sample(key)
 	data["Site"] = site
-	return t.render(data)
+	return t.renderAll(data)
 }

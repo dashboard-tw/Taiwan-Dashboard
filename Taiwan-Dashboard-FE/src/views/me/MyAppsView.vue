@@ -59,7 +59,7 @@ const hasClient = computed(() => (state.value ? state.value.clients.length > 0 :
             <span class="step">2</span>合作額度
             <span class="badge">{{ isPartner ? '目前：合作額度' : '目前：一般額度' }}</span>
           </h2>
-          <p>應用上架後，額度會自動提高。</p>
+          <p>應用上架後，額度會自動提高。名下沒有上架中的應用時，會自動恢復為一般額度。</p>
           <table>
             <thead>
               <tr>

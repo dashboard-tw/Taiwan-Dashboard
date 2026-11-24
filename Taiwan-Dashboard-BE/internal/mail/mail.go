@@ -31,6 +31,7 @@ type Message struct {
 	To      string
 	Subject string
 	Text    string
+	HTML    string
 	Tag     string
 	ID      string
 }
@@ -139,16 +140,33 @@ func (s *SMTP) build(to *mail.Address, m Message) ([]byte, error) {
 	header("Date", time.Now().Format(time.RFC1123Z))
 	header("Message-ID", "<"+hex.EncodeToString(id)+"@"+domain+">")
 	header("MIME-Version", "1.0")
-	header("Content-Type", "text/plain; charset=UTF-8")
-	header("Content-Transfer-Encoding", "base64")
 	header("Auto-Submitted", "auto-generated")
+	if m.HTML == "" {
+		header("Content-Type", "text/plain; charset=UTF-8")
+		header("Content-Transfer-Encoding", "base64")
+		b.WriteString("\r\n")
+		writeBase64(&b, m.Text)
+		return b.Bytes(), nil
+	}
+	boundary := "dtw-" + hex.EncodeToString(id)
+	header("Content-Type", `multipart/alternative; boundary="`+boundary+`"`)
 	b.WriteString("\r\n")
-	text := strings.ReplaceAll(strings.ReplaceAll(m.Text, "\r\n", "\n"), "\n", "\r\n")
-	enc := base64.StdEncoding.EncodeToString([]byte(text))
+	for _, part := range []struct{ kind, body string }{{"text/plain", m.Text}, {"text/html", m.HTML}} {
+		b.WriteString("--" + boundary + "\r\n")
+		b.WriteString("Content-Type: " + part.kind + "; charset=UTF-8\r\n")
+		b.WriteString("Content-Transfer-Encoding: base64\r\n\r\n")
+		writeBase64(&b, part.body)
+	}
+	b.WriteString("--" + boundary + "--\r\n")
+	return b.Bytes(), nil
+}
+
+func writeBase64(b *bytes.Buffer, s string) {
+	s = strings.ReplaceAll(strings.ReplaceAll(s, "\r\n", "\n"), "\n", "\r\n")
+	enc := base64.StdEncoding.EncodeToString([]byte(s))
 	for len(enc) > 76 {
 		b.WriteString(enc[:76] + "\r\n")
 		enc = enc[76:]
 	}
 	b.WriteString(enc + "\r\n")
-	return b.Bytes(), nil
 }

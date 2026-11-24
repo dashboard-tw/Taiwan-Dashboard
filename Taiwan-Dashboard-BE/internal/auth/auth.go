@@ -87,7 +87,7 @@ func (s *Store) CreateSession(ctx context.Context, userID int64, ip, userAgent s
 		return "", time.Time{}, err
 	}
 	if newDevice {
-		s.emit(Event{Kind: EventNewDevice, UserID: userID, IP: ip, UserAgent: userAgent})
+		s.emit(ctx, Event{Kind: EventNewDevice, UserID: userID, IP: ip, UserAgent: userAgent})
 	}
 	return token, expires, nil
 }

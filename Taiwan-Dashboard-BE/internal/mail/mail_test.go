@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"mime"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	netmail "net/mail"
@@ -49,6 +50,43 @@ func TestBuildMessage(t *testing.T) {
 	}
 	if _, err := s.build(to, Message{Subject: "a\r\nBcc: x@example.com"}); err == nil {
 		t.Error("a subject with a line break was accepted")
+	}
+}
+
+func TestBuildMultipart(t *testing.T) {
+	s, err := NewSMTP(Config{Host: "smtp.example.com", From: "noreply@dashboard.tw"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	to, _ := netmail.ParseAddress("user@example.com")
+	raw, err := s.build(to, Message{Subject: "主旨", Text: "純文字", HTML: "<p>網頁</p>"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	msg, err := netmail.ReadMessage(strings.NewReader(string(raw)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	kind, params, err := mime.ParseMediaType(msg.Header.Get("Content-Type"))
+	if err != nil || kind != "multipart/alternative" {
+		t.Fatalf("Content-Type = %q", msg.Header.Get("Content-Type"))
+	}
+	r := multipart.NewReader(msg.Body, params["boundary"])
+	var got []string
+	for {
+		p, err := r.NextPart()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		enc, _ := io.ReadAll(p)
+		b, _ := base64.StdEncoding.DecodeString(strings.ReplaceAll(string(enc), "\r\n", ""))
+		got = append(got, strings.Split(p.Header.Get("Content-Type"), ";")[0]+"="+string(b))
+	}
+	if strings.Join(got, "|") != "text/plain=純文字|text/html=<p>網頁</p>" {
+		t.Errorf("parts = %q", got)
 	}
 }
 

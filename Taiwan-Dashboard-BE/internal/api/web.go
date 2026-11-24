@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"dashboard.tw/backend/internal/auth"
 	"dashboard.tw/backend/internal/component"
 )
 
@@ -81,5 +82,17 @@ func webHeaders(c *gin.Context, p string) {
 	h.Set("Referrer-Policy", "strict-origin-when-cross-origin")
 	if !strings.HasPrefix(p, "/embed/") {
 		h.Set("X-Frame-Options", "SAMEORIGIN")
+	}
+}
+
+func clientInfo(behindCloudflare bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		info := auth.Client{UserAgent: c.Request.UserAgent()}
+		if behindCloudflare {
+			h := c.Request.Header
+			info.Country, info.Region, info.City = h.Get("CF-IPCountry"), h.Get("CF-Region"), h.Get("CF-IPCity")
+		}
+		c.Request = c.Request.WithContext(auth.WithClient(c.Request.Context(), info))
+		c.Next()
 	}
 }

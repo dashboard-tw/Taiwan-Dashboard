@@ -183,7 +183,7 @@ func (s *Store) createExternal(ctx context.Context, provider string, id Identity
 	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
-	s.emit(Event{Kind: EventSignup, UserID: u.ID, Provider: provider})
+	s.emit(ctx, Event{Kind: EventSignup, UserID: u.ID, Provider: provider})
 	return &u, nil
 }
 

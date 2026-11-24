@@ -55,11 +55,11 @@ func (n *Notifier) SendTest(ctx context.Context, key, to string) error {
 	}
 	data := Sample(key)
 	data["Site"] = n.Site
-	subject, body, err := t.render(data)
+	r, err := t.renderAll(data)
 	if err != nil {
 		return err
 	}
-	return n.Sender.Send(ctx, mail.Message{To: to, Subject: "［測試］" + subject, Text: body, Tag: "test"})
+	return n.Sender.Send(ctx, mail.Message{To: to, Subject: "［測試］" + r.Subject, Text: r.Text, HTML: r.HTML, Tag: "test"})
 }
 
 func (n *Notifier) userInfo(ctx context.Context, userID int64) (email, name string, err error) {
@@ -94,14 +94,27 @@ func (n *Notifier) OnEvent(e auth.Event) {
 	case auth.EventSignup:
 		n.toUser("signup", e.UserID, map[string]string{"Provider": providerName(e.Provider)})
 	case auth.EventNewDevice:
-		n.toUser("new_device", e.UserID, map[string]string{
-			"Time": clock(e.At), "Device": auth.DeviceName(e.UserAgent), "IP": orUnknown(e.IP),
-		})
+		n.toUser("new_device", e.UserID, clientVars(e, nil))
 	case auth.EventLink, auth.EventUnlink:
-		n.toUser(e.Kind, e.UserID, map[string]string{"Provider": providerName(e.Provider), "Time": clock(e.At)})
-	case auth.EventAPIKeyCreated, auth.EventAPIKeyDisabled, auth.EventAPIKeyDeleted:
-		n.toUser(e.Kind, e.UserID, map[string]string{"Key": e.Key, "ClientID": e.ClientID, "Time": clock(e.At)})
+		n.toUser(e.Kind, e.UserID, clientVars(e, map[string]string{"Provider": providerName(e.Provider)}))
+	case auth.EventAPIKeyCreated, auth.EventAPIKeyRotated, auth.EventAPIKeyDisabled, auth.EventAPIKeyDeleted:
+		n.toUser(e.Kind, e.UserID, clientVars(e, map[string]string{"Key": e.Key, "ClientID": e.ClientID}))
 	}
+}
+
+func clientVars(e auth.Event, data map[string]string) map[string]string {
+	if data == nil {
+		data = map[string]string{}
+	}
+	d := auth.DescribeDevice(e.UserAgent)
+	data["Time"] = clock(e.At)
+	data["IP"] = orUnknown(e.IP)
+	data["Location"] = orUnknown(e.Client.Location())
+	data["DeviceType"] = orUnknown(d.Type)
+	data["OS"] = orUnknown(d.OS)
+	data["Browser"] = orUnknown(d.Browser)
+	data["Device"] = auth.DeviceName(e.UserAgent)
+	return data
 }
 
 func (n *Notifier) AccountDeleting(ctx context.Context, userID int64) func() {
@@ -164,10 +177,12 @@ func (n *Notifier) AppReviewed(userID int64, app, action, note string) {
 	n.toUser(key, userID, map[string]string{"App": app, "Note": note})
 }
 
-func (n *Notifier) AppSubmitted(app, author string, updated bool) {
+func (n *Notifier) AppSubmitted(userID int64, app, author string, updated bool) {
 	if !n.enabled() {
 		return
 	}
+	n.queue(job{template: "app_received", userID: userID, data: map[string]string{"App": app, "Author": author},
+		mergeKey: fmt.Sprintf("app_received:%d", userID), delay: mergeDelay})
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var ids []int64

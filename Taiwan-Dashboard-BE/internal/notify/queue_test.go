@@ -73,10 +73,10 @@ func TestQueueSignupAndRetry(t *testing.T) {
 	}
 	dueNow(t, store)
 	drain(t, n)
-	if len(f.sent) != 1 || f.sent[0].To != "octo@example.com" || f.sent[0].Subject != "歡迎加入臺灣儀表板" || f.sent[0].Tag != "signup" {
+	if len(f.sent) != 1 || f.sent[0].To != "octo@example.com" || f.sent[0].Subject != "歡迎使用臺灣儀表板" || f.sent[0].Tag != "signup" {
 		t.Fatalf("sent = %+v", f.sent)
 	}
-	if !strings.Contains(f.sent[0].Text, "Octo 您好") || !strings.Contains(f.sent[0].Text, "用 GitHub 註冊") {
+	if !strings.Contains(f.sent[0].Text, "Octo 您好") || !strings.Contains(f.sent[0].Text, "透過 GitHub 完成帳號建立") {
 		t.Errorf("text = %q", f.sent[0].Text)
 	}
 	var status string
@@ -107,20 +107,27 @@ func TestQueueMergesSubmissions(t *testing.T) {
 		admin.ID, enc, store.Emails.Fingerprint(admin.ID, "admin@example.com"), store.Emails.Lookup("admin@example.com")); err != nil {
 		t.Fatal(err)
 	}
-	n.AppSubmitted("甲", "小明", false)
-	n.AppSubmitted("乙", "小明", false)
-	n.AppSubmitted("丙", "小華", false)
+	n.AppSubmitted(admin.ID, "甲", "小明", false)
+	n.AppSubmitted(admin.ID, "乙", "小明", false)
+	n.AppSubmitted(admin.ID, "丙", "小華", false)
 	drain(t, n)
 	if len(f.sent) != 0 {
 		t.Fatal("submissions were sent before the merge window ended")
 	}
 	dueNow(t, store)
 	drain(t, n)
-	if len(f.sent) != 1 {
-		t.Fatalf("sent %d mails, want one merged mail", len(f.sent))
+	if len(f.sent) != 2 {
+		t.Fatalf("sent %d mails, want one merged mail for admins and one receipt", len(f.sent))
 	}
-	if !strings.Contains(f.sent[0].Text, "小明、小華 投稿了新的應用「甲」、「乙」、「丙」") {
-		t.Errorf("text = %q", f.sent[0].Text)
+	byTag := map[string]string{}
+	for _, m := range f.sent {
+		byTag[m.Tag] = m.Text
+	}
+	if !strings.Contains(byTag["app_submitted"], "開發者 小明、小華 已提交新應用「甲」、「乙」、「丙」") {
+		t.Errorf("admin text = %q", byTag["app_submitted"])
+	}
+	if !strings.Contains(byTag["app_received"], "我們已收到您投稿的應用「甲」、「乙」、「丙」") {
+		t.Errorf("receipt text = %q", byTag["app_received"])
 	}
 }
 
@@ -142,7 +149,7 @@ func TestQueueSkipsAndDeletedAccount(t *testing.T) {
 	done()
 	n.AppReviewed(u.ID, "應用", "approve", "")
 	drain(t, n)
-	if len(f.sent) != 1 || f.sent[0].To != "bye@example.com" || f.sent[0].Subject != "帳號已刪除" {
+	if len(f.sent) != 1 || f.sent[0].To != "bye@example.com" || f.sent[0].Subject != "帳號刪除確認通知" {
 		t.Fatalf("sent = %+v", f.sent)
 	}
 	var got []string

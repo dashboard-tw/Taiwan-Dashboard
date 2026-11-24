@@ -124,7 +124,8 @@ describe('rain levels', () => {
   it('apply to the rain components only', () => {
     expect(levelsFor('rain-by-county', 'weather', '毫米')).toBe(RAIN_24H_LEVELS)
     expect(levelsFor('rain-1hr-top', 'weather', '毫米')).toBe(RAIN_1H_LEVELS)
-    expect(levelsFor('typhoon-track', 'weather', '公尺/秒')).toBeNull()
+    expect(levelsFor('typhoon-track', 'warning', '公尺/秒')).toBeNull()
+    expect(levelsFor('typhoon-event-track', 'warning', '公尺/秒')).toBeNull()
   })
 })
 

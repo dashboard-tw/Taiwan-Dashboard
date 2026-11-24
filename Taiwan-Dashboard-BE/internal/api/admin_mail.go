@@ -152,12 +152,12 @@ func (h adminHandlers) previewMailTemplate(c *gin.Context) {
 	if !bindJSON(c, &in) || !in.validate(c, key) {
 		return
 	}
-	subject, body, err := notify.Preview(c.Request.Context(), h.db, key, in.Subject, in.Body, h.site)
+	r, err := notify.Preview(c.Request.Context(), h.db, key, in.Subject, in.Body, h.site)
 	if err != nil {
 		writeError(c, http.StatusBadRequest, "invalid_template", err.Error())
 		return
 	}
-	writeData(c, http.StatusOK, gin.H{"subject": subject, "body": body}, nil)
+	writeData(c, http.StatusOK, gin.H{"subject": r.Subject, "body": r.Text, "html": r.HTML}, nil)
 }
 
 func (h adminHandlers) testMailTemplate(c *gin.Context) {

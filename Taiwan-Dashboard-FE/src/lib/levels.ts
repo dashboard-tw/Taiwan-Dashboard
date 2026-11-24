@@ -309,7 +309,7 @@ export function levelsFor(slug: string, topic: string, unit: string): Level[] | 
   if (slug === 'river-quality-by-county' || slug === 'river-quality-worst') return RPI_LEVELS
   if (slug === 'debris-flow-alert') return DEBRIS_LEVELS
   if (unit === '公里/小時') return SPEED_LEVELS
-  if (unit === '公尺/秒') return WIND_LEVELS
+  if (unit === '公尺/秒' && topic === 'weather') return WIND_LEVELS
   if (topic === 'earthquake' && unit === '次') return QUAKE_COUNT_LEVELS
   if (slug.startsWith('pm25')) return PM25_LEVELS
   if (unit === 'UVI') return UV_LEVELS

@@ -293,14 +293,14 @@ func (n *Notifier) deliver(ctx context.Context, j job) (status, reason string) {
 		return "skipped", "這個信箱曾經" + suppressLabel[why] + "，不再寄送"
 	}
 	j.data["Site"] = n.Site
-	subject, body, err := Render(ctx, n.Store.DB, j.template, j.data)
+	r, err := RenderMail(ctx, n.Store.DB, j.template, j.data)
 	if errors.Is(err, ErrDisabled) {
 		return "skipped", "這封信已停用"
 	}
 	if err != nil {
 		return "retry", err.Error()
 	}
-	if err := n.Sender.Send(ctx, mail.Message{To: email, Subject: subject, Text: body, Tag: j.template, ID: fmt.Sprintf("mail_queue:%d", j.id)}); err != nil {
+	if err := n.Sender.Send(ctx, mail.Message{To: email, Subject: r.Subject, Text: r.Text, HTML: r.HTML, Tag: j.template, ID: fmt.Sprintf("mail_queue:%d", j.id)}); err != nil {
 		return "retry", err.Error()
 	}
 	if n.Sandbox {

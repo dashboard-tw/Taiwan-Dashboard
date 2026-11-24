@@ -521,7 +521,9 @@ const HEADERS = [
                   每天 {{ PER_DAY }} 次、{{ MB_PER_DAY }} MB 流量，每分鐘
                   {{ PER_MINUTE }} 次，每天午夜歸零。應用上架到<RouterLink to="/showcase/app"
                     >應用活化</RouterLink
-                  >後，每天可用 {{ PARTNER_PER_DAY }} 次。用量超過八成時會寄信提醒，一天一封。
+                  >後，每天可用
+                  {{ PARTNER_PER_DAY }}
+                  次，應用都下架後恢復一般額度。用量超過八成時會寄信提醒，一天一封。
                 </p>
               </div>
               <div class="card">

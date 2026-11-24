@@ -138,7 +138,7 @@ func (s *Store) LinkIdentity(ctx context.Context, userID int64, provider, subjec
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-	s.emit(Event{Kind: EventLink, UserID: userID, Provider: provider, IP: ip})
+	s.emit(ctx, Event{Kind: EventLink, UserID: userID, Provider: provider, IP: ip})
 	return nil
 }
 
@@ -186,6 +186,6 @@ func (s *Store) UnlinkIdentity(ctx context.Context, userID int64, provider, ip s
 	if err := tx.Commit(); err != nil {
 		return err
 	}
-	s.emit(Event{Kind: EventUnlink, UserID: userID, Provider: provider, IP: ip})
+	s.emit(ctx, Event{Kind: EventUnlink, UserID: userID, Provider: provider, IP: ip})
 	return nil
 }

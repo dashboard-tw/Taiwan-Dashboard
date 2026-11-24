@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"strings"
 	"time"
 )
@@ -12,6 +13,7 @@ const (
 	EventUnlink    = "unlink"
 
 	EventAPIKeyCreated  = "api_key_created"
+	EventAPIKeyRotated  = "api_key_rotated"
 	EventAPIKeyDisabled = "api_key_disabled"
 	EventAPIKeyDeleted  = "api_key_deleted"
 )
@@ -24,12 +26,18 @@ type Event struct {
 	UserAgent     string
 	At            time.Time
 	Key, ClientID string
+	Client        Client
 }
 
-func (s *Store) emit(e Event) {
+func (s *Store) emit(ctx context.Context, e Event) {
 	if s.OnEvent == nil {
 		return
 	}
+	c := ClientFrom(ctx)
+	if e.UserAgent != "" {
+		c.UserAgent = e.UserAgent
+	}
+	e.Client, e.UserAgent = c, c.UserAgent
 	if e.At.IsZero() {
 		e.At = s.now()
 	}

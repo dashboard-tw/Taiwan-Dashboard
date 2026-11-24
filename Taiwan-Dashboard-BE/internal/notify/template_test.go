@@ -43,11 +43,11 @@ func TestSeededTemplates(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if subject != "應用審查未通過：雨天出門提醒" {
+	if subject != "應用審查結果通知：雨天出門提醒" {
 		t.Errorf("subject = %q", subject)
 	}
-	if !strings.HasPrefix(body, "王小明 您好：") || !strings.Contains(body, "原因：網址無法開啟") ||
-		!strings.HasSuffix(body, "這封信由系統自動寄出，請不要直接回覆。") {
+	if !strings.HasPrefix(body, "王小明 您好：") || !strings.Contains(body, "審核意見：網址無法開啟") ||
+		!strings.HasSuffix(body, "Discord 社群：https://discord.gg/gU5gndueZH") {
 		t.Errorf("body = %q", body)
 	}
 

@@ -20,6 +20,9 @@
 | `docs/brand/logo-light.svg`、`logo-light-1024.png` | 向量、1024 × 1024 | 淺色版：白底、深藍色臺灣，用在淺色的簡報或文件 |
 | `docs/brand/logo-mark-white.svg`、`logo-mark-white-1024.png` | 向量、1024 × 1024 | 無背景、白色臺灣，放在深色背景上 |
 | `docs/brand/logo-mark-dark.svg`、`logo-mark-dark-1024.png` | 向量、1024 × 1024 | 無背景、深藍色臺灣，放在淺色背景上 |
+| `docs/brand/logo-horizontal-light.png`、`logo-horizontal-dark.png` | 1536 × 480 | 長方形 Logo：左邊圖示，右邊「臺灣儀表板」與「Taiwan Dashboard」。light 用在淺色背景，dark 用在深色背景 |
+| `Taiwan-Dashboard-FE/public/mail/logo-light.png`、`logo-dark.png` | 384 × 120 | 通知信頂端的長方形 Logo，信裡以 192 × 60 顯示 |
+| `Taiwan-Dashboard-FE/public/mail/discord.png`、`github.png` | 48 × 48 | 通知信頁尾的灰色社群圖示，信裡以 24 × 24 顯示 |
 | `docs/brand/social-preview.jpg` | 2560 × 1280 | GitHub 倉庫的 Social preview，用網站實際畫面製作 |
 | `docs/brand/screenshots/` | 2400 × 1500 | 網站實際畫面：首頁、地圖模式、臺北市、電力、天氣、API 文件，用於應用登錄與介紹 |
 
@@ -39,3 +42,5 @@
 臺灣島放大 1.36 倍置中，深色底用 `#ffffff`，淺色底用 `#0d1b2e`。
 
 修改時先改 `logo.svg` 與 `docs/brand` 裡的 SVG，再執行 `node scripts/windows/render-logo.mjs` 重新產生各尺寸 PNG。
+
+長方形 Logo 的文字用 Noto Sans TC（SIL Open Font License）：「臺灣儀表板」粗體 700、高度的 40%，「Taiwan Dashboard」中等 500、高度的 17.5%，顏色深色底用 `#ffffff` 與 `#b8c2ce`，淺色底用 `#0d1b2e` 與 `#5b6675`。圖示與文字之間留高度的 20%。

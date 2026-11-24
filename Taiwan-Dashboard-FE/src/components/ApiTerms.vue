@@ -36,6 +36,9 @@ withDefaults(defineProps<{ perDay: number; perMinute: number; mbPerDay?: number 
           >申請應用活化</RouterLink
         >。
       </li>
+      <li>
+        合作額度以名下至少有一個上架中的應用為條件。應用下架或刪除後，若名下已無上架中的應用，額度會自動恢復為一般額度。
+      </li>
     </ul>
 
     <h3>三、保管憑證</h3>

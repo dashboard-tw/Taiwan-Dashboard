@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -31,7 +32,7 @@ type Deps struct {
 
 func NewRouter(deps Deps) *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
+	r.Use(gin.Logger(), gin.Recovery(), clientInfo(strings.EqualFold(deps.ClientIPHeader, "CF-Connecting-IP")))
 	_ = r.SetTrustedProxies([]string{"127.0.0.1", "::1"})
 	if deps.ClientIPHeader != "" {
 		r.TrustedPlatform = deps.ClientIPHeader

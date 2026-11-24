@@ -166,7 +166,7 @@ func (s *Store) CreateClient(ctx context.Context, userID int64, name, ip string)
 	if err != nil {
 		return nil, "", err
 	}
-	s.emit(Event{Kind: EventAPIKeyCreated, UserID: userID, IP: ip, Key: name, ClientID: clientID})
+	s.emit(ctx, Event{Kind: EventAPIKeyCreated, UserID: userID, IP: ip, Key: name, ClientID: clientID})
 	return &c, secret, nil
 }
 
@@ -224,11 +224,14 @@ func (s *Store) RotateClientSecret(ctx context.Context, userID, id int64, ip str
 	if err != nil {
 		return "", err
 	}
-	err = s.changeClient(ctx, userID, id, "client.rotate", ip, func(tx *sql.Tx) error {
+	name, err := s.changeClientNamed(ctx, userID, id, "client.rotate", ip, func(tx *sql.Tx) error {
 		_, err := tx.ExecContext(ctx, `UPDATE app.api_key SET key_hash = $2, secret_hint = $3 WHERE id = $1`,
 			id, hashOf(secret), secretHint(secret))
 		return err
 	})
+	if err == nil {
+		s.emit(ctx, Event{Kind: EventAPIKeyRotated, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
+	}
 	return secret, err
 }
 
@@ -244,7 +247,7 @@ func (s *Store) SetClientEnabled(ctx context.Context, userID, id int64, enabled 
 		return err
 	})
 	if err == nil && !enabled {
-		s.emit(Event{Kind: EventAPIKeyDisabled, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
+		s.emit(ctx, Event{Kind: EventAPIKeyDisabled, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
 	}
 	return err
 }
@@ -255,7 +258,7 @@ func (s *Store) DeleteClient(ctx context.Context, userID, id int64, ip string) e
 		return err
 	})
 	if err == nil {
-		s.emit(Event{Kind: EventAPIKeyDeleted, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
+		s.emit(ctx, Event{Kind: EventAPIKeyDeleted, UserID: userID, IP: ip, Key: name[0], ClientID: name[1]})
 	}
 	return err
 }

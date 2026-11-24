@@ -72,8 +72,11 @@ func (b *Brevo) Send(ctx context.Context, m Message) error {
 		To:          []brevoAddr{{Email: to.Address, Name: to.Name}},
 		Subject:     m.Subject,
 		TextContent: m.Text,
-		HTMLContent: textToHTML(m.Text),
+		HTMLContent: m.HTML,
 		Headers:     map[string]string{"idempotencyKey": key},
+	}
+	if body.HTMLContent == "" {
+		body.HTMLContent = textToHTML(m.Text)
 	}
 	if m.Tag != "" {
 		body.Tags = []string{m.Tag}

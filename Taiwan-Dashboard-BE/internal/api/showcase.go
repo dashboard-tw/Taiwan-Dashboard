@@ -249,7 +249,7 @@ func (h meHandlers) createApp(c *gin.Context) {
 		meFail(c, err)
 		return
 	}
-	h.auth.Notify.AppSubmitted(in.Name, u.DisplayName, false)
+	h.auth.Notify.AppSubmitted(u.ID, in.Name, u.DisplayName, false)
 	h.auth.Hooks.Emit(c.Request.Context(), hooks.EventAppSubmitted, hooks.Message{
 		Title: "有新投稿：" + in.Name, Level: hooks.LevelInfo, URL: siteOf(h.auth.Origins) + "/admin/apps",
 		Text: in.Description, Fields: []hooks.Field{{Name: "投稿者", Value: u.DisplayName}},
@@ -295,7 +295,7 @@ func (h meHandlers) updateApp(c *gin.Context) {
 		meFail(c, err)
 		return
 	}
-	h.auth.Notify.AppSubmitted(in.Name, u.DisplayName, true)
+	h.auth.Notify.AppSubmitted(u.ID, in.Name, u.DisplayName, true)
 	h.auth.Hooks.Emit(c.Request.Context(), hooks.EventAppSubmitted, hooks.Message{
 		Title: "應用修改待審查：" + in.Name, Level: hooks.LevelInfo, URL: siteOf(h.auth.Origins) + "/admin/apps",
 		Fields: []hooks.Field{{Name: "投稿者", Value: u.DisplayName}},
