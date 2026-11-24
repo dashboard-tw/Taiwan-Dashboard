@@ -10,7 +10,7 @@ await build({
 const { pages, render } = await import(pathToFileURL(`${out}/prerender.js`).href)
 await mkdir('dist/prerender', { recursive: true })
 for (const [name, view] of Object.entries(pages)) {
-  const html = (await render(view, `/${name}`)).replace(/<!--[\s\S]*?-->/g, '')
+  const html = await render(view, `/${name}`)
   await writeFile(`dist/prerender/${name}.html`, html)
   console.log(`prerender /${name}: ${html.length} bytes`)
 }

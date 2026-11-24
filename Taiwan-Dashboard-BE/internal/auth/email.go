@@ -19,6 +19,9 @@ const emailFormat = 1
 const EmailKeySize = 32
 
 var ErrEmailUnreadable = errors.New("stored email cannot be decrypted")
+var ErrSealTooLong = errors.New("content is too long to encrypt")
+
+const MaxSealLen = 4096
 
 type EmailVault struct {
 	aead      cipher.AEAD
@@ -68,6 +71,9 @@ func emailAAD(userID int64) []byte {
 }
 
 func (v *EmailVault) Seal(userID int64, email string) ([]byte, error) {
+	if len(email) > MaxSealLen {
+		return nil, ErrSealTooLong
+	}
 	out := make([]byte, 1+v.aead.NonceSize(), 1+v.aead.NonceSize()+len(email)+v.aead.Overhead())
 	out[0] = emailFormat
 	if _, err := rand.Read(out[1:]); err != nil {

@@ -3,6 +3,8 @@ package auth
 import (
 	"bytes"
 	"crypto/sha256"
+	"errors"
+	"strings"
 	"testing"
 )
 
@@ -103,5 +105,15 @@ func TestEmailLookup(t *testing.T) {
 	}
 	if bytes.Equal(a, testVault(t, 2).Lookup("octo@example.com")) {
 		t.Error("lookup does not depend on the key")
+	}
+}
+
+func TestEmailSealLimit(t *testing.T) {
+	v := testVault(t, 1)
+	if _, err := v.Seal(7, strings.Repeat("a", MaxSealLen)); err != nil {
+		t.Errorf("a value at the limit was refused: %v", err)
+	}
+	if _, err := v.Seal(7, strings.Repeat("a", MaxSealLen+1)); !errors.Is(err, ErrSealTooLong) {
+		t.Errorf("an oversized value was sealed: %v", err)
 	}
 }
