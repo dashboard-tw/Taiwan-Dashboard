@@ -758,3 +758,34 @@ func TestOpenAPIIsPublic(t *testing.T) {
 		t.Errorf("unknown parameter: %d", w.Code)
 	}
 }
+
+func TestDeletedClientKeepsDailyUsage(t *testing.T) {
+	e := newOpenEnv(t)
+	withQuota(t, 3, 60)
+	a := e.signInAs(t, auth.RoleUser, "active")
+
+	id, secret, clientRow := e.newClient(t, a, "第一組")
+	w := e.token(id, secret, false)
+	if w.Code != http.StatusOK {
+		t.Fatalf("token: %d %s", w.Code, w.Body)
+	}
+	first := readToken(t, w).AccessToken
+	for i := 0; i < 3; i++ {
+		if w := e.withKey("/api/v1/datasets", first); w.Code != http.StatusOK {
+			t.Fatalf("request %d: %d", i+1, w.Code)
+		}
+	}
+	if w := e.send("DELETE", fmt.Sprintf("/api/v1/me/api-clients/%d", clientRow), a, nil); w.Code != http.StatusNoContent {
+		t.Fatalf("delete client: %d %s", w.Code, w.Body)
+	}
+
+	second := e.newKey(t, a)
+	w = e.withKey("/api/v1/datasets", second)
+	if w.Code != http.StatusTooManyRequests || !strings.Contains(w.Body.String(), "quota_exceeded") {
+		t.Errorf("a new credential after deleting the old one: %d %s, want 429 quota_exceeded", w.Code, w.Body)
+	}
+	state := decode[clientsState](t, e.send("GET", "/api/v1/me/api-clients", a, nil))
+	if state.UsedToday.Requests != 3 {
+		t.Errorf("used today = %d, want the 3 requests of the deleted credential", state.UsedToday.Requests)
+	}
+}
