@@ -207,3 +207,37 @@ func TestRunnerNotifiesAfterNewRows(t *testing.T) {
 		t.Errorf("notification = %q, %v; want the dataset id", payload, ok)
 	}
 }
+
+func TestReleaseOrphanRuns(t *testing.T) {
+	r := newRunner(t)
+	ctx := context.Background()
+	p := &fakePipeline{}
+	if err := r.RegisterDatasets(ctx, []pipeline.Pipeline{p}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := r.DB.Exec(`
+		INSERT INTO app.pipeline_run (dataset_id, started_at) VALUES
+		  ('fake', now() - interval '20 minutes'), ('fake', now() - interval '1 minute')`); err != nil {
+		t.Fatal(err)
+	}
+
+	conn, err := r.DB.Conn(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := conn.ExecContext(ctx, `SELECT pg_advisory_lock(hashtext('pipeline:fake'))`); err != nil {
+		t.Fatal(err)
+	}
+	if n, err := pipeline.ReleaseOrphanRuns(ctx, r.DB); err != nil || n != 0 {
+		t.Fatalf("a run that is still going was released: %d %v", n, err)
+	}
+	conn.Close()
+
+	n, err := pipeline.ReleaseOrphanRuns(ctx, r.DB)
+	if err != nil || n != 1 {
+		t.Fatalf("ReleaseOrphanRuns = %d, %v", n, err)
+	}
+	if c := pipelinetest.Count(t, r.DB, `SELECT count(*) FROM app.pipeline_run WHERE status = 'running'`); c != 1 {
+		t.Errorf("the recent run should stay running, %d left", c)
+	}
+}

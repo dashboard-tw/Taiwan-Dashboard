@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -309,7 +310,35 @@ func (h adminHandlers) runDataset(c *gin.Context) {
 		return
 	}
 	id := c.Param("id")
-	res, err := h.run(c.Request.Context(), id)
+	ctx := context.WithoutCancel(c.Request.Context())
+	ip := c.ClientIP()
+	type outcome struct {
+		res pipeline.Result
+		err error
+	}
+	done := make(chan outcome, 1)
+	go func() {
+		res, err := h.run(ctx, id)
+		if !errors.Is(err, ErrUnknownDataset) && !errors.Is(err, pipeline.ErrAlreadyRunning) {
+			detail := map[string]any{"rows_fetched": res.RowsFetched, "rows_inserted": res.RowsInserted}
+			if err != nil {
+				detail["error"] = err.Error()
+			}
+			if aerr := h.store.Audit(ctx, &u.ID, "dataset.run", "dataset:"+id, detail, ip); aerr != nil {
+				slog.Error("audit dataset run", "error", aerr)
+			}
+		}
+		done <- outcome{res, err}
+	}()
+	var res pipeline.Result
+	var err error
+	select {
+	case o := <-done:
+		res, err = o.res, o.err
+	case <-time.After(runForegroundWait):
+		writeData(c, http.StatusAccepted, gin.H{"background": true}, nil)
+		return
+	}
 	switch {
 	case errors.Is(err, ErrUnknownDataset):
 		writeError(c, http.StatusNotFound, "not_found", "找不到這個資料集")
@@ -317,13 +346,6 @@ func (h adminHandlers) runDataset(c *gin.Context) {
 	case errors.Is(err, pipeline.ErrAlreadyRunning):
 		writeError(c, http.StatusConflict, "already_running", "這個資料集正在抓取中，請稍後再試")
 		return
-	}
-	detail := map[string]any{"rows_fetched": res.RowsFetched, "rows_inserted": res.RowsInserted}
-	if err != nil {
-		detail["error"] = err.Error()
-	}
-	if aerr := h.store.Audit(context.WithoutCancel(c.Request.Context()), &u.ID, "dataset.run", "dataset:"+id, detail, c.ClientIP()); aerr != nil {
-		slog.Error("audit dataset run", "error", aerr)
 	}
 	if err != nil {
 		writeError(c, http.StatusBadGateway, "run_failed", "抓取失敗："+pipeline.Truncate(err.Error(), 300))
@@ -338,6 +360,8 @@ func (h adminHandlers) runDataset(c *gin.Context) {
 }
 
 var ErrUnknownDataset = errors.New("unknown dataset")
+
+var runForegroundWait = 25 * time.Second
 
 func nonNilStrings(s []string) []string {
 	if s == nil {

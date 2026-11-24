@@ -33,6 +33,7 @@ export interface PowerUnitRef {
 }
 
 export interface RunResult {
+  background?: boolean
   rows_fetched: number
   rows_inserted: number
   warnings: string[]

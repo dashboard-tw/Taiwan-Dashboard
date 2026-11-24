@@ -324,6 +324,13 @@ func maintenanceJobs(r *pipeline.Runner) []pipeline.Job {
 				if n > 0 {
 					slog.Warn("datasets marked stale", "count", n)
 				}
+				if err != nil {
+					return err
+				}
+				released, err := pipeline.ReleaseOrphanRuns(ctx, r.DB)
+				if released > 0 {
+					slog.Warn("interrupted pipeline runs marked failed", "count", released)
+				}
 				return err
 			},
 		},

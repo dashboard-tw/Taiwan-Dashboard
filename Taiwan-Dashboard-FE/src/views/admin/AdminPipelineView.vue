@@ -149,6 +149,10 @@ async function run(id: string) {
   delete results.value[id]
   try {
     const r = await runDataset(id)
+    if (r.background) {
+      results.value[id] = { ok: true, text: '抓取時間較長，已改在背景執行，完成後會更新抓取紀錄' }
+      return
+    }
     const warn = r.warnings.length ? `。${r.warnings.join('。')}` : ''
     results.value[id] = {
       ok: true,

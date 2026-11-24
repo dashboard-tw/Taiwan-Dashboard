@@ -177,6 +177,58 @@ func MarkStale(ctx context.Context, db *sql.DB) (int64, error) {
 	return res.RowsAffected()
 }
 
+const OrphanAfter = 10 * time.Minute
+
+func ReleaseOrphanRuns(ctx context.Context, db *sql.DB) (int, error) {
+	rows, err := db.QueryContext(ctx, `
+		SELECT id, dataset_id FROM app.pipeline_run
+		 WHERE status = 'running' AND started_at < now() - $1::interval`, intervalString(OrphanAfter))
+	if err != nil {
+		return 0, err
+	}
+	type run struct {
+		id      int64
+		dataset string
+	}
+	var runs []run
+	for rows.Next() {
+		var r run
+		if err := rows.Scan(&r.id, &r.dataset); err != nil {
+			rows.Close()
+			return 0, err
+		}
+		runs = append(runs, r)
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil || len(runs) == 0 {
+		return 0, err
+	}
+	conn, err := db.Conn(ctx)
+	if err != nil {
+		return 0, err
+	}
+	defer conn.Close()
+	released := 0
+	for _, r := range runs {
+		var locked bool
+		if err := conn.QueryRowContext(ctx, `SELECT pg_try_advisory_lock(hashtext($1))`, "pipeline:"+r.dataset).Scan(&locked); err != nil {
+			return released, err
+		}
+		if !locked {
+			continue
+		}
+		_, err := conn.ExecContext(ctx, `
+			UPDATE app.pipeline_run SET status = 'failed', finished_at = now(), error = '程式重新啟動時中斷'
+			 WHERE id = $1 AND status = 'running'`, r.id)
+		_, _ = conn.ExecContext(context.WithoutCancel(ctx), `SELECT pg_advisory_unlock(hashtext($1))`, "pipeline:"+r.dataset)
+		if err != nil {
+			return released, err
+		}
+		released++
+	}
+	return released, nil
+}
+
 func intervalString(d time.Duration) string {
 	return fmt.Sprintf("%d seconds", int64(d/time.Second))
 }
