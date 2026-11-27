@@ -9,12 +9,23 @@ export interface TopicInfo {
   statusComponent: string
 }
 
-export type TopicGroup = 'weather' | 'environment' | 'utilities' | 'transport' | 'society'
+export type TopicGroup =
+  | 'weather'
+  | 'disaster'
+  | 'environment'
+  | 'energy'
+  | 'utilities'
+  | 'medical'
+  | 'transport'
+  | 'society'
 
 export const TOPIC_GROUPS: { id: TopicGroup; label: string }[] = [
-  { id: 'weather', label: '天氣與防災' },
+  { id: 'weather', label: '天氣' },
+  { id: 'disaster', label: '防災' },
   { id: 'environment', label: '環境' },
+  { id: 'energy', label: '能源' },
   { id: 'utilities', label: '民生' },
+  { id: 'medical', label: '醫療衛生' },
   { id: 'transport', label: '交通' },
   { id: 'society', label: '人口與社會' },
 ]
@@ -56,15 +67,23 @@ export const TOPICS: TopicInfo[] = [
     slug: 'warning',
     label: '颱風警特報',
     title: '颱風與警特報',
-    group: 'weather',
+    group: 'disaster',
     mapComponent: 'weather-warning-by-county',
     statusComponent: 'weather-warning-by-county',
+  },
+  {
+    slug: 'flood',
+    label: '土石流淹水',
+    title: '土石流與淹水',
+    group: 'disaster',
+    mapComponent: 'flood-by-county',
+    statusComponent: 'flood-summary',
   },
   {
     slug: 'earthquake',
     label: '地震',
     title: '地震',
-    group: 'weather',
+    group: 'disaster',
     mapComponent: 'quake-felt-by-county',
     statusComponent: 'quake-recent',
   },
@@ -72,7 +91,7 @@ export const TOPICS: TopicInfo[] = [
     slug: 'fire',
     label: '火災',
     title: '火災',
-    group: 'weather',
+    group: 'disaster',
     mapComponent: 'fire-by-county',
     statusComponent: 'fire-summary',
   },
@@ -94,19 +113,27 @@ export const TOPICS: TopicInfo[] = [
   },
   {
     slug: 'sustain',
-    label: '永續環境',
-    title: '永續環境',
+    label: '環境品質',
+    title: '環境品質',
     group: 'environment',
-    mapComponent: 'residential-power-per-household',
-    statusComponent: 'power-sales-mix',
+    mapComponent: 'waste-per-capita',
+    statusComponent: 'recycling-rate',
   },
   {
     slug: 'power',
     label: '電力',
     title: '電力',
-    group: 'utilities',
+    group: 'energy',
     mapComponent: null,
     statusComponent: 'power-gen-mix',
+  },
+  {
+    slug: 'power-use',
+    label: '用電統計',
+    title: '用電統計',
+    group: 'energy',
+    mapComponent: 'residential-power-per-household',
+    statusComponent: 'power-sales-mix',
   },
   {
     slug: 'outage',
@@ -120,7 +147,7 @@ export const TOPICS: TopicInfo[] = [
     slug: 'resources',
     label: '醫療長照',
     title: '醫療與長照',
-    group: 'utilities',
+    group: 'medical',
     mapComponent: 'hospital-by-county',
     statusComponent: 'hospital-by-county',
   },
@@ -128,7 +155,7 @@ export const TOPICS: TopicInfo[] = [
     slug: 'disease',
     label: '傳染病',
     title: '傳染病',
-    group: 'utilities',
+    group: 'medical',
     mapComponent: 'dengue-by-county',
     statusComponent: 'dengue-summary',
   },
@@ -144,7 +171,7 @@ export const TOPICS: TopicInfo[] = [
     slug: 'food',
     label: '食品安全',
     title: '食品安全',
-    group: 'utilities',
+    group: 'medical',
     mapComponent: null,
     statusComponent: 'food-rejection-summary',
   },
@@ -163,6 +190,14 @@ export const TOPICS: TopicInfo[] = [
     group: 'transport',
     mapComponent: 'freeway-speed-by-county',
     statusComponent: 'freeway-congestion',
+  },
+  {
+    slug: 'fuel',
+    label: '加油充電',
+    title: '加油與充電',
+    group: 'energy',
+    mapComponent: 'fuel-station-by-county',
+    statusComponent: 'fuel-price-now',
   },
   {
     slug: 'rail',
@@ -189,14 +224,6 @@ export const TOPICS: TopicInfo[] = [
     statusComponent: 'youbike-summary',
   },
   {
-    slug: 'safety',
-    label: '交通安全',
-    title: '交通安全',
-    group: 'transport',
-    mapComponent: 'accident-a1-by-county',
-    statusComponent: 'accident-a1-by-county',
-  },
-  {
     slug: 'population',
     label: '人口',
     title: '人口',
@@ -205,12 +232,12 @@ export const TOPICS: TopicInfo[] = [
     statusComponent: 'population-by-county',
   },
   {
-    slug: 'family',
-    label: '婦幼家庭',
-    title: '婦幼與家庭',
+    slug: 'education',
+    label: '教育托育',
+    title: '教育與托育',
     group: 'society',
-    mapComponent: 'birth-rate-by-county',
-    statusComponent: 'vital-12m',
+    mapComponent: 'school-by-county',
+    statusComponent: 'school-by-county',
   },
   {
     slug: 'economy',
@@ -249,7 +276,8 @@ export const REFRESH_MINUTES: Record<string, number> = {
   typhoon: 10,
   resources: 60,
   population: 60,
-  family: 60,
+  education: 60,
+  'power-use': 60,
   fire: 60,
   food: 60,
   housing: 60,
@@ -260,6 +288,8 @@ export const REFRESH_MINUTES: Record<string, number> = {
   tourism: 60,
   health: 60,
   ocean: 60,
+  flood: 10,
+  fuel: 60,
 }
 
 export function refreshMs(slug: string | undefined): number {
@@ -293,6 +323,8 @@ export const DASHBOARD_ICONS: Record<string, string> = {
   forecast: 'calendar_month',
   health: 'health_and_safety',
   ocean: 'waves',
+  flood: 'flood',
+  fuel: 'local_gas_station',
   warning: 'cyclone',
   typhoon: 'crisis_alert',
   'typhoon-event': 'cyclone',
@@ -305,7 +337,8 @@ export const DASHBOARD_ICONS: Record<string, string> = {
   resources: 'local_hospital',
   population: 'groups',
   tourism: 'luggage',
-  family: 'stroller',
+  'power-use': 'electric_meter',
+  education: 'school',
   fire: 'local_fire_department',
   agri: 'agriculture',
   food: 'restaurant',
@@ -314,6 +347,6 @@ export const DASHBOARD_ICONS: Record<string, string> = {
   aviation: 'flight',
   economy: 'trending_up',
   animal: 'pets',
-  sustain: 'eco',
+  sustain: 'recycling',
   county: 'location_on',
 }

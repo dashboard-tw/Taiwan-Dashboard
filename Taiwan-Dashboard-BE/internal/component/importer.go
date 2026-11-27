@@ -150,7 +150,7 @@ var topics = map[string]bool{"aqi": true, "reservoir": true, "power": true, "out
 	"agri": true, "food": true, "fire": true,
 	"housing": true,
 	"disease": true, "aviation": true, "economy": true, "animal": true,
-	"forecast": true, "health": true, "ocean": true}
+	"forecast": true, "health": true, "ocean": true, "flood": true, "fuel": true, "power-use": true, "education": true}
 
 func validateComponent(c ComponentSpec, known map[string]bool) error {
 	var errs []error

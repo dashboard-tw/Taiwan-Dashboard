@@ -547,7 +547,7 @@
     {
       "slug": "debris-alert-summary",
       "name": "土石流警戒重點數字",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "目前的土石流紅、黃色警戒數",
       "long_desc": "農業部農村發展及水土保持署依雨量發布，每 10 分鐘更新。黃色警戒需疏散弱勢族群，紅色警戒由地方政府勸告或強制撤離。沒有警戒時無資料。",
       "use_case": "颱風豪雨時確認住家附近有沒有土石流警戒。",
@@ -576,7 +576,7 @@
     {
       "slug": "debris-alert-by-county",
       "name": "各縣市土石流警戒",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "各縣市土石流與大規模崩塌警戒數",
       "long_desc": "農業部農村發展及水土保持署依雨量發布，每 10 分鐘更新。黃色警戒需疏散弱勢族群，紅色警戒由地方政府勸告或強制撤離。沒有警戒時無資料。",
       "use_case": "看哪些地方有土石流警戒。",
@@ -608,7 +608,7 @@
     {
       "slug": "debris-alert-list",
       "name": "土石流警戒地區",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "發布土石流警戒的鄉鎮與村里",
       "long_desc": "農業部農村發展及水土保持署依雨量發布，每 10 分鐘更新。紅色警戒排在前面，每個鄉鎮一列。沒有警戒時無資料。",
       "use_case": "確認自己的村里是否在警戒範圍。",
@@ -637,7 +637,7 @@
     {
       "slug": "flood-summary",
       "name": "淹水感測",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "淹水感測器的回報數、積淹水數與最大水深",
       "long_desc": "經濟部水利署與縣市政府設在易淹水路口的感測器，每 10 分鐘更新。水深 10 公分以上算積淹水。只計算 2 小時內有回報的感測器，超過 300 公分的異常值不計。",
       "use_case": "豪雨颱風時掌握各地路面積水。",
@@ -666,7 +666,7 @@
     {
       "slug": "flood-by-county",
       "name": "各縣市積淹水",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "各縣市積淹水 10 公分以上的感測器數",
       "long_desc": "經濟部水利署與縣市政府設在易淹水路口的感測器，每 10 分鐘更新。地圖上黃色為 10 公分以上，橘色 30 公分以上，紅色 50 公分以上。",
       "use_case": "看哪裡正在淹水。",
@@ -694,7 +694,7 @@
     {
       "slug": "flood-list",
       "name": "正在積淹水的地點",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "目前積淹水的地點，依水深排序",
       "long_desc": "經濟部水利署與縣市政府設在易淹水路口的感測器，每 10 分鐘更新。只列出水深 10 公分以上、2 小時內有回報的感測器。",
       "use_case": "避開積淹水的路段。",
@@ -723,7 +723,7 @@
     {
       "slug": "flood-trend",
       "name": "積淹水感測器數走勢",
-      "topic": "warning",
+      "topic": "flood",
       "short_desc": "近一週積淹水感測器數的變化",
       "long_desc": "每小時取積淹水 10 公分以上感測器數的最大值。資料來自經濟部水利署與縣市政府的淹水感測器。",
       "use_case": "觀察豪雨颱風期間積淹水的變化。",
@@ -1528,7 +1528,7 @@
     {
       "slug": "river-quality-by-county",
       "name": "各縣市河川污染指數",
-      "topic": "reservoir",
+      "topic": "sustain",
       "short_desc": "各縣市河川的平均污染指數",
       "long_desc": "環境部每月採樣計算河川污染指數 RPI。2.0 以下為未受污染，2.0–3.0 輕度，3.1–6.0 中度，6.0 以上嚴重。結果約晚兩個月公布，取各測站半年內最近一次採樣。",
       "use_case": "比較各地河川的污染程度。",
@@ -1561,7 +1561,7 @@
     {
       "slug": "river-quality-status",
       "name": "河川水質",
-      "topic": "reservoir",
+      "topic": "sustain",
       "short_desc": "河川測站依污染程度的站數",
       "long_desc": "環境部每月採樣計算河川污染指數 RPI。2.0 以下為未受污染，2.0–3.0 輕度，3.1–6.0 中度，6.0 以上嚴重。結果約晚兩個月公布。",
       "use_case": "親水活動前了解河川污染情形。",
@@ -1590,7 +1590,7 @@
     {
       "slug": "river-quality-worst",
       "name": "污染最嚴重的河段",
-      "topic": "reservoir",
+      "topic": "sustain",
       "short_desc": "污染指數最高的 15 個河川測站",
       "long_desc": "環境部每月採樣計算河川污染指數 RPI，6.0 以上為嚴重污染。結果約晚兩個月公布，取各測站半年內最近一次採樣。",
       "use_case": "找出需要改善的河段。",
@@ -1619,7 +1619,7 @@
     {
       "slug": "power-sales-mix",
       "name": "用電部門組成",
-      "topic": "sustain",
+      "topic": "power-use",
       "short_desc": "最近一個月各部門的用電比例",
       "long_desc": "台電每月公布的售電量，分為住宅、服務業、工業、農林漁牧，不含自用發電。",
       "use_case": "比較工業縣市與住商縣市的用電差異。",
@@ -1648,7 +1648,7 @@
     {
       "slug": "residential-power-per-household",
       "name": "每戶住宅用電",
-      "topic": "sustain",
+      "topic": "power-use",
       "short_desc": "各縣市每戶平均住宅用電",
       "long_desc": "住宅售電量除以年底戶數，單位為度。夏天冷氣用電多，數字會比冬天高。",
       "use_case": "比較各地家庭的用電量。",
@@ -1675,7 +1675,7 @@
     {
       "slug": "power-sales-trend",
       "name": "各部門用電趨勢",
-      "topic": "sustain",
+      "topic": "power-use",
       "short_desc": "每月各部門用電量的變化",
       "long_desc": "台電每月公布的售電量，單位為億度，分為住宅、服務業、工業、農林漁牧。",
       "use_case": "看用電的季節變化與長期趨勢。",
@@ -3028,7 +3028,7 @@
     {
       "slug": "fuel-price",
       "name": "油價走勢",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "中油汽柴油牌價走勢",
       "long_desc": "台灣中油 92、95、98 無鉛汽油與超級柴油的參考牌價。圖表顯示近兩年，歷史可查到 1999 年。",
       "use_case": "看油價的長期趨勢。",
@@ -3053,7 +3053,7 @@
     {
       "slug": "fuel-price-now",
       "name": "目前油價",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "中油目前的汽柴油牌價",
       "long_desc": "通常每週日中午公布，週一凌晨生效。民營加油站價格可能略有不同。",
       "use_case": "加油前看油價。",
@@ -3077,7 +3077,7 @@
     {
       "slug": "fuel-station-by-county",
       "name": "各縣市中油加油站",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "各縣市中油加油站數",
       "long_desc": "台灣中油直營與加盟站，每天更新，不含其他品牌。地圖上可查看營業時間與油品。",
       "use_case": "找附近的加油站。",
@@ -3105,7 +3105,7 @@
     {
       "slug": "fuel-station-services",
       "name": "加油站服務",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "中油加油站的服務項目",
       "long_desc": "統計有自助加油、98 無鉛、超級柴油的站數，以及中油自營站數。不含其他品牌。",
       "use_case": "看各地有多少站能自助加油。",
@@ -3134,7 +3134,7 @@
     {
       "slug": "ev-summary",
       "name": "電動車充電",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "充電站數、充電槍數與目前使用狀況",
       "long_desc": "交通部 TDX 資料，站點每天更新，即時狀態每 30 分鐘更新，但只有部分縣市提供。AC 為慢充，DC 為快充。",
       "use_case": "找充電站，看現在好不好充。",
@@ -3163,7 +3163,7 @@
     {
       "slug": "ev-station-by-county",
       "name": "各縣市充電站",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "各縣市電動車充電站數",
       "long_desc": "交通部 TDX 資料，地圖上可查看充電槍、費率與即時狀態。深綠色代表有 DC 快充。",
       "use_case": "找附近的充電站。",
@@ -3191,7 +3191,7 @@
     {
       "slug": "ev-connector-types",
       "name": "充電槍規格",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "各種充電槍規格的站數",
       "long_desc": "J1772、Type 2 為交流慢充，CCS1、CCS2、CHAdeMO 為直流快充。一站可能有多種規格。資料來自交通部 TDX。",
       "use_case": "看自己的車在各地好不好找到充電站。",
@@ -3220,7 +3220,7 @@
     {
       "slug": "ev-usage-trend",
       "name": "充電槍使用率",
-      "topic": "traffic",
+      "topic": "fuel",
       "short_desc": "近一週充電槍使用率",
       "long_desc": "使用中的充電槍除以可用的充電槍，不含故障，每小時取平均。只有提供即時狀態的縣市。",
       "use_case": "看哪些時段比較多人充電。",
@@ -3693,7 +3693,7 @@
     {
       "slug": "accident-a1-total",
       "name": "今年 A1 交通事故",
-      "topic": "safety",
+      "topic": "traffic",
       "short_desc": "今年 A1 交通事故的死傷與件數",
       "long_desc": "內政部警政署資料。A1 類指當場或 24 小時內有人死亡的事故。約每月更新，最近幾週的事故尚未列入。",
       "use_case": "掌握今年交通事故的規模。",
@@ -3722,7 +3722,7 @@
     {
       "slug": "accident-a1-by-county",
       "name": "A1 交通事故死亡",
-      "topic": "safety",
+      "topic": "traffic",
       "short_desc": "今年各縣市 A1 交通事故死亡人數",
       "long_desc": "內政部警政署資料，約每月更新。地圖上每個點是一件事故，點越大死亡人數越多。",
       "use_case": "了解各地的交通安全。",
@@ -3755,7 +3755,7 @@
     {
       "slug": "accident-a1-rate",
       "name": "每十萬人交通事故死亡",
-      "topic": "safety",
+      "topic": "traffic",
       "short_desc": "今年各縣市每十萬人交通事故死亡數",
       "long_desc": "A1 類事故死亡人數除以縣市戶籍人口，方便比較人口規模不同的縣市。資料來自內政部警政署，約每月更新。",
       "use_case": "比較各縣市的交通風險。",
@@ -3782,7 +3782,7 @@
     {
       "slug": "accident-a1-monthly",
       "name": "每月交通事故死亡",
-      "topic": "safety",
+      "topic": "traffic",
       "short_desc": "近一年每月 A1 交通事故死亡人數",
       "long_desc": "內政部警政署資料，依發生月份加總。最近一個月通常還不完整。",
       "use_case": "看交通事故死亡的變化趨勢。",
@@ -3811,7 +3811,7 @@
     {
       "slug": "accident-a1-cause",
       "name": "交通事故主要肇因",
-      "topic": "safety",
+      "topic": "traffic",
       "short_desc": "今年 A1 交通事故最常見的 10 種肇因",
       "long_desc": "依警方研判的主要肇因計算件數。資料來自內政部警政署，約每月更新。",
       "use_case": "了解致命事故的常見原因，例如分心、酒駕或未禮讓。",
@@ -3840,7 +3840,7 @@
     {
       "slug": "accident-a1-vehicle",
       "name": "交通事故車種",
-      "topic": "safety",
+      "topic": "traffic",
       "short_desc": "今年 A1 交通事故的肇事車種",
       "long_desc": "第一當事者是警方初步研判肇事責任較重的一方，「人」指行人。資料來自內政部警政署。",
       "use_case": "看致命事故多半和哪種車輛有關。",
@@ -4005,7 +4005,7 @@
     {
       "slug": "school-by-county",
       "name": "各縣市學校",
-      "topic": "population",
+      "topic": "education",
       "short_desc": "各縣市各級學校數",
       "long_desc": "教育部統計處最新學年度名錄，包含國小、國中、高中職與大專校院。完全中學會在國中與高中各算一次。",
       "use_case": "搬家或選校時參考各地教育資源。",
@@ -4037,7 +4037,7 @@
     {
       "slug": "school-private-share",
       "name": "私立學校比例",
-      "topic": "population",
+      "topic": "education",
       "short_desc": "各學制的私立學校比例",
       "long_desc": "教育部統計處最新學年度名錄。國中小幾乎都是公立，高中職與大專校院私立比例較高。",
       "use_case": "了解公私立學校的分布。",
@@ -4066,7 +4066,7 @@
     {
       "slug": "vital-12m",
       "name": "最近一年人口動態",
-      "topic": "family",
+      "topic": "population",
       "short_desc": "近 12 個月的出生、死亡、結婚與離婚",
       "long_desc": "內政部戶政司每月公布，約晚一個月。",
       "use_case": "一眼看出少子化與人口自然減少的程度。",
@@ -4095,7 +4095,7 @@
     {
       "slug": "births-deaths-trend",
       "name": "每月出生與死亡",
-      "topic": "family",
+      "topic": "population",
       "short_desc": "每月出生數與死亡數",
       "long_desc": "內政部戶政司每月公布。死亡多於出生時，人口就會自然減少。",
       "use_case": "看出生數變化與人口自然增減。",
@@ -4124,7 +4124,7 @@
     {
       "slug": "birth-rate-by-county",
       "name": "各縣市出生率",
-      "topic": "family",
+      "topic": "population",
       "short_desc": "近 12 個月各縣市粗出生率",
       "long_desc": "近 12 個月出生數除以年底戶籍人口，單位為每千人。",
       "use_case": "比較各地的生育情形。",
@@ -4151,7 +4151,7 @@
     {
       "slug": "marriage-trend",
       "name": "每月結婚與離婚",
-      "topic": "family",
+      "topic": "population",
       "short_desc": "每月結婚與離婚對數",
       "long_desc": "內政部戶政司依登記月份統計。有好日子的月份，例如 5 月 20 日，結婚特別多。",
       "use_case": "看結婚與離婚的變化。",
@@ -4180,7 +4180,7 @@
     {
       "slug": "childcare-by-county",
       "name": "各縣市托嬰中心",
-      "topic": "family",
+      "topic": "education",
       "short_desc": "各縣市托嬰中心家數",
       "long_desc": "衛生福利部社會福利機構名冊，包含公私立托嬰中心，收托未滿 2 歲幼兒，每月更新。",
       "use_case": "找住家或公司附近的托嬰中心。",
@@ -5276,7 +5276,7 @@
       "slug": "warning",
       "name": "颱風與警特報",
       "icon": "cyclone",
-      "description": "颱風路徑與警報、停班停課、避難收容、天氣警特報、低溫高溫與濃霧、土石流與淹水等防災示警",
+      "description": "天氣警特報、颱風路徑與警報、停班停課、防災示警、低溫高溫與濃霧特報、避難收容",
       "components": [
         {"component": "weather-warning-by-county", "size": "normal"},
         {"component": "weather-warning-list", "size": "normal"},
@@ -5286,14 +5286,22 @@
         {"component": "work-closure-tomorrow", "size": "normal"},
         {"component": "disaster-alert-list", "size": "normal"},
         {"component": "advisory-list", "size": "normal"},
+        {"component": "shelter-open", "size": "normal"},
+        {"component": "shelter-by-county", "size": "normal"}
+      ]
+    },
+    {
+      "slug": "flood",
+      "name": "土石流與淹水",
+      "icon": "flood",
+      "description": "土石流與大規模崩塌警戒、淹水感測器偵測到的積淹水與走勢",
+      "components": [
         {"component": "debris-alert-summary", "size": "normal"},
         {"component": "flood-summary", "size": "normal"},
         {"component": "debris-alert-by-county", "size": "normal"},
         {"component": "debris-alert-list", "size": "normal"},
         {"component": "flood-by-county", "size": "normal"},
         {"component": "flood-list", "size": "normal"},
-        {"component": "shelter-open", "size": "normal"},
-        {"component": "shelter-by-county", "size": "normal"},
         {"component": "flood-trend", "size": "normal"}
       ]
     },
@@ -5339,32 +5347,27 @@
       "slug": "reservoir",
       "name": "水情",
       "icon": "water",
-      "description": "水庫蓄水、河川水位警戒與河川水質",
+      "description": "水庫蓄水率、今年雨量與平年比較、河川水位警戒",
       "components": [
         {"component": "reservoir-storage", "size": "normal"},
         {"component": "reservoir-by-county", "size": "normal"},
         {"component": "rain-vs-normal", "size": "normal"},
         {"component": "river-alert-status", "size": "normal"},
-        {"component": "river-alert-margin", "size": "normal"},
-        {"component": "river-quality-by-county", "size": "normal"},
-        {"component": "river-quality-status", "size": "normal"},
-        {"component": "river-quality-worst", "size": "normal"}
+        {"component": "river-alert-margin", "size": "normal"}
       ]
     },
     {
       "slug": "sustain",
-      "name": "永續環境",
-      "icon": "eco",
-      "description": "各部門用電、每戶住宅用電、再生能源、垃圾與資源回收",
+      "name": "環境品質",
+      "icon": "recycling",
+      "description": "每人每日垃圾量、資源回收率、河川污染指數與水質",
       "components": [
-        {"component": "power-sales-mix", "size": "normal"},
-        {"component": "residential-power-per-household", "size": "normal"},
-        {"component": "power-sales-trend", "size": "normal"},
-        {"component": "renewable-mix", "size": "normal"},
         {"component": "waste-per-capita", "size": "normal"},
         {"component": "recycling-rate", "size": "normal"},
         {"component": "waste-trend", "size": "normal"},
-        {"component": "river-quality-status", "size": "normal"}
+        {"component": "river-quality-by-county", "size": "normal"},
+        {"component": "river-quality-status", "size": "normal"},
+        {"component": "river-quality-worst", "size": "normal"}
       ]
     },
     {
@@ -5381,6 +5384,17 @@
         {"component": "power-forecast", "size": "normal"},
         {"component": "renewable-monthly", "size": "normal"},
         {"component": "renewable-mix", "size": "normal"}
+      ]
+    },
+    {
+      "slug": "power-use",
+      "name": "用電統計",
+      "icon": "electric_meter",
+      "description": "各部門用電組成與趨勢、各縣市每戶住宅用電",
+      "components": [
+        {"component": "power-sales-mix", "size": "normal"},
+        {"component": "residential-power-per-household", "size": "normal"},
+        {"component": "power-sales-trend", "size": "normal"}
       ]
     },
     {
@@ -5471,12 +5485,26 @@
       "slug": "traffic",
       "name": "道路交通",
       "icon": "directions_car",
-      "description": "國道即時路況、汽柴油油價、中油加油站與電動車充電站",
+      "description": "國道路段車速與壅塞，以及 A1 類交通事故的死亡人數、肇因與車種",
       "components": [
         {"component": "freeway-congestion", "size": "normal"},
         {"component": "freeway-speed-by-county", "size": "normal"},
-        {"component": "fuel-price", "size": "normal"},
+        {"component": "accident-a1-total", "size": "normal"},
+        {"component": "accident-a1-by-county", "size": "normal"},
+        {"component": "accident-a1-rate", "size": "normal"},
+        {"component": "accident-a1-monthly", "size": "normal"},
+        {"component": "accident-a1-cause", "size": "normal"},
+        {"component": "accident-a1-vehicle", "size": "normal"}
+      ]
+    },
+    {
+      "slug": "fuel",
+      "name": "加油與充電",
+      "icon": "local_gas_station",
+      "description": "汽柴油牌價與走勢、中油加油站，以及電動車充電站與充電槍使用率",
+      "components": [
         {"component": "fuel-price-now", "size": "normal"},
+        {"component": "fuel-price", "size": "normal"},
         {"component": "fuel-station-by-county", "size": "normal"},
         {"component": "fuel-station-services", "size": "normal"},
         {"component": "ev-summary", "size": "normal"},
@@ -5526,48 +5554,31 @@
       ]
     },
     {
-      "slug": "safety",
-      "name": "交通安全",
-      "icon": "car_crash",
-      "description": "A1 類道路交通事故的死亡、肇因與車種",
-      "components": [
-        {"component": "accident-a1-total", "size": "normal"},
-        {"component": "accident-a1-by-county", "size": "normal"},
-        {"component": "accident-a1-rate", "size": "normal"},
-        {"component": "accident-a1-monthly", "size": "normal"},
-        {"component": "accident-a1-cause", "size": "normal"},
-        {"component": "accident-a1-vehicle", "size": "normal"}
-      ]
-    },
-    {
       "slug": "population",
       "name": "人口",
       "icon": "groups",
-      "description": "各縣市的人口數、人口密度、人口增減、家庭大小與學校",
+      "description": "各縣市的人口數、人口密度、人口增減與家庭大小，以及出生、死亡、結婚、離婚",
       "components": [
         {"component": "population-total", "size": "normal"},
+        {"component": "vital-12m", "size": "normal"},
         {"component": "population-by-county", "size": "normal"},
         {"component": "population-density", "size": "normal"},
         {"component": "population-change", "size": "normal"},
         {"component": "household-size", "size": "normal"},
-        {"component": "school-by-county", "size": "normal"},
-        {"component": "school-private-share", "size": "normal"},
-        {"component": "medical-per-10k", "size": "normal"},
-        {"component": "accident-a1-rate", "size": "normal"}
+        {"component": "births-deaths-trend", "size": "normal"},
+        {"component": "birth-rate-by-county", "size": "normal"},
+        {"component": "marriage-trend", "size": "normal"}
       ]
     },
     {
-      "slug": "family",
-      "name": "婦幼與家庭",
-      "icon": "stroller",
-      "description": "出生、死亡、結婚、離婚與托嬰中心",
+      "slug": "education",
+      "name": "教育與托育",
+      "icon": "school",
+      "description": "各縣市的國小到大專校院、私立學校比例與托嬰中心",
       "components": [
-        {"component": "vital-12m", "size": "normal"},
-        {"component": "births-deaths-trend", "size": "normal"},
-        {"component": "birth-rate-by-county", "size": "normal"},
-        {"component": "marriage-trend", "size": "normal"},
-        {"component": "childcare-by-county", "size": "normal"},
-        {"component": "school-by-county", "size": "normal"}
+        {"component": "school-by-county", "size": "normal"},
+        {"component": "school-private-share", "size": "normal"},
+        {"component": "childcare-by-county", "size": "normal"}
       ]
     },
     {

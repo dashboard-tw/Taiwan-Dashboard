@@ -21,7 +21,8 @@ const APITermsVersion = "2026-11-22"
 var (
 	surveyIdentities = []string{"individual", "student", "media", "government", "nonprofit", "company", "other"}
 	surveyPurposes   = []string{"research", "journalism", "app", "analysis", "teaching", "personal", "other"}
-	surveyTopics     = []string{"aqi", "reservoir", "power", "outage", "earthquake", "weather", "warning", "traffic", "resources", "population", "tourism", "rail", "bike", "safety", "family", "sustain", "agri", "food", "fire", "housing", "disease", "aviation", "economy", "animal"}
+	surveyTopics     = []string{"aqi", "reservoir", "power", "outage", "earthquake", "weather", "warning", "traffic", "resources", "population", "tourism", "rail", "bike", "safety", "family", "sustain", "agri", "food", "fire", "housing", "disease", "aviation", "economy", "animal",
+		"forecast", "health", "ocean", "flood", "fuel", "power-use", "education"}
 )
 
 type survey struct {

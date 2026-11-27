@@ -26,6 +26,10 @@ export type Topic =
   | 'forecast'
   | 'health'
   | 'ocean'
+  | 'flood'
+  | 'fuel'
+  | 'power-use'
+  | 'education'
 export type Scope = 'national' | 'county'
 export type DataShape = 'by_county' | 'two_d' | 'three_d' | 'percent' | 'time' | 'map_legend'
 

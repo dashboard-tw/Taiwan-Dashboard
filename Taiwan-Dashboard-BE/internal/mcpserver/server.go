@@ -51,7 +51,7 @@ func New(d Deps) *mcp.Server {
 	srv := mcp.NewServer(&mcp.Implementation{
 		Name:        "dashboard-tw",
 		Title:       "臺灣儀表板 Taiwan Dashboard",
-		Description: "Live and historical Taiwan government open data: weather, disasters, air quality, water, power, transport, living and population.",
+		Description: "Live and historical Taiwan government open data: weather, disasters, environment, energy, daily living, health care, transport, population and society.",
 		Version:     d.Version,
 		WebsiteURL:  d.Site,
 		Icons:       []mcp.Icon{{Source: d.Site + "/logo.png", MIMEType: "image/png", Sizes: []string{"512x512"}}},
@@ -66,7 +66,7 @@ func New(d Deps) *mcp.Server {
 	mcp.AddTool(srv, &mcp.Tool{Name: "fetch", Annotations: ro("Read a dataset or chart"),
 		Description: "Read an id returned by search: a dataset's description with its latest rows, or a chart's current values. Counts toward the daily API quota."}, s.fetch)
 	mcp.AddTool(srv, &mcp.Tool{Name: "list_datasets", Annotations: ro("List datasets"),
-		Description: "List all datasets with update frequency, latest observation time and whether they can be filtered by county. Optional topic: weather, environment, living, transport, society."}, s.listDatasets)
+		Description: "List all datasets with update frequency, latest observation time and whether they can be filtered by county. Optional topic: weather, disaster, environment, energy, living, medical, transport, society."}, s.listDatasets)
 	mcp.AddTool(srv, &mcp.Tool{Name: "describe_dataset", Annotations: ro("Describe a dataset"),
 		Description: "Get a dataset's fields, units, source agency, license and history query limits."}, s.describeDataset)
 	mcp.AddTool(srv, &mcp.Tool{Name: "get_latest", Annotations: ro("Latest data"),
@@ -340,7 +340,7 @@ func strOr(p *string) string {
 }
 
 type listIn struct {
-	Topic string `json:"topic,omitempty" jsonschema:"only list this topic: weather, environment, living, transport or society"`
+	Topic string `json:"topic,omitempty" jsonschema:"only list this topic: weather, disaster, environment, energy, living, medical, transport or society"`
 }
 
 type datasetItem struct {

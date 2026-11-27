@@ -36,23 +36,41 @@ type Topic struct {
 	Name string `json:"name"`
 }
 
+// 和網站側邊欄的大分類一致
 var Topics = []Topic{
-	{"weather", "天氣與防災"},
+	{"weather", "天氣"},
+	{"disaster", "防災"},
 	{"environment", "環境"},
+	{"energy", "能源"},
 	{"living", "民生"},
+	{"medical", "醫療衛生"},
 	{"transport", "交通"},
 	{"society", "人口與社會"},
 }
 
 var topicOf = map[string]string{
-	"aqi_obs": "environment", "uv_obs": "environment", "aqi_forecast": "environment",
-	"reservoir_obs": "environment", "river_level": "environment",
-	"water_outage": "living", "water_outage_taipei": "living", "power_outage": "living",
-	"typhoon_track": "weather", "typhoon_warning": "weather", "weather_warning": "weather",
-	"rain_obs": "weather", "weather_obs": "weather", "county_forecast": "weather",
-	"earthquake": "weather", "earthquake_local": "weather",
-	"power_gen": "living", "power_region": "living", "power_load": "living", "power_peak_daily": "living",
-	"power_supply_daily": "living", "power_supply_forecast": "living",
+	"weather_obs": "weather", "rain_obs": "weather", "county_forecast": "weather", "town_forecast": "weather",
+	"town_forecast_week": "weather", "wind_layer": "weather", "radar_image": "weather", "radar_layer": "weather",
+	"satellite_image": "weather", "cloud_layer": "weather", "uv_obs": "weather", "health_weather": "weather",
+	"tide_forecast": "weather", "sun_moon": "weather", "climate": "weather",
+	"typhoon_track": "disaster", "typhoon_warning": "disaster", "weather_warning": "disaster",
+	"weather_advisory": "disaster", "work_closure": "disaster", "disaster_alert": "disaster", "shelter": "disaster",
+	"shelter_report": "disaster", "debris_alert": "disaster", "flood_sensor": "disaster", "earthquake": "disaster",
+	"earthquake_local": "disaster", "tsunami": "disaster", "fire_incident": "disaster",
+	"aqi_obs": "environment", "aqi_forecast": "environment", "reservoir_obs": "environment",
+	"river_level": "environment", "river_quality": "environment", "waste": "environment",
+	"power_gen": "energy", "power_region": "energy", "power_load": "energy", "power_peak_daily": "energy",
+	"power_supply_daily": "energy", "power_supply_forecast": "energy", "renewable_month": "energy",
+	"power_sales": "energy", "fuel_price": "energy", "fuel_station": "energy", "ev_live": "energy",
+	"water_outage": "living", "water_outage_taipei": "living", "power_outage": "living", "farm_price": "living",
+	"poultry_price": "living", "hog_trade": "living", "real_estate": "living",
+	"medical_facility": "medical", "ltc_facility": "medical", "dengue_daily": "medical", "nhi_visit": "medical",
+	"food_rejection":  "medical",
+	"freeway_traffic": "transport", "traffic_accident": "transport", "rail_alert": "transport", "tra_live": "transport",
+	"flight": "transport", "bike_availability": "transport",
+	"population_year": "society", "vital_month": "society", "school": "society", "childcare_center": "society",
+	"econ_indicator": "society", "income_town": "society", "shelter_animal": "society", "shelter_stats": "society",
+	"tourism_attraction": "society", "tourism_hotel": "society",
 }
 
 func TopicOf(id string) string {

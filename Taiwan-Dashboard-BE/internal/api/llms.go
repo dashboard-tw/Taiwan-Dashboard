@@ -11,6 +11,21 @@ import (
 	"dashboard.tw/backend/internal/screen"
 )
 
+// siteGroups 和前端 frontend/src/lib/topics.ts 的大分類一致
+var siteGroups = []struct {
+	Name  string
+	Slugs []string
+}{
+	{"天氣", []string{"weather", "forecast", "health", "ocean"}},
+	{"防災", []string{"warning", "flood", "earthquake", "fire"}},
+	{"環境", []string{"aqi", "reservoir", "sustain"}},
+	{"能源", []string{"power", "power-use", "fuel"}},
+	{"民生", []string{"outage", "agri", "housing"}},
+	{"醫療衛生", []string{"resources", "disease", "food"}},
+	{"交通", []string{"traffic", "rail", "aviation", "bike"}},
+	{"人口與社會", []string{"population", "education", "economy", "animal", "tourism"}},
+}
+
 func llmsTxt(svc *screen.Service, base string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cat, _, err := svc.Catalog(c.Request.Context())
@@ -37,15 +52,38 @@ func llmsTxt(svc *screen.Service, base string) gin.HandlerFunc {
 		line("主題頁可以加上縣市代碼只看單一縣市，例如 " + base + "/weather/63000 是臺北市的天氣。")
 		line("")
 
-		line("## 主題")
-		line("")
-		for _, d := range cat.Dashboards {
-			if slices.Contains(sitemapSkipDashboards, d.Slug) {
-				continue
-			}
-			link(d.Name, "/"+d.Slug, d.Description)
+		bySlug := map[string]int{}
+		for i, d := range cat.Dashboards {
+			bySlug[d.Slug] = i
 		}
-		line("")
+		listed := map[string]bool{}
+		for _, g := range siteGroups {
+			line("## " + g.Name)
+			line("")
+			for _, slug := range g.Slugs {
+				if i, ok := bySlug[slug]; ok {
+					d := cat.Dashboards[i]
+					link(d.Name, "/"+d.Slug, d.Description)
+					listed[slug] = true
+				}
+			}
+			line("")
+		}
+		var rest []string
+		for _, d := range cat.Dashboards {
+			if !listed[d.Slug] && !slices.Contains(sitemapSkipDashboards, d.Slug) {
+				rest = append(rest, d.Slug)
+			}
+		}
+		if len(rest) > 0 {
+			line("## 專題")
+			line("")
+			for _, slug := range rest {
+				d := cat.Dashboards[bySlug[slug]]
+				link(d.Name, "/"+d.Slug, d.Description)
+			}
+			line("")
+		}
 
 		line("## 縣市")
 		line("")

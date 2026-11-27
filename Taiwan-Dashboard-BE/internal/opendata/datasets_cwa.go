@@ -252,9 +252,3 @@ const (
 	         s.report_url, s.origin_time, s.source, s.location, ST_X(s.geom), ST_Y(s.geom), s.magnitude::float8,
 	         s.depth_km::float8`
 )
-
-func init() {
-	for _, d := range cwaDatasets {
-		topicOf[d.ID] = "weather"
-	}
-}

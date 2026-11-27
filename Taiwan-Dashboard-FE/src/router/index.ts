@@ -153,6 +153,13 @@ export const router = createRouter({
       meta: { bare: true },
     },
     { path: '/docs/api', redirect: '/developers' },
+    // 交通安全併入道路交通
+    { path: '/safety/:rest(.*)*', redirect: (to) => to.fullPath.replace(/^\/safety/, '/traffic') },
+    // 婦幼與家庭拆到人口、教育與托育
+    {
+      path: '/family/:rest(.*)*',
+      redirect: (to) => to.fullPath.replace(/^\/family/, '/population'),
+    },
     { path: '/sitemap', name: 'sitemap', component: () => import('../views/SitemapView.vue') },
     { path: '/privacy', name: 'privacy', component: () => import('../views/PrivacyView.vue') },
     { path: '/terms', name: 'terms', component: () => import('../views/TermsView.vue') },

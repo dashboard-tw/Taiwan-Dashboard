@@ -141,10 +141,11 @@ func (h screenHandlers) dashboard(c *gin.Context) {
 	respondJSON(c, body, stale, cachePublic)
 }
 
-var topicOrder = map[string]int{"weather": 0, "forecast": 1, "health": 2, "ocean": 3, "warning": 4, "earthquake": 5,
-	"fire": 6, "aqi": 7, "reservoir": 8, "sustain": 9, "power": 10, "outage": 11, "resources": 12, "disease": 13,
-	"agri": 14, "food": 15, "housing": 16, "traffic": 17, "rail": 18, "aviation": 19, "bike": 20, "safety": 21,
-	"population": 22, "family": 23, "economy": 24, "animal": 25, "tourism": 26}
+var topicOrder = map[string]int{"weather": 0, "forecast": 1, "health": 2, "ocean": 3, "warning": 4, "flood": 5,
+	"earthquake": 6, "fire": 7, "aqi": 8, "reservoir": 9, "sustain": 10, "power": 11, "power-use": 12, "fuel": 13,
+	"outage": 14, "agri": 15, "housing": 16, "resources": 17, "disease": 18, "food": 19, "traffic": 20, "rail": 21,
+	"aviation": 22, "bike": 23, "population": 24, "education": 25, "economy": 26, "animal": 27, "tourism": 28,
+	"safety": 29, "family": 30}
 
 func (h screenHandlers) components(c *gin.Context) {
 	cat, stale, err := h.svc.Catalog(c.Request.Context())

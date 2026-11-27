@@ -1054,22 +1054,3 @@ var moreDatasets = []Dataset{
 		Months: months(`reported_at`, `data.fire_incident`),
 	},
 }
-
-func init() {
-	for id, topic := range map[string]string{
-		"disaster_alert": "weather", "debris_alert": "weather", "flood_sensor": "weather", "work_closure": "weather",
-		"shelter": "weather", "shelter_report": "weather", "radar_image": "weather", "satellite_image": "weather",
-		"radar_layer": "weather", "cloud_layer": "weather", "wind_layer": "weather", "fire_incident": "weather",
-		"river_quality": "environment", "renewable_month": "environment", "waste": "environment", "power_sales": "environment",
-		"medical_facility": "living", "ltc_facility": "living", "farm_price": "living", "poultry_price": "living",
-		"hog_trade": "living", "food_rejection": "living", "real_estate": "living", "dengue_daily": "living", "nhi_visit": "living",
-		"freeway_traffic": "transport", "fuel_price": "transport", "fuel_station": "transport", "rail_alert": "transport",
-		"tra_live": "transport", "bike_availability": "transport", "ev_live": "transport", "flight": "transport",
-		"traffic_accident": "transport",
-		"population_year":  "society", "vital_month": "society", "econ_indicator": "society", "income_town": "society",
-		"school": "society", "childcare_center": "society", "tourism_attraction": "society", "tourism_hotel": "society",
-		"shelter_animal": "society", "shelter_stats": "society",
-	} {
-		topicOf[id] = topic
-	}
-}

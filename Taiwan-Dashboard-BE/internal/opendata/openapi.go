@@ -319,6 +319,7 @@ func OpenAPI(o SpecOptions) obj {
 		{"name": "資料集清單", "description": "先從這裡看有哪些資料集。"},
 	}
 	downloadsServer := []obj{{"url": "/", "description": "大量下載不在 /api/v1 底下"}}
+	groupTags := map[string][]string{} // 依網站的大分類分組，給支援 x-tagGroups 的文件工具
 
 	for i := range Datasets {
 		d := &Datasets[i]
@@ -327,6 +328,7 @@ func OpenAPI(o SpecOptions) obj {
 			tag = name + "（" + d.ID + "）"
 		}
 		tags = append(tags, obj{"name": tag, "description": d.Description})
+		groupTags[TopicOf(d.ID)] = append(groupTags[TopicOf(d.ID)], tag)
 		row := schemaName(d.ID)
 		schemas[row] = rowSchema(d.Fields)
 		latestRow := row
@@ -462,7 +464,7 @@ func OpenAPI(o SpecOptions) obj {
 		"info": obj{
 			"title":   "dashboard.tw 開放資料 API",
 			"version": o.Version,
-			"description": fmt.Sprintf("dashboard.tw 收集的所有政府開放資料（天氣與防災、環境、民生、交通、人口與社會），提供固定格式的最新資料、歷史資料與每月大量下載。\n\n"+
+			"description": fmt.Sprintf("dashboard.tw 收集的所有政府開放資料（天氣、防災、環境、能源、民生、醫療衛生、交通、人口與社會），提供固定格式的最新資料、歷史資料與每月大量下載。\n\n"+
 				"- **驗證**：OAuth 2.0 Client Credentials。登入後在「我的 API 憑證」建立 Client Id 與 Client Secret，"+
 				"呼叫 `POST /auth/token` 換取 Access Token（有效 %d 小時），放在 `Authorization: Bearer <Access Token>` 標頭\n"+
 				"- **額度**：每天 %d 次、%d MB 流量，每分鐘 %d 次，臺灣時間午夜重設。流量以回應內容的大小計算。"+
@@ -478,6 +480,15 @@ func OpenAPI(o SpecOptions) obj {
 		"security": []obj{{"oauth2": []string{}}},
 		"tags":     tags,
 		"paths":    paths,
+		"x-tagGroups": func() []obj {
+			groups := []obj{{"name": "開始使用", "tags": []string{"驗證", "資料集清單"}}}
+			for _, t := range Topics {
+				if len(groupTags[t.ID]) > 0 {
+					groups = append(groups, obj{"name": t.Name, "tags": groupTags[t.ID]})
+				}
+			}
+			return groups
+		}(),
 		"components": obj{
 			"securitySchemes": obj{"oauth2": obj{
 				"type":        "oauth2",
