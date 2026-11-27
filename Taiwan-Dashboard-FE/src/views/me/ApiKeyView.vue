@@ -52,6 +52,7 @@ const limits = computed(
   () => state.value?.limits ?? { PerDay: 600, PerMinute: 30, BytesPerDay: 300 * 1024 * 1024 },
 )
 const MB = 1024 * 1024
+const dev = computed(() => !!state.value?.dev)
 const meters = computed(() => {
   const u = state.value?.used_today ?? { requests: 0, bytes: 0 }
   const pct = (a: number, b: number) => (b > 0 ? Math.min(100, Math.round((a / b) * 100)) : 0)
@@ -59,16 +60,16 @@ const meters = computed(() => {
     {
       label: '次數',
       used: u.requests.toString(),
-      limit: limits.value.PerDay.toString(),
+      limit: dev.value ? '不限' : limits.value.PerDay.toString(),
       unit: '次',
-      pct: pct(u.requests, limits.value.PerDay),
+      pct: dev.value ? 0 : pct(u.requests, limits.value.PerDay),
     },
     {
       label: '流量',
       used: mb(u.bytes),
-      limit: mb(limits.value.BytesPerDay),
+      limit: dev.value ? '不限' : mb(limits.value.BytesPerDay),
       unit: 'MB',
-      pct: pct(u.bytes, limits.value.BytesPerDay),
+      pct: dev.value ? 0 : pct(u.bytes, limits.value.BytesPerDay),
     },
   ]
 })
@@ -78,8 +79,9 @@ function mb(bytes: number) {
 const maxClients = computed(() => state.value?.max_clients ?? 3)
 const survey = computed(() => state.value?.survey ?? null)
 const surveyCurrent = computed(
-  () => !!survey.value && survey.value.terms_version === state.value?.terms_version,
+  () => dev.value || (!!survey.value && survey.value.terms_version === state.value?.terms_version),
 )
+const canCreate = computed(() => dev.value || clients.value.length < maxClients.value)
 const onboarding = computed(() => !!state.value && !surveyCurrent.value && !clients.value.length)
 
 const fresh = ref<{ name: string; clientId: string; secret: string } | null>(null)
@@ -225,12 +227,14 @@ const usageOptions = computed<ApexOptions>(() => ({
   },
   yaxis: {
     min: 0,
-    max: limits.value.PerDay,
+    max: dev.value ? undefined : limits.value.PerDay,
     tickAmount: 4,
     labels: { formatter: (v: number) => String(Math.round(v)) },
   },
   annotations: {
-    yaxis: [{ y: limits.value.PerDay, borderColor: '#ed5a5a', label: { text: '每日上限' } }],
+    yaxis: dev.value
+      ? []
+      : [{ y: limits.value.PerDay, borderColor: '#ed5a5a', label: { text: '每日上限' } }],
   },
   tooltip: {
     y: {
@@ -379,7 +383,8 @@ const downloadMonth: CommandPart[] = [
       <div class="col">
         <section class="card block">
           <h2>
-            我的憑證（{{ clients.length }}/{{ maxClients }}）
+            我的憑證（{{ clients.length }}{{ dev ? '' : `/${maxClients}` }}）
+            <span v-if="dev" class="badge">開發帳號</span>
             <RouterLink to="/developers" class="btn-plain"
               ><span class="mi" aria-hidden="true">description</span>API 文件</RouterLink
             >
@@ -463,11 +468,7 @@ const downloadMonth: CommandPart[] = [
           </ul>
           <p v-else class="muted">還沒有憑證，請先建立一組。</p>
 
-          <form
-            v-if="clients.length < maxClients && surveyCurrent"
-            class="create"
-            @submit.prevent="create"
-          >
+          <form v-if="canCreate && surveyCurrent" class="create" @submit.prevent="create">
             <input
               v-model="newName"
               class="input"
@@ -479,7 +480,7 @@ const downloadMonth: CommandPart[] = [
               <span class="mi" aria-hidden="true">add</span>建立憑證
             </button>
           </form>
-          <p v-else-if="clients.length >= maxClients" class="muted small">
+          <p v-else-if="!canCreate" class="muted small">
             已達 {{ maxClients }} 組上限，請先刪除不用的憑證。
           </p>
         </section>
@@ -523,7 +524,7 @@ const downloadMonth: CommandPart[] = [
           :series="usageSeries"
           :options="usageOptions"
         />
-        <section class="card block">
+        <section v-if="!dev" class="card block">
           <h2>
             使用資料
             <button

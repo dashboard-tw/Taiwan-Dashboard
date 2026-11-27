@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
 
+	"dashboard.tw/backend/internal/auth"
 	"dashboard.tw/backend/internal/db"
 )
 
@@ -132,8 +133,10 @@ func (h meHandlers) saveSurvey(c *gin.Context) {
 func (h meHandlers) surveyDone(c *gin.Context) (bool, error) {
 	var done bool
 	err := h.asUser(c, func(tx *sql.Tx) error {
+		// 開發帳號不用填使用調查
 		return tx.QueryRowContext(c.Request.Context(),
-			`SELECT EXISTS (SELECT 1 FROM app.api_survey WHERE terms_version = $1)`, APITermsVersion).Scan(&done)
+			`SELECT EXISTS (SELECT 1 FROM app.api_survey WHERE terms_version = $1)
+			     OR EXISTS (SELECT 1 FROM app.users WHERE id = $2 AND is_dev)`, APITermsVersion, h.user(c).ID).Scan(&done)
 	})
 	return done, err
 }
@@ -165,7 +168,7 @@ func (h adminHandlers) apiSurvey(c *gin.Context) {
 		var total, active, keys int
 		if err := tx.QueryRowContext(ctx, `
 			SELECT count(*), count(*) FILTER (WHERE EXISTS (SELECT 1 FROM app.api_key k WHERE k.user_id = s.user_id AND k.revoked_at IS NULL AND k.kind = 'client')),
-			       (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client')
+			       (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client' AND id NOT IN `+auth.DevKeysSQL+`)
 			  FROM app.api_survey s`).Scan(&total, &active, &keys); err != nil {
 			return err
 		}

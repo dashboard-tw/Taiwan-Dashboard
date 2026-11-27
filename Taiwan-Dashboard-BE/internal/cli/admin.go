@@ -22,7 +22,7 @@ func newAdminCmd(version string) *cobra.Command {
 			return cmd.Help()
 		},
 	}
-	cmd.AddCommand(newAdminImportCmd(version), newAdminCreateCmd(), newAdminCheckEmailCmd())
+	cmd.AddCommand(newAdminImportCmd(version), newAdminCreateCmd(), newAdminCheckEmailCmd(), newAdminDevCmd())
 	return cmd
 }
 
@@ -71,6 +71,42 @@ func newAdminCheckEmailCmd() *cobra.Command {
 			return nil
 		},
 	}
+}
+
+func newAdminDevCmd() *cobra.Command {
+	var off bool
+	cmd := &cobra.Command{
+		Use:   "dev-account <email>",
+		Short: "Mark an account as a dev account: no survey, no credential or quota limits, left out of admin statistics",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cfg, err := config.Load()
+			if err != nil {
+				return err
+			}
+			vault, err := emailVault(cfg)
+			if err != nil {
+				return err
+			}
+			sqlDB, gdb, err := openDatabase(cmd.Context())
+			if err != nil {
+				return err
+			}
+			defer db.Close(gdb)
+			id, err := (&auth.Store{DB: sqlDB, Emails: vault}).SetDev(cmd.Context(), args[0], !off)
+			if err != nil {
+				return err
+			}
+			if off {
+				fmt.Printf("user %d is no longer a dev account\n", id)
+			} else {
+				fmt.Printf("user %d is now a dev account\n", id)
+			}
+			return nil
+		},
+	}
+	cmd.Flags().BoolVar(&off, "off", false, "turn the dev flag off")
+	return cmd
 }
 
 func newAdminImportCmd(version string) *cobra.Command {

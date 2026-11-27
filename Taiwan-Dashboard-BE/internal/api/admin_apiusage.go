@@ -42,7 +42,7 @@ const accountStatus = `
 	              ELSE 'idle' END AS status
 	    FROM app.users u
 	    LEFT JOIN app.api_key k ON k.user_id = u.id AND k.revoked_at IS NULL
-	   WHERE EXISTS (SELECT 1 FROM app.api_key x WHERE x.user_id = u.id))`
+	   WHERE EXISTS (SELECT 1 FROM app.api_key x WHERE x.user_id = u.id) AND NOT u.is_dev)`
 
 func (h adminHandlers) apiUsage(c *gin.Context) {
 	if _, ok := mustAdmin(c); !ok {
@@ -87,7 +87,7 @@ func (h adminHandlers) apiUsage(c *gin.Context) {
 			       count(DISTINCT k.user_id) FILTER (WHERE u.requests > 0)::int
 			  FROM generate_series((now() AT TIME ZONE 'Asia/Taipei')::date - ($1::int - 1),
 			                       (now() AT TIME ZONE 'Asia/Taipei')::date, interval '1 day') d
-			  LEFT JOIN app.api_usage_daily u ON u.day = d::date
+			  LEFT JOIN app.api_usage_daily u ON u.day = d::date AND u.api_key_id NOT IN `+auth.DevKeysSQL+`
 			  LEFT JOIN app.api_key k ON k.id = u.api_key_id
 			 GROUP BY d ORDER BY d`, days)
 		if err != nil {
@@ -112,7 +112,7 @@ func (h adminHandlers) apiUsage(c *gin.Context) {
 			       count(DISTINCT k.user_id) FILTER (WHERE u.requests > 0)::int,
 			       count(*) FILTER (WHERE u.requests >= $2)::int
 			  FROM app.api_usage_daily u JOIN app.api_key k ON k.id = u.api_key_id
-			 WHERE u.day > (now() AT TIME ZONE 'Asia/Taipei')::date - $1::int`, days, limit).
+			 WHERE u.day > (now() AT TIME ZONE 'Asia/Taipei')::date - $1::int AND u.api_key_id NOT IN `+auth.DevKeysSQL, days, limit).
 			Scan(&total, &rejected, &accounts, &quotaHits); err != nil {
 			return err
 		}

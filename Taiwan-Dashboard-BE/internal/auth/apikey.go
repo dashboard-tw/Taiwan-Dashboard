@@ -21,22 +21,29 @@ type Tier struct {
 	PerDay      int
 	PerMinute   int
 	BytesPerDay int64
+	Unlimited   bool // 開發帳號：不限次數、流量與每分鐘次數
 }
 
 var Tiers = map[string]Tier{
 	TierFree:    {PerDay: 600, PerMinute: 30, BytesPerDay: 300 << 20},
 	TierPartner: {PerDay: 3000, PerMinute: 60, BytesPerDay: 1536 << 20},
+	TierDev:     {Unlimited: true},
 }
 
 const (
 	TierFree    = "free"
 	TierPartner = "partner"
+	TierDev     = "dev"
 )
 
 func tierSQL(user string) string {
-	return `CASE WHEN EXISTS (SELECT 1 FROM app.showcase_app a WHERE a.user_id = ` + user +
+	return `CASE WHEN EXISTS (SELECT 1 FROM app.users d WHERE d.id = ` + user + ` AND d.is_dev) THEN '` + TierDev +
+		`' WHEN EXISTS (SELECT 1 FROM app.showcase_app a WHERE a.user_id = ` + user +
 		` AND a.published IS NOT NULL) THEN '` + TierPartner + `' ELSE '` + TierFree + `' END`
 }
+
+// DevKeysSQL lists the API keys of dev accounts, so admin statistics can leave them out.
+const DevKeysSQL = `(SELECT dk.id FROM app.api_key dk JOIN app.users du ON du.id = dk.user_id WHERE du.is_dev)`
 
 func (s *Store) TierOf(ctx context.Context, userID int64) (string, error) {
 	var tier string
@@ -72,6 +79,7 @@ type KeyOwner struct {
 	KeyID   int64
 	UserID  int64
 	Tier    Tier
+	Dev     bool // 開發帳號，不算進後台統計
 	OAuth   bool
 	Expires time.Time
 }
@@ -146,14 +154,15 @@ func (s *Store) CreateClient(ctx context.Context, userID int64, name, ip string)
 	}
 	c := APIClient{Name: name, ClientID: clientID, SecretHint: secretHint(secret), Enabled: true}
 	err = db.AsUser(ctx, s.DB, userID, func(tx *sql.Tx) error {
-		if _, err := tx.ExecContext(ctx, `SELECT 1 FROM app.users WHERE id = $1 FOR UPDATE`, userID); err != nil {
+		var dev bool
+		if err := tx.QueryRowContext(ctx, `SELECT is_dev FROM app.users WHERE id = $1 FOR UPDATE`, userID).Scan(&dev); err != nil {
 			return err
 		}
 		var n int
 		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client'`).Scan(&n); err != nil {
 			return err
 		}
-		if n >= MaxClients {
+		if !dev && n >= MaxClients {
 			return ErrTooManyClients
 		}
 		if err := tx.QueryRowContext(ctx, `
@@ -338,6 +347,7 @@ func (s *Store) lookupToken(ctx context.Context, token string, oauth bool) (*Key
 		t = Tiers[TierFree]
 	}
 	o.Tier = t
+	o.Dev = tier == TierDev
 	return &o, nil
 }
 
@@ -398,7 +408,7 @@ func (s *Store) UseAPIKey(ctx context.Context, o *KeyOwner) (used Usage, ok bool
 			 WHERE k.user_id = $1 AND u.day = $2`, o.UserID, day).Scan(&used.Requests, &used.Bytes); err != nil {
 			return err
 		}
-		if used.Requests >= o.Tier.PerDay || used.Bytes >= o.Tier.BytesPerDay {
+		if !o.Tier.Unlimited && (used.Requests >= o.Tier.PerDay || used.Bytes >= o.Tier.BytesPerDay) {
 			return nil
 		}
 		if _, err := tx.ExecContext(ctx, `
@@ -487,6 +497,7 @@ func (s *Store) LookupClient(ctx context.Context, clientID, secret string) (*Key
 		t = Tiers[TierFree]
 	}
 	o.Tier = t
+	o.Dev = tier == TierDev
 	return &o, nil
 }
 
@@ -507,4 +518,26 @@ func (s *Store) MCPCallsToday(ctx context.Context, userID int64) (int, error) {
 			userID, s.taipeiDay()).Scan(&n)
 	})
 	return n, err
+}
+
+// SetDev turns the dev flag of the account with this email on or off and returns the user id.
+func (s *Store) SetDev(ctx context.Context, email string, on bool) (int64, error) {
+	if s.Emails == nil {
+		return 0, errors.New("EMAIL_KEY is not set")
+	}
+	var id int64
+	err := db.AsSystem(ctx, s.DB, func(tx *sql.Tx) error {
+		err := tx.QueryRowContext(ctx, `
+			UPDATE app.users SET is_dev = $2
+			 WHERE id = (SELECT id FROM app.users WHERE email_lookup = $1 ORDER BY id LIMIT 1)
+			RETURNING id`, s.Emails.Lookup(email), on).Scan(&id)
+		if errors.Is(err, sql.ErrNoRows) {
+			return fmt.Errorf("no account uses this email")
+		}
+		if err != nil {
+			return err
+		}
+		return audit(ctx, tx, nil, "user.dev", fmt.Sprintf("user:%d", id), map[string]any{"on": on}, "")
+	})
+	return id, err
 }

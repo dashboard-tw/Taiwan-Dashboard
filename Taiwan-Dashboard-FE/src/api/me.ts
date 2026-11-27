@@ -91,12 +91,14 @@ export interface ApiClientsState {
   used_today: { requests: number; bytes: number }
   mcp_calls_today: number
   usage: DayUsage[]
-  tier: 'free' | 'partner'
-  limits: { PerDay: number; PerMinute: number; BytesPerDay: number }
+  tier: 'free' | 'partner' | 'dev'
+  limits: { PerDay: number; PerMinute: number; BytesPerDay: number; Unlimited?: boolean }
   partner_limits: { PerDay: number; PerMinute: number; BytesPerDay: number }
   token_ttl: number
   survey: ApiSurvey | null
   terms_version: string
+  /** 開發帳號：不用填調查，沒有憑證數與額度限制 */
+  dev?: boolean
 }
 
 export async function saveApiSurvey(s: ApiSurvey): Promise<void> {

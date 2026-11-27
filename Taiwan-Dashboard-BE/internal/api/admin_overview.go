@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"dashboard.tw/backend/internal/auth"
 	"dashboard.tw/backend/internal/component"
 	"dashboard.tw/backend/internal/db"
 )
@@ -51,8 +52,9 @@ func (h adminHandlers) overview(c *gin.Context) {
 			SELECT count(*), count(*) FILTER (WHERE role = 'admin'), count(*) FILTER (WHERE status = 'disabled'),
 			       count(*) FILTER (WHERE created_at >= now() - interval '7 days'),
 			       count(*) FILTER (WHERE last_login_at >= now() - interval '7 days'),
-			       (SELECT count(*) FROM app.session WHERE revoked_at IS NULL AND expires_at > now())
-			  FROM app.users`).
+			       (SELECT count(*) FROM app.session s JOIN app.users su ON su.id = s.user_id
+			         WHERE s.revoked_at IS NULL AND s.expires_at > now() AND NOT su.is_dev)
+			  FROM app.users WHERE NOT is_dev`).
 			Scan(&users.Total, &users.Admins, &users.Disabled, &users.New7d, &users.Active7d, &users.Sessions); err != nil {
 			return err
 		}
@@ -68,13 +70,14 @@ func (h adminHandlers) overview(c *gin.Context) {
 		}
 		if err := tx.QueryRowContext(ctx, `
 			WITH today AS (SELECT (now() AT TIME ZONE 'Asia/Taipei')::date AS d)
-			SELECT (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client'),
-			       (SELECT count(DISTINCT user_id) FROM app.api_key WHERE revoked_at IS NULL AND disabled_at IS NULL),
+			SELECT (SELECT count(*) FROM app.api_key WHERE revoked_at IS NULL AND kind = 'client' AND id NOT IN `+auth.DevKeysSQL+`),
+			       (SELECT count(DISTINCT user_id) FROM app.api_key WHERE revoked_at IS NULL AND disabled_at IS NULL
+			           AND id NOT IN `+auth.DevKeysSQL+`),
 			       coalesce(sum(u.requests) FILTER (WHERE u.day = today.d), 0),
 			       coalesce(sum(u.bytes) FILTER (WHERE u.day = today.d), 0),
 			       coalesce(sum(u.rejected) FILTER (WHERE u.day = today.d), 0),
 			       coalesce(sum(u.requests) FILTER (WHERE u.day > today.d - 7), 0)
-			  FROM today LEFT JOIN app.api_usage_daily u ON u.day > today.d - 7
+			  FROM today LEFT JOIN app.api_usage_daily u ON u.day > today.d - 7 AND u.api_key_id NOT IN `+auth.DevKeysSQL+`
 			 GROUP BY today.d`).
 			Scan(&api.Clients, &api.Accounts, &api.RequestsToday, &api.BytesToday, &api.RejectedToday, &api.Requests7d); err != nil {
 			return err
@@ -175,8 +178,9 @@ func (h adminHandlers) overview(c *gin.Context) {
 			  SELECT generate_series((now() AT TIME ZONE 'Asia/Taipei')::date - 13,
 			                         (now() AT TIME ZONE 'Asia/Taipei')::date, interval '1 day')::date AS d)
 			SELECT to_char(days.d, 'YYYY-MM-DD'),
-			       (SELECT count(*) FROM app.users u WHERE (u.created_at AT TIME ZONE 'Asia/Taipei')::date = days.d),
-			       (SELECT coalesce(sum(a.requests), 0) FROM app.api_usage_daily a WHERE a.day = days.d),
+			       (SELECT count(*) FROM app.users u WHERE (u.created_at AT TIME ZONE 'Asia/Taipei')::date = days.d AND NOT u.is_dev),
+			       (SELECT coalesce(sum(a.requests), 0) FROM app.api_usage_daily a
+			         WHERE a.day = days.d AND a.api_key_id NOT IN `+auth.DevKeysSQL+`),
 			       (SELECT count(*) FROM app.pipeline_run r
 			         WHERE r.status = 'failed' AND (r.started_at AT TIME ZONE 'Asia/Taipei')::date = days.d)
 			  FROM days ORDER BY days.d`)

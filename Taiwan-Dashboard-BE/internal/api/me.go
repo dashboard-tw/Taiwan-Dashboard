@@ -275,7 +275,7 @@ func (h meHandlers) apiClients(c *gin.Context) {
 	writeData(c, http.StatusOK, gin.H{
 		"clients": clients, "max_clients": auth.MaxClients, "used_today": used, "mcp_calls_today": mcpCalls,
 		"usage": usage, "tier": tier, "limits": auth.Tiers[tier], "partner_limits": auth.Tiers[auth.TierPartner], "token_ttl": int(auth.TokenTTL.Seconds()),
-		"survey": s, "terms_version": APITermsVersion,
+		"survey": s, "terms_version": APITermsVersion, "dev": tier == auth.TierDev,
 	}, nil)
 }
 

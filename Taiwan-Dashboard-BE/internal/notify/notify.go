@@ -140,7 +140,7 @@ func (n *Notifier) AccountDeleting(ctx context.Context, userID int64) func() {
 }
 
 func (n *Notifier) UsageHigh(userID int64, used auth.Usage, tier auth.Tier) {
-	if !n.enabled() {
+	if !n.enabled() || tier.Unlimited {
 		return
 	}
 	if used.Requests*10 < tier.PerDay*8 && used.Bytes*10 < tier.BytesPerDay*8 {

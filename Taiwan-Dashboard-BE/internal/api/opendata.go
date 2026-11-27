@@ -40,6 +40,9 @@ type keyLimits struct {
 }
 
 func (k *keyLimits) allow(owner *auth.KeyOwner) (bool, time.Duration) {
+	if owner.Tier.Unlimited {
+		return true, 0
+	}
 	k.mu.Lock()
 	l := k.byTi[owner.Tier.PerMinute]
 	if l == nil {
@@ -96,9 +99,11 @@ func requireKey(store *auth.Store, limits *keyLimits) gin.HandlerFunc {
 			openFail(c, err)
 			return
 		}
-		c.Header("X-RateLimit-Limit", strconv.Itoa(owner.Tier.PerDay))
-		c.Header("X-RateLimit-Remaining", strconv.Itoa(max(0, owner.Tier.PerDay-used.Requests)))
-		c.Header("X-Traffic-Limit", strconv.FormatInt(owner.Tier.BytesPerDay, 10))
+		if !owner.Tier.Unlimited {
+			c.Header("X-RateLimit-Limit", strconv.Itoa(owner.Tier.PerDay))
+			c.Header("X-RateLimit-Remaining", strconv.Itoa(max(0, owner.Tier.PerDay-used.Requests)))
+			c.Header("X-Traffic-Limit", strconv.FormatInt(owner.Tier.BytesPerDay, 10))
+		}
 		c.Header("X-Traffic-Used", strconv.FormatInt(used.Bytes, 10))
 		if !ok {
 			countRejected(c, store, owner)
@@ -203,6 +208,11 @@ func countDataset(svc *opendata.Service) gin.HandlerFunc {
 		c.Next()
 		if c.Writer.Status() >= 400 {
 			return
+		}
+		if v, ok := c.Get(ownerKey); ok {
+			if o, _ := v.(*auth.KeyOwner); o != nil && o.Dev {
+				return // 開發帳號不算進各資料集的使用統計
+			}
 		}
 		id := c.Param("id")
 		if id == "" {
