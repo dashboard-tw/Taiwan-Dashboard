@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/dashboard-tw/Taiwan-Dashboard/actions/workflows/github-code-scanning/codeql)
+[![CodeFactor](https://www.codefactor.io/repository/github/dashboard-tw/taiwan-dashboard/badge)](https://www.codefactor.io/repository/github/dashboard-tw/taiwan-dashboard)
 [![License: AGPL-3.0](https://img.shields.io/github/license/dashboard-tw/Taiwan-Dashboard)](LICENSE)
 [![Go](https://img.shields.io/github/go-mod/go-version/dashboard-tw/Taiwan-Dashboard?filename=Taiwan-Dashboard-BE%2Fgo.mod&logo=go&logoColor=white)](Taiwan-Dashboard-BE/go.mod)
 [![Vue 3](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)](Taiwan-Dashboard-FE/package.json)
