@@ -173,7 +173,7 @@ h1 {
 }
 .req {
   margin-left: auto;
-  color: #d9661f;
+  color: var(--verb-post);
   font-size: 0.8rem;
 }
 .param-group li p {
@@ -196,13 +196,13 @@ h1 {
   font-weight: 700;
 }
 .code.c2 {
-  color: #1f8f5f;
+  color: var(--verb-get);
 }
 .code.c3 {
   color: var(--text-muted);
 }
 .code.c4 {
-  color: #d9661f;
+  color: var(--verb-post);
 }
 @media (max-width: 40em) {
   .statuses li {

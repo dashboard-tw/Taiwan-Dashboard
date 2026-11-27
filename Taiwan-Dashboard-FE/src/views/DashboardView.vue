@@ -138,10 +138,12 @@ async function share() {
 
 <template>
   <div class="page">
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS[slug] ?? 'dashboard' }}</span>
-      <template v-if="title">{{ title }}</template>
-      <span v-else class="skeleton title-skeleton" aria-hidden="true"></span>
+    <div class="page-title">
+      <h1>
+        <span class="mi" aria-hidden="true">{{ DASHBOARD_ICONS[slug] ?? 'dashboard' }}</span>
+        <template v-if="title">{{ title }}</template>
+        <span v-else class="skeleton title-skeleton" aria-hidden="true"></span>
+      </h1>
       <span class="tools">
         <CountySelect
           :model-value="county"
@@ -158,7 +160,7 @@ async function share() {
           <span class="mi" aria-hidden="true">{{ copied ? 'check' : 'share' }}</span>
         </button>
       </span>
-    </h1>
+    </div>
     <p
       v-if="slug === 'typhoon' && typhoon.loaded.value && !typhoon.active.value"
       class="typhoon-note"

@@ -35,8 +35,8 @@ const skeleton = computed(() => (list.value ? list.value.map(slotOf) : UNKNOWN_S
 
 <template>
   <div class="page">
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">apps</span>元件庫
+    <div class="page-title">
+      <h1><span class="mi" aria-hidden="true">apps</span>元件庫</h1>
       <span class="tools">
         <input
           v-model="q"
@@ -46,7 +46,7 @@ const skeleton = computed(() => (list.value ? list.value.map(slotOf) : UNKNOWN_S
           aria-label="搜尋元件"
         />
       </span>
-    </h1>
+    </div>
     <div class="filters" role="group" aria-label="依主題篩選">
       <button
         v-for="t in TOPICS"

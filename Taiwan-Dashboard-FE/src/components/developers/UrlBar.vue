@@ -50,10 +50,10 @@ async function copy() {
   letter-spacing: 0.02em;
 }
 .method.get {
-  background: #1f8f5f;
+  background: #146c47;
 }
 .method.post {
-  background: #d9661f;
+  background: #a3450c;
 }
 .addr {
   flex: 1;

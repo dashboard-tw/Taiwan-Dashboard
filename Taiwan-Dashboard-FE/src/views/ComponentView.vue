@@ -53,16 +53,18 @@ function changeCounty(c: string | null) {
 
 <template>
   <div class="page">
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">{{
-        component ? DASHBOARD_ICONS[component.topic] : 'widgets'
-      }}</span>
-      <template v-if="component">{{ component.name }}</template>
-      <span
-        v-else-if="!notFound && !failed"
-        class="skeleton title-skeleton"
-        aria-hidden="true"
-      ></span>
+    <div class="page-title">
+      <h1>
+        <span class="mi" aria-hidden="true">{{
+          component ? DASHBOARD_ICONS[component.topic] : 'widgets'
+        }}</span>
+        <template v-if="component">{{ component.name }}</template>
+        <span
+          v-else-if="!notFound && !failed"
+          class="skeleton title-skeleton"
+          aria-hidden="true"
+        ></span>
+      </h1>
       <span class="tools">
         <CountySelect
           v-if="component?.scopes.includes('county')"
@@ -70,7 +72,7 @@ function changeCounty(c: string | null) {
           @update:model-value="changeCounty"
         />
       </span>
-    </h1>
+    </div>
     <p v-if="notFound" class="muted">查無此元件：{{ slug }}</p>
     <p v-else-if="failed" class="muted">元件載入失敗</p>
     <div v-else-if="component" class="card panel">

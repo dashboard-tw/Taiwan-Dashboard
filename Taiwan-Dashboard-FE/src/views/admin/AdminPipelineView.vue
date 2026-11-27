@@ -191,14 +191,14 @@ function duration(r: PipelineRun): string {
 
 <template>
   <div>
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">monitor_heart</span>資料管線
+    <div class="page-title">
+      <h1><span class="mi" aria-hidden="true">monitor_heart</span>資料管線</h1>
       <span class="tools">
         <span v-if="datasets" :class="problems ? 'bad' : 'ok'">
           {{ problems ? `${problems} 個資料集需要注意` : '所有資料集都正常' }}
         </span>
       </span>
-    </h1>
+    </div>
     <p v-if="error" class="bad" role="alert">{{ error }}</p>
 
     <section class="card block run-all">

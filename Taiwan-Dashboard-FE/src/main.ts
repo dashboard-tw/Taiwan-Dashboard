@@ -6,6 +6,7 @@ import { handleAuthPopup } from './lib/authPopup'
 import { router } from './router'
 import { reloadForNewBuild } from './lib/staleBuild'
 import { initTheme } from './theme'
+import { watchNewWindowLinks } from './lib/newWindow'
 import './style.css'
 
 initTheme()
@@ -14,5 +15,8 @@ window.addEventListener('vite:preloadError', (e) => {
 })
 if (!handleAuthPopup()) {
   const app = createApp(App).use(createPinia()).use(router).use(i18n)
-  void router.isReady().then(() => app.mount('#app'))
+  void router.isReady().then(() => {
+    app.mount('#app')
+    watchNewWindowLinks()
+  })
 }

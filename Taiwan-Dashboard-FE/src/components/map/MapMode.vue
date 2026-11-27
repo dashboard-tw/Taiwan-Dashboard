@@ -230,8 +230,10 @@ function freq(c: ComponentInfo) {
   display: inline-flex;
   align-items: center;
 }
+/* 不用透明度淡化，文字要維持 4.5:1 對比 */
 .muted-tag {
-  opacity: 0.7;
+  border: 1px dashed var(--border);
+  background: transparent;
 }
 .map-card.on .map-card-head {
   margin-bottom: 6px;

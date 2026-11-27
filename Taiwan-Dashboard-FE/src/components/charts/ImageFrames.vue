@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import type { Series } from '../../api/types'
 import { imageUrl } from '../../lib/weatherImage'
+
+const sliderId = useId()
 
 const props = defineProps<{ series: Series[]; label: string }>()
 
@@ -110,12 +112,16 @@ onBeforeUnmount(() => {
       >
         <span class="mi" aria-hidden="true">{{ playing ? 'pause' : 'play_arrow' }}</span>
       </button>
+      <label :for="sliderId" class="visually-hidden"
+        >{{ label }}的時間，用左右方向鍵切換前後一張</label
+      >
       <input
+        :id="sliderId"
         v-model.number="index"
         type="range"
         min="0"
         :max="frames.length - 1"
-        :aria-label="`${label}的時間`"
+        :title="`拖曳或用左右方向鍵切換${label}的時間`"
         :aria-valuetext="timeLabel"
         @input="stop"
       />

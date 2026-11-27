@@ -439,14 +439,19 @@ function time(iso: string) {
 
 <template>
   <div>
-    <h1 class="page-title">
-      <RouterLink class="back" :to="{ name: 'admin-components' }" aria-label="回到元件清單">
-        <span class="mi" aria-hidden="true">arrow_back</span>
-      </RouterLink>
-      {{ isNew ? '新增元件' : (spec?.name ?? slug) }}
-      <span v-if="spec && !isNew" :class="['badge', spec.status === 'published' ? 'ok' : 'muted']">
-        {{ spec.status === 'published' ? '已發布' : '草稿' }}
-      </span>
+    <div class="page-title">
+      <h1>
+        <RouterLink class="back" :to="{ name: 'admin-components' }" aria-label="回到元件清單">
+          <span class="mi" aria-hidden="true">arrow_back</span>
+        </RouterLink>
+        {{ isNew ? '新增元件' : (spec?.name ?? slug) }}
+        <span
+          v-if="spec && !isNew"
+          :class="['badge', spec.status === 'published' ? 'ok' : 'muted']"
+        >
+          {{ spec.status === 'published' ? '已發布' : '草稿' }}
+        </span>
+      </h1>
       <span class="tools">
         <button
           v-if="!isNew"
@@ -480,7 +485,7 @@ function time(iso: string) {
           </button>
         </template>
       </span>
-    </h1>
+    </div>
     <p v-if="loadError" class="notice bad" role="alert">{{ loadError }}</p>
 
     <div v-if="spec" class="editor-layout" :class="{ 'with-versions': showVersions }">

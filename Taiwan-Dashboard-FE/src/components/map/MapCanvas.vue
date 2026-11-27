@@ -2,7 +2,7 @@
 import * as maplibregl from 'maplibre-gl'
 import type { GeoJSONSource, LngLatBoundsLike, Map as MapLibreMap } from 'maplibre-gl'
 import { geoBounds } from 'd3-geo'
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useId, watch } from 'vue'
 import {
   API_BASE,
   getComponentData,
@@ -17,6 +17,8 @@ import { rewind } from '../../lib/geo'
 import { levelIn, levelsFor } from '../../lib/levels'
 import { resolvedTheme } from '../../theme'
 import { loadWindGrid, WindAnimation, type WindGrid } from '../../lib/windField'
+
+const frameSliderId = useId()
 import { onScheduledRefresh } from '../../composables/useRefreshClock'
 
 export interface ActiveLayer {
@@ -600,7 +602,12 @@ function showFeature(a: ActiveLayer, f: maplibregl.MapGeoJSONFeature, lngLat: ma
 
 <template>
   <div class="map-root">
-    <div ref="el" class="map-canvas" role="region" aria-label="地圖"></div>
+    <div
+      ref="el"
+      class="map-canvas"
+      role="region"
+      aria-label="地圖：可用滑鼠拖曳或方向鍵移動，滾輪或加減鍵縮放"
+    ></div>
     <div
       v-if="frameTimes.length > 1"
       class="frame-bar"
@@ -614,12 +621,16 @@ function showFeature(a: ActiveLayer, f: maplibregl.MapGeoJSONFeature, lngLat: ma
       >
         <span class="mi" aria-hidden="true">{{ framePlaying ? 'pause' : 'play_arrow' }}</span>
       </button>
+      <label :for="frameSliderId" class="visually-hidden"
+        >雷達、衛星等影像圖層的時間，用左右方向鍵切換前後一張</label
+      >
       <input
+        :id="frameSliderId"
         v-model.number="frameIndex"
         type="range"
         min="0"
         :max="frameTimes.length - 1"
-        aria-label="影像圖層的時間"
+        title="拖曳或用左右方向鍵切換影像圖層的時間"
         :aria-valuetext="frameLabel"
         @input="stopFrames"
       />

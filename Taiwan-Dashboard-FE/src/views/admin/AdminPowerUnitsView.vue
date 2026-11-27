@@ -137,12 +137,12 @@ const value = (e: Event) => (e.target as HTMLSelectElement).value || null
 
 <template>
   <div>
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">bolt</span>發電機組
+    <div class="page-title">
+      <h1><span class="mi" aria-hidden="true">bolt</span>發電機組</h1>
       <span v-if="units" class="tools" :class="missing ? 'bad' : 'ok'">
         {{ missing ? `${missing} 座電廠還沒有縣市` : '每座電廠都有縣市了' }}
       </span>
-    </h1>
+    </div>
     <p v-if="error" class="notice bad" role="alert">{{ error }}</p>
 
     <section class="card block">

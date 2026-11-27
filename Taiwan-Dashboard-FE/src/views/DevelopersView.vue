@@ -1032,15 +1032,19 @@ h1 {
   font-weight: 700;
 }
 .verb.get {
-  color: #1f8f5f;
+  color: var(--verb-get);
 }
 .verb.post {
-  color: #d9661f;
+  color: var(--verb-post);
 }
 .count {
   color: var(--text-muted);
   font-size: 0.78rem;
   font-variant-numeric: tabular-nums;
+}
+/* 選中的項目背景較深，數字改用連結本身的顏色 */
+.router-link-active .count {
+  color: inherit;
 }
 .chev {
   color: var(--text-muted);

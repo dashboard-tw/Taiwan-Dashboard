@@ -51,9 +51,11 @@ function changeCounty(c: string | null) {
 
 <template>
   <div class="page">
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">location_on</span>
-      {{ name ? `${name}總覽` : '' }}
+    <div class="page-title">
+      <h1>
+        <span class="mi" aria-hidden="true">location_on</span>
+        {{ name ? `${name}總覽` : '' }}
+      </h1>
       <span class="tools">
         <CountySelect
           :model-value="code"
@@ -61,7 +63,7 @@ function changeCounty(c: string | null) {
           @update:model-value="changeCounty"
         />
       </span>
-    </h1>
+    </div>
     <p v-if="unknown" class="notice">查無此縣市：{{ code }}</p>
     <p v-else-if="error" class="notice">縣市總覽載入失敗</p>
     <div v-else-if="!components.length" class="component-grid">

@@ -507,7 +507,8 @@ const shown = computed(() => {
 }
 .doc-table td a {
   color: var(--text-primary);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 .doc-table td a:hover {
   color: var(--accent);

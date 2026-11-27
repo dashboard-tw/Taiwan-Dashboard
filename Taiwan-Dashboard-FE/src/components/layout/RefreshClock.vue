@@ -28,7 +28,7 @@ function click() {
     :title="cooling ? '剛更新過，請稍候再試' : '按一下馬上更新資料'"
     @click="click"
   >
-    <span aria-live="polite">{{ refreshing ? '更新中…' : `下次更新：${remaining}` }}</span>
+    <span aria-live="off">{{ refreshing ? '更新中…' : `下次更新：${remaining}` }}</span>
   </button>
 </template>
 

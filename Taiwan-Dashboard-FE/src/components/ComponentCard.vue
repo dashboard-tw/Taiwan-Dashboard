@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { pageTyphoon } from '../lib/pageContext'
 import { useRouter } from 'vue-router'
 import type { ComponentInfo, DataMeta } from '../api/types'
@@ -36,7 +36,25 @@ const query = computed(() => ({
   ...(effectiveCounty.value ? { county: effectiveCounty.value } : {}),
   ...(pageTyphoon.value ? { typhoon: pageTyphoon.value } : {}),
 }))
-const { result } = useComponentData(() => props.component.slug, 'data', query)
+// 卡片快捲到畫面附近才抓資料；縣市總覽有一百多張卡片，一次全抓會撞到每個 IP 的請求上限
+const root = ref<HTMLElement | null>(null)
+const near = ref(typeof IntersectionObserver === 'undefined')
+let observer: IntersectionObserver | null = null
+onMounted(() => {
+  if (near.value || !root.value) return
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        near.value = true
+        observer?.disconnect()
+      }
+    },
+    { rootMargin: '600px 0px' },
+  )
+  observer.observe(root.value)
+})
+onBeforeUnmount(() => observer?.disconnect())
+const { result } = useComponentData(() => props.component.slug, 'data', query, near)
 const mapFirst = computed(
   () => props.component.chart_types[0] === 'CountyMapChart' && !effectiveCounty.value,
 )
@@ -133,7 +151,7 @@ function openInfo() {
 </script>
 
 <template>
-  <article :class="['component-card', `mode-${mode}`]">
+  <article ref="root" :class="['component-card', `mode-${mode}`]">
     <header class="head">
       <h2>
         <span class="name">{{ component.name }}</span>

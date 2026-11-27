@@ -70,6 +70,7 @@ watch(
   <RouterView v-if="bare" />
   <template v-else>
     <a class="skip" href="#main">跳到主要內容</a>
+    <RouterLink class="skip" to="/sitemap">網站導覽</RouterLink>
     <SiteHeader :sidebar-open="drawerOpen && narrow" @toggle-sidebar="drawerOpen = !drawerOpen" />
     <div class="shell">
       <SiteSidebar

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { DASHBOARD_ICONS, TOPIC_GROUPS, TOPICS } from '../../lib/topics'
@@ -21,11 +21,29 @@ watch(
     }
   },
 )
+// 抽屜開著時，在頁面任何地方按 Esc 都能關閉
 function onKey(e: KeyboardEvent) {
   if (e.key === 'Escape' && props.open) {
     e.stopPropagation()
     emit('close')
   }
+}
+watch(
+  () => props.open,
+  (open) => {
+    if (open) document.addEventListener('keydown', onKey)
+    else document.removeEventListener('keydown', onKey)
+  },
+)
+onBeforeUnmount(() => document.removeEventListener('keydown', onKey))
+
+// 鍵盤焦點離開抽屜（漢堡鈕除外）就關閉，避免選單蓋住下方內容
+function onFocusOut(e: FocusEvent) {
+  if (!props.open) return
+  const next = e.relatedTarget as Node | null
+  if (!next || aside.value?.contains(next)) return
+  if ((next as HTMLElement).closest?.('.menu-toggle')) return
+  emit('close')
 }
 
 const { t } = useI18n()
@@ -48,7 +66,7 @@ function topicActive(slug: string) {
     ref="aside"
     :class="['sidebar', { collapsed, open }]"
     :aria-label="t('sidebar.label')"
-    @keydown="onKey"
+    @focusout="onFocusOut"
   >
     <div class="head">
       <h2 v-if="!collapsed">{{ t('sidebar.public') }}</h2>

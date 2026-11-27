@@ -143,8 +143,8 @@ function time(iso: string | null) {
 
 <template>
   <div>
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">query_stats</span>API 用量
+    <div class="page-title">
+      <h1><span class="mi" aria-hidden="true">query_stats</span>API 用量</h1>
       <span class="tools">
         <span class="range" role="group" aria-label="期間">
           <button
@@ -159,7 +159,7 @@ function time(iso: string | null) {
           </button>
         </span>
       </span>
-    </h1>
+    </div>
     <p v-if="error" class="notice bad" role="alert">{{ error }}</p>
     <p v-if="message" :class="['notice', { bad: !message.ok }]" role="status">{{ message.text }}</p>
 

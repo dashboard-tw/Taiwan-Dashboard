@@ -7,6 +7,9 @@
 }
 
 :root {
+  /* API 方法標籤，淺色背景上要有 4.5:1 對比 */
+  --verb-get: #146c47;
+  --verb-post: #a3450c;
   --bg: #eef0f2;
   --surface: #ffffff;
   --surface-muted: #e6e8eb;
@@ -58,6 +61,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
+    --verb-get: #4cc38a;
+    --verb-post: #f08a4b;
     --bg: #090909;
     --surface: #282a2c;
     --surface-muted: #333537;
@@ -88,6 +93,8 @@
 }
 
 :root[data-theme='dark'] {
+  --verb-get: #4cc38a;
+  --verb-post: #f08a4b;
   --bg: #090909;
   --surface: #282a2c;
   --surface-muted: #333537;
@@ -200,6 +207,15 @@ button {
 }
 .page-title .mi {
   font-size: 1.4rem;
+}
+/* 有工具列的頁面：標題只包住圖示與文字，選單和按鈕放在標題外 */
+.page-title > h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  font: inherit;
 }
 .page-title .tools {
   display: flex;

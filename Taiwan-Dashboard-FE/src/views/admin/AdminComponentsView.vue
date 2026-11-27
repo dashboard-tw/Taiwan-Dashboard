@@ -50,8 +50,8 @@ function time(iso: string) {
 
 <template>
   <div>
-    <h1 class="page-title">
-      <span class="mi" aria-hidden="true">widgets</span>元件
+    <div class="page-title">
+      <h1><span class="mi" aria-hidden="true">widgets</span>元件</h1>
       <span class="tools">
         <input
           v-model="q"
@@ -64,7 +64,7 @@ function time(iso: string) {
           <span class="mi" aria-hidden="true">add</span>新增元件
         </RouterLink>
       </span>
-    </h1>
+    </div>
     <p v-if="error" class="notice bad" role="alert">{{ error }}</p>
 
     <section class="card block">
