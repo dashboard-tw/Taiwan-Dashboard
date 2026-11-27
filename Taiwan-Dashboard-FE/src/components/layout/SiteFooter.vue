@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { siteStats } from '../../lib/presence'
+import { formatNumber } from '../../lib/format'
 
 const { t } = useI18n()
 </script>
@@ -18,6 +20,11 @@ const { t } = useI18n()
       <a href="https://github.com/dashboard-tw" rel="noopener">GitHub</a>
       <a href="https://discord.gg/gU5gndueZH" rel="noopener">Discord</a>
     </nav>
+    <p v-if="siteStats" class="stats">
+      瀏覽人次：{{ formatNumber(siteStats.visits, 0) }}｜目前在線：{{
+        formatNumber(siteStats.online, 0)
+      }}
+    </p>
   </footer>
 </template>
 
@@ -32,6 +39,10 @@ const { t } = useI18n()
 }
 p {
   margin: 0 0 0.6rem;
+}
+.stats {
+  margin: 0.8rem 0 0;
+  font-variant-numeric: tabular-nums;
 }
 nav {
   display: flex;

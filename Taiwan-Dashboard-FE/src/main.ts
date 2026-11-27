@@ -7,6 +7,7 @@ import { router } from './router'
 import { reloadForNewBuild } from './lib/staleBuild'
 import { initTheme } from './theme'
 import { watchNewWindowLinks } from './lib/newWindow'
+import { startPresence } from './lib/presence'
 import './style.css'
 
 initTheme()
@@ -18,5 +19,7 @@ if (!handleAuthPopup()) {
   void router.isReady().then(() => {
     app.mount('#app')
     watchNewWindowLinks()
+    const path = window.location.pathname
+    if (!path.startsWith('/embed/') && !path.startsWith('/oauth/')) startPresence()
   })
 }

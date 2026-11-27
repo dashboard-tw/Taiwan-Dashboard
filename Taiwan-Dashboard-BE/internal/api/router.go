@@ -106,6 +106,7 @@ func NewRouter(deps Deps) *gin.Engine {
 		}
 		screenGroup := v1.Group("", newLimiter(perMinute, burst).middleware())
 		registerScreen(screenGroup, deps.Screen, siteURL)
+		screenGroup.POST("/presence", newPresence(deps.Screen.App).handle)
 		if deps.ImageDir != "" {
 			registerImages(screenGroup, deps.ImageDir)
 		} else if deps.ImageProxy != nil {
