@@ -14,14 +14,22 @@
 | `water_outage` | `outage/` | 台灣自來水 停水資訊 | 每 30 分鐘 |
 | `water_outage_taipei` | `outage/` | 臺北自來水事業處 停水公告 | 每 30 分鐘 |
 | `power_outage` | `outage/` | 台電 電力維生管線災情資訊 `d006012`（災害期間） | 每 20 分鐘 |
-| `earthquake` | `earthquake/` | 中央氣象署 顯著有感地震報告 `E-A0015-001` | 每 10 分鐘 |
-| `earthquake_local` | `earthquake/` | 中央氣象署 小區域有感地震報告 `E-A0016-001` | 每 10 分鐘 |
-| `typhoon_track` | `weather/` | 中央氣象署 熱帶氣旋路徑 `W-C0034-005` | 每 20 分鐘 |
-| `typhoon_warning` | `weather/` | 中央氣象署 颱風警報 `W-C0034-001` | 每 15 分鐘 |
-| `weather_warning` | `weather/` | 中央氣象署 各縣市天氣警特報 `W-C0033-001` | 每 10 分鐘 |
+| `earthquake` | `earthquake/` | 中央氣象署 顯著有感地震報告 `E-A0015-001` | 每 2 分鐘 |
+| `earthquake_local` | `earthquake/` | 中央氣象署 小區域有感地震報告 `E-A0016-001` | 每 2 分鐘 |
+| `tsunami` | `earthquake/` | 中央氣象署 海嘯資訊 `E-A0014-001` | 每 2 分鐘 |
+| `typhoon_track` | `weather/` | 中央氣象署 熱帶氣旋路徑 `W-C0034-005` | 每 10 分鐘 |
+| `typhoon_warning` | `weather/` | 中央氣象署 颱風警報 `W-C0034-001` | 每 5 分鐘 |
+| `weather_warning` | `weather/` | 中央氣象署 各縣市天氣警特報 `W-C0033-001` | 每 5 分鐘 |
 | `rain_obs` | `weather/` | 中央氣象署 自動雨量站雨量 `O-A0002-001` | 每 5 分鐘 |
 | `weather_obs` | `weather/` | 中央氣象署 自動氣象站 `O-A0001-001` 與現在天氣觀測 `O-A0003-001`（合併） | 每 5 分鐘 |
-| `county_forecast` | `weather/` | 中央氣象署 今明 36 小時天氣預報 `F-C0032-001` | 每 30 分鐘 |
+| `county_forecast` | `weather/` | 中央氣象署 今明 36 小時天氣預報 `F-C0032-001` | 每 15 分鐘 |
+| `town_forecast` | `weather/` | 中央氣象署 鄉鎮未來 3 天天氣預報 `F-D0047-093`（22 縣市一次抓，結束兩天後刪除） | 每小時 |
+| `town_forecast_week` | `weather/` | 中央氣象署 鄉鎮未來 1 週天氣預報 `F-D0047-093`（含紫外線指數，結束兩天後刪除） | 每 3 小時 |
+| `tide_forecast` | `weather/` | 中央氣象署 潮汐預報 `F-A0021-001`（未來一個月，兩天前的刪除） | 每天 |
+| `sun_moon` | `weather/` | 中央氣象署 日出日沒 `A-B0062-001` 與月出月沒 `A-B0063-001`（未來 30 天） | 每天 |
+| `weather_advisory` | `weather/` | 中央氣象署 低溫特報 `W-C0033-004`、高溫資訊 `W-C0033-005`、濃霧特報 `W-C0033-010` | 每 10 分鐘 |
+| `health_weather` | `weather/` | 中央氣象署 健康氣象：熱傷害 `M-A0085-001`、冷傷害 `F-A0085-002`、溫差提醒 `F-A0085-004`（結束兩天後刪除） | 每 3 小時 |
+| `climate` | `weather/` | 中央氣象署 有人氣象站月平年值 `C-B0027-001` 與今年每日雨量 `C-B0025-001` | 每天 |
 | `wind_layer` | `weather/` | 中央氣象署 WRF 數值預報 `M-A0061`（GRIB2，只讀 10 公尺風，保留 7 天） | 每 30 分鐘 |
 | `radar_image` | `weather/` | 中央氣象署 雷達合成回波圖 `O-A0058-003`（存成檔案，保留 7 天） | 每 5 分鐘 |
 | `satellite_image` | `weather/` | 中央氣象署 衛星雲圖 `O-B0032-002`（存成檔案，保留 7 天） | 每 5 分鐘 |

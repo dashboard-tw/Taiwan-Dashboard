@@ -35,7 +35,7 @@
     {
       "slug": "county-forecast",
       "name": "各縣市天氣預報",
-      "topic": "weather",
+      "topic": "forecast",
       "short_desc": "各縣市目前時段的預報最高溫",
       "long_desc": "中央氣象署每天 5、11、17、23 時發布未來 36 小時預報，每 12 小時一個時段。縣市模式顯示接下來三個時段的最高溫與最低溫。",
       "use_case": "出門前看天氣，決定要不要帶傘、穿多少。",
@@ -68,7 +68,7 @@
     {
       "slug": "forecast-rain-chance",
       "name": "各縣市降雨機率",
-      "topic": "weather",
+      "topic": "forecast",
       "short_desc": "各縣市目前時段的降雨機率",
       "long_desc": "取自中央氣象署 36 小時天氣預報，每 12 小時一個時段。降雨機率指這段時間內縣市任一地點下雨的機會。縣市模式顯示接下來三個時段。",
       "use_case": "決定今天、今晚或明天要不要帶傘。",
@@ -4777,6 +4777,430 @@
         }
       ],
       "map_layers": []
+    },
+    {
+      "slug": "town-forecast-temp",
+      "name": "鄉鎮天氣預報",
+      "topic": "forecast",
+      "short_desc": "各鄉鎮接下來 3 小時的預報氣溫",
+      "long_desc": "中央氣象署的鄉鎮預報，每 3 小時一個時段，每天更新 8 次。全國模式列出各縣市氣溫最高的鄉鎮，縣市模式列出所有鄉鎮。點地圖上的鄉鎮可以看天氣、體感溫度和降雨機率。",
+      "use_case": "出門前查所在鄉鎮接下來幾小時的天氣。",
+      "dataset_ids": ["town_forecast"],
+      "time_range": "current",
+      "chart_types": ["BarChart"],
+      "colors": [],
+      "unit": "°C",
+      "decimals": 0,
+      "links": ["https://www.cwa.gov.tw/V8/C/W/Town/index.html"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_forecast\n  WHERE ends_at > now()\n  ORDER BY geocode, starts_at\n),\nbest AS (\n  SELECT DISTINCT ON (t.county_code) c.short_name || t.name AS x_axis, f.temp_c AS data, c.sort_order\n  FROM cur f\n  JOIN ref.forecast_town t USING (geocode)\n  JOIN ref.county c ON c.code = t.county_code\n  WHERE f.temp_c IS NOT NULL\n  ORDER BY t.county_code, f.temp_c DESC, t.name\n)\nSELECT x_axis, data\nFROM best\nORDER BY data DESC, sort_order"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_forecast\n  WHERE ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT t.name AS x_axis, f.temp_c AS data\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nJOIN ref.county c ON c.code = t.county_code\nWHERE t.county_code = :county AND f.temp_c IS NOT NULL\nORDER BY f.temp_c DESC, t.name\nLIMIT 40"
+        }
+      ],
+      "map_layers": [
+        {"title": "各鄉鎮預報（點選看天氣）", "layer_type": "circle", "source_type": "query", "geojson_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_forecast\n  WHERE ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT ST_AsGeoJSON(t.geom, 4) AS geometry, c.short_name || t.name AS name, f.weather, f.temp_c, f.rain_chance_pct,\n       f.temp_c || ' °C' AS temp, f.apparent_c || ' °C' AS apparent, f.rain_chance_pct || '%' AS rain, f.comfort,\n       f.wind_dir || ' ' || f.beaufort || ' 級' AS wind,\n       to_char(f.starts_at AT TIME ZONE 'Asia/Taipei', 'MM/DD HH24') || '–' || to_char(f.ends_at AT TIME ZONE 'Asia/Taipei', 'HH24') || ' 時' AS period\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nJOIN ref.county c ON c.code = t.county_code\nWHERE (:county::char(5) IS NULL OR t.county_code = :county)", "style": {"paint": {"circle-radius": ["interpolate", ["linear"], ["zoom"], 6, 4, 10, 8, 14, 12], "circle-color": ["step", ["coalesce", ["get", "temp_c"], -99], "#a8a29e", -50, "#2f5f9e", 10, "#4f86c6", 15, "#8fb5dc", 20, "#b9b4ab", 25, "#eda36a", 30, "#dc6a3c", 35, "#b03a22"], "circle-stroke-color": "#ffffff", "circle-stroke-width": 1}}, "popup_fields": [{"key": "name", "name": "鄉鎮"}, {"key": "period", "name": "時段"}, {"key": "weather", "name": "天氣"}, {"key": "temp", "name": "溫度"}, {"key": "apparent", "name": "體感溫度"}, {"key": "rain", "name": "降雨機率"}, {"key": "wind", "name": "風"}, {"key": "comfort", "name": "舒適度"}]}
+      ]
+    },
+    {
+      "slug": "town-rain-chance",
+      "name": "鄉鎮降雨機率",
+      "topic": "forecast",
+      "short_desc": "各鄉鎮接下來 3 小時的降雨機率",
+      "long_desc": "取自中央氣象署鄉鎮預報，每 3 小時一個時段。全國模式列出各縣市降雨機率最高的鄉鎮，縣市模式列出所有鄉鎮。",
+      "use_case": "決定等一下出門要不要帶傘。",
+      "dataset_ids": ["town_forecast"],
+      "time_range": "current",
+      "chart_types": ["BarChart"],
+      "colors": [],
+      "unit": "%",
+      "decimals": 0,
+      "links": ["https://www.cwa.gov.tw/V8/C/W/Town/index.html"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_forecast\n  WHERE ends_at > now()\n  ORDER BY geocode, starts_at\n),\nbest AS (\n  SELECT DISTINCT ON (t.county_code) c.short_name || t.name AS x_axis, f.rain_chance_pct AS data, c.sort_order\n  FROM cur f\n  JOIN ref.forecast_town t USING (geocode)\n  JOIN ref.county c ON c.code = t.county_code\n  WHERE f.rain_chance_pct IS NOT NULL\n  ORDER BY t.county_code, f.rain_chance_pct DESC, t.name\n)\nSELECT x_axis, data\nFROM best\nORDER BY data DESC, sort_order"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_forecast\n  WHERE ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT t.name AS x_axis, f.rain_chance_pct AS data\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nJOIN ref.county c ON c.code = t.county_code\nWHERE t.county_code = :county AND f.rain_chance_pct IS NOT NULL\nORDER BY f.rain_chance_pct DESC, t.name\nLIMIT 40"
+        }
+      ],
+      "map_layers": [
+        {"title": "各鄉鎮降雨機率", "layer_type": "circle", "source_type": "query", "geojson_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_forecast\n  WHERE ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT ST_AsGeoJSON(t.geom, 4) AS geometry, c.short_name || t.name AS name, f.weather, f.temp_c, f.rain_chance_pct,\n       f.temp_c || ' °C' AS temp, f.apparent_c || ' °C' AS apparent, f.rain_chance_pct || '%' AS rain, f.comfort,\n       f.wind_dir || ' ' || f.beaufort || ' 級' AS wind,\n       to_char(f.starts_at AT TIME ZONE 'Asia/Taipei', 'MM/DD HH24') || '–' || to_char(f.ends_at AT TIME ZONE 'Asia/Taipei', 'HH24') || ' 時' AS period\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nJOIN ref.county c ON c.code = t.county_code\nWHERE (:county::char(5) IS NULL OR t.county_code = :county)", "style": {"paint": {"circle-radius": ["interpolate", ["linear"], ["zoom"], 6, 4, 10, 8, 14, 12], "circle-color": ["step", ["coalesce", ["get", "rain_chance_pct"], -1], "#a8a29e", 0, "#d6e4f0", 20, "#a9c8e4", 40, "#6fa3d2", 60, "#3d7bbf", 80, "#1f4e8c"], "circle-stroke-color": "#ffffff", "circle-stroke-width": 1}}, "popup_fields": [{"key": "name", "name": "鄉鎮"}, {"key": "period", "name": "時段"}, {"key": "weather", "name": "天氣"}, {"key": "temp", "name": "溫度"}, {"key": "apparent", "name": "體感溫度"}, {"key": "rain", "name": "降雨機率"}, {"key": "wind", "name": "風"}, {"key": "comfort", "name": "舒適度"}]}
+      ]
+    },
+    {
+      "slug": "week-forecast",
+      "name": "一週天氣預報",
+      "topic": "forecast",
+      "short_desc": "各縣市明天的預報最高溫",
+      "long_desc": "取自中央氣象署鄉鎮一週預報，數值是縣市內各鄉鎮的平均。全國模式顯示明天的最高溫，縣市模式顯示未來一週每天的最高溫與最低溫。",
+      "use_case": "安排週末出遊或這幾天的穿著。",
+      "dataset_ids": ["town_forecast_week"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "°C",
+      "decimals": 0,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://www.cwa.gov.tw/V8/C/W/week.html"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "WITH d AS (\n  SELECT t.county_code, f.geocode, date_trunc('day', f.starts_at, 'Asia/Taipei') AS day,\n         max(f.max_temp_c) AS hi, min(f.min_temp_c) AS lo\n  FROM data.town_forecast_week f\n  JOIN ref.forecast_town t USING (geocode)\n  WHERE f.ends_at > now()\n  GROUP BY 1, 2, 3\n)\nSELECT county_code, round(avg(hi)) AS data\nFROM d\nWHERE day = date_trunc('day', now(), 'Asia/Taipei') + interval '1 day'\nGROUP BY county_code\nORDER BY county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "time",
+          "chart_sql": "WITH d AS (\n  SELECT t.county_code, f.geocode, date_trunc('day', f.starts_at, 'Asia/Taipei') AS day,\n         max(f.max_temp_c) AS hi, min(f.min_temp_c) AS lo\n  FROM data.town_forecast_week f\n  JOIN ref.forecast_town t USING (geocode)\n  WHERE f.ends_at > now() AND t.county_code = :county\n  GROUP BY 1, 2, 3\n)\nSELECT d.day AS x_axis, v.name AS y_axis, round(avg(v.val)) AS data\nFROM d\nCROSS JOIN LATERAL (VALUES ('最高溫', d.hi), ('最低溫', d.lo)) AS v(name, val)\nGROUP BY 1, 2\nORDER BY 1, 2"
+        }
+      ],
+      "map_layers": [
+        {"title": "明天最高溫", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
+    },
+    {
+      "slug": "uv-forecast",
+      "name": "紫外線預報",
+      "topic": "health",
+      "short_desc": "各縣市白天的紫外線指數預報",
+      "long_desc": "取自中央氣象署鄉鎮一週預報，只有白天時段有紫外線指數，傍晚以後顯示明天的預報。縣市取鄉鎮中最高的值。分級依世界衛生組織標準：0–2 低量、3–5 中量、6–7 高量、8–10 過量、11 以上危險。",
+      "use_case": "前一天先知道明天要不要準備防曬。",
+      "dataset_ids": ["town_forecast_week"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "UVI",
+      "decimals": 0,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://www.cwa.gov.tw/V8/C/W/OBS_UVI.html"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "WITH p AS (\n  SELECT min(starts_at) AS s FROM data.town_forecast_week WHERE uvi IS NOT NULL AND ends_at > now()\n)\nSELECT t.county_code, max(f.uvi) AS data\nFROM data.town_forecast_week f\nJOIN ref.forecast_town t USING (geocode)\nJOIN p ON f.starts_at = p.s\nWHERE f.uvi IS NOT NULL\nGROUP BY t.county_code\nORDER BY t.county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH p AS (\n  SELECT min(starts_at) AS s FROM data.town_forecast_week WHERE uvi IS NOT NULL AND ends_at > now()\n)\nSELECT t.name AS x_axis, f.uvi AS data\nFROM data.town_forecast_week f\nJOIN ref.forecast_town t USING (geocode)\nJOIN p ON f.starts_at = p.s\nWHERE t.county_code = :county AND f.uvi IS NOT NULL\nORDER BY f.uvi DESC, t.name"
+        }
+      ],
+      "map_layers": [
+        {"title": "紫外線指數預報", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
+    },
+    {
+      "slug": "tide-forecast",
+      "name": "今天的潮汐",
+      "topic": "ocean",
+      "short_desc": "潮差最大的地點與今天滿潮、乾潮的時間",
+      "long_desc": "中央氣象署潮汐預報，涵蓋沿海鄉鎮、漁港、海水浴場和潛點。潮差是今天最高與最低潮位的差。全國模式列出潮差最大的 15 個地點，縣市模式列出縣市內所有地點。",
+      "use_case": "去海邊、釣魚或潛水前確認漲退潮時間。",
+      "dataset_ids": ["tide_forecast"],
+      "time_range": "current",
+      "chart_types": ["ListChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "links": ["https://www.cwa.gov.tw/V8/C/M/tide.html"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "WITH today AS (\n  SELECT f.station_id, max(f.height_cm) - min(f.height_cm) AS range_cm,\n         string_agg(CASE f.tide WHEN '滿潮' THEN to_char(f.at AT TIME ZONE 'Asia/Taipei', 'HH24:MI') END, '、' ORDER BY f.at) AS high,\n         string_agg(CASE f.tide WHEN '乾潮' THEN to_char(f.at AT TIME ZONE 'Asia/Taipei', 'HH24:MI') END, '、' ORDER BY f.at) AS low\n  FROM data.tide_forecast f\n  WHERE f.at >= date_trunc('day', now(), 'Asia/Taipei') AND f.at < date_trunc('day', now(), 'Asia/Taipei') + interval '1 day'\n  GROUP BY f.station_id\n)\nSELECT s.name || '｜潮差 ' || coalesce(d.range_cm || ' 公分', '—') || E'\\n' || '滿潮 ' || coalesce(d.high, '—') || '　乾潮 ' || coalesce(d.low, '—') AS x_axis,\n       NULL::numeric AS data\nFROM today d\nJOIN ref.tide_station s USING (station_id)\nORDER BY d.range_cm DESC NULLS LAST, s.name\nLIMIT 15"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH today AS (\n  SELECT f.station_id, max(f.height_cm) - min(f.height_cm) AS range_cm,\n         string_agg(CASE f.tide WHEN '滿潮' THEN to_char(f.at AT TIME ZONE 'Asia/Taipei', 'HH24:MI') END, '、' ORDER BY f.at) AS high,\n         string_agg(CASE f.tide WHEN '乾潮' THEN to_char(f.at AT TIME ZONE 'Asia/Taipei', 'HH24:MI') END, '、' ORDER BY f.at) AS low\n  FROM data.tide_forecast f\n  WHERE f.at >= date_trunc('day', now(), 'Asia/Taipei') AND f.at < date_trunc('day', now(), 'Asia/Taipei') + interval '1 day'\n  GROUP BY f.station_id\n)\nSELECT s.name || '｜潮差 ' || coalesce(d.range_cm || ' 公分', '—') || E'\\n' || '滿潮 ' || coalesce(d.high, '—') || '　乾潮 ' || coalesce(d.low, '—') AS x_axis,\n       NULL::numeric AS data\nFROM today d\nJOIN ref.tide_station s USING (station_id)\nWHERE s.county_code = :county\nORDER BY s.name\nLIMIT 80"
+        }
+      ],
+      "map_layers": [
+        {"title": "潮汐地點", "layer_type": "circle", "source_type": "query", "geojson_sql": "WITH today AS (\n  SELECT f.station_id, max(f.height_cm) - min(f.height_cm) AS range_cm,\n         string_agg(CASE f.tide WHEN '滿潮' THEN to_char(f.at AT TIME ZONE 'Asia/Taipei', 'HH24:MI') END, '、' ORDER BY f.at) AS high,\n         string_agg(CASE f.tide WHEN '乾潮' THEN to_char(f.at AT TIME ZONE 'Asia/Taipei', 'HH24:MI') END, '、' ORDER BY f.at) AS low\n  FROM data.tide_forecast f\n  WHERE f.at >= date_trunc('day', now(), 'Asia/Taipei') AND f.at < date_trunc('day', now(), 'Asia/Taipei') + interval '1 day'\n  GROUP BY f.station_id\n)\nSELECT ST_AsGeoJSON(s.geom, 4) AS geometry, s.name, d.range_cm,\n       d.range_cm || ' 公分' AS range, d.high, d.low\nFROM ref.tide_station s\nLEFT JOIN today d USING (station_id)\nWHERE (:county::char(5) IS NULL OR s.county_code = :county)", "style": {"paint": {"circle-radius": ["interpolate", ["linear"], ["zoom"], 6, 4, 10, 8, 14, 12], "circle-color": ["step", ["coalesce", ["get", "range_cm"], -1], "#a8a29e", 0, "#a9c8e4", 100, "#6fa3d2", 200, "#3d7bbf", 300, "#1f4e8c"], "circle-stroke-color": "#ffffff", "circle-stroke-width": 1}}, "popup_fields": [{"key": "name", "name": "地點"}, {"key": "range", "name": "今天潮差"}, {"key": "high", "name": "滿潮"}, {"key": "low", "name": "乾潮"}]}
+      ]
+    },
+    {
+      "slug": "sun-moon",
+      "name": "日出日沒時刻",
+      "topic": "ocean",
+      "short_desc": "各縣市今天的日出、日沒、月出與月沒",
+      "long_desc": "中央氣象署天文資料。縣市模式顯示未來 7 天。沒有月出或月沒的日子顯示為「—」。",
+      "use_case": "安排看日出、拍夕陽或觀星的時間。",
+      "dataset_ids": ["sun_moon"],
+      "time_range": "current",
+      "chart_types": ["ListChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "links": ["https://www.cwa.gov.tw/V8/C/D/astronomy_data.html"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "SELECT c.short_name || '｜' || '日出 ' || coalesce(to_char(m.sunrise, 'HH24:MI'), '—') || '　日沒 ' || coalesce(to_char(m.sunset, 'HH24:MI'), '—')\n       || E'\\n' || '月出 ' || coalesce(to_char(m.moonrise, 'HH24:MI'), '—') || '　月沒 ' || coalesce(to_char(m.moonset, 'HH24:MI'), '—') AS x_axis,\n       NULL::numeric AS data\nFROM data.sun_moon m\nJOIN ref.county c ON c.code = m.county_code\nWHERE m.date = (now() AT TIME ZONE 'Asia/Taipei')::date\nORDER BY c.sort_order"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "SELECT to_char(m.date, 'MM/DD') || '｜' || '日出 ' || coalesce(to_char(m.sunrise, 'HH24:MI'), '—') || '　日沒 ' || coalesce(to_char(m.sunset, 'HH24:MI'), '—')\n       || E'\\n' || '月出 ' || coalesce(to_char(m.moonrise, 'HH24:MI'), '—') || '　月沒 ' || coalesce(to_char(m.moonset, 'HH24:MI'), '—') AS x_axis,\n       NULL::numeric AS data\nFROM data.sun_moon m\nWHERE m.county_code = :county AND m.date >= (now() AT TIME ZONE 'Asia/Taipei')::date\nORDER BY m.date\nLIMIT 7"
+        }
+      ]
+    },
+    {
+      "slug": "tsunami-recent",
+      "name": "海嘯資訊",
+      "topic": "earthquake",
+      "short_desc": "近一年中央氣象署發布的海嘯消息與警報",
+      "long_desc": "多數是國外大地震的通報，大部分不會影響臺灣。每則消息一列，最新的在最上面。沒有資料代表近一年沒有發布。",
+      "use_case": "國外發生大地震時，確認臺灣沿海是否受影響。",
+      "dataset_ids": ["tsunami"],
+      "time_range": "current",
+      "chart_types": ["ListChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "links": ["https://scweb.cwa.gov.tw/zh-tw/tsunami/data"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "SELECT to_char(s.issued_at AT TIME ZONE 'Asia/Taipei', 'YYYY/MM/DD HH24:MI') || '｜' || coalesce(s.report_type, '海嘯資訊')\n       || ' 第 ' || s.report_seq || ' 報' || coalesce('（' || s.location || coalesce(' 規模 ' || s.magnitude, '') || '）', '')\n       || coalesce(E'\\n' || s.content, '') AS x_axis,\n       NULL::numeric AS data\nFROM data.tsunami s\nWHERE s.issued_at >= now() - interval '1 year'\nORDER BY s.issued_at DESC\nLIMIT 15"
+        }
+      ]
+    },
+    {
+      "slug": "heat-injury",
+      "name": "熱傷害指數",
+      "topic": "health",
+      "short_desc": "各縣市未來 24 小時最高的熱傷害指數",
+      "long_desc": "中央氣象署健康氣象，數值越高越容易中暑。全國模式顯示各縣市鄉鎮中的最高值，縣市模式列出各鄉鎮。每 3 小時一個時段。",
+      "use_case": "安排戶外工作、運動或活動前，評估中暑的風險。",
+      "dataset_ids": ["health_weather"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://opendata.cwa.gov.tw/dataset/forecast/M-A0085-001"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "SELECT t.county_code, max(h.index_value) AS data\nFROM data.town_health h\nJOIN ref.forecast_town t USING (geocode)\nWHERE h.kind = 'heat' AND h.ends_at > now() AND h.starts_at < now() + interval '24 hours'\nGROUP BY t.county_code\nORDER BY t.county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "SELECT t.name AS x_axis, max(h.index_value) AS data\nFROM data.town_health h\nJOIN ref.forecast_town t USING (geocode)\nWHERE h.kind = 'heat' AND h.ends_at > now() AND h.starts_at < now() + interval '24 hours' AND t.county_code = :county\nGROUP BY t.name\nORDER BY data DESC, t.name"
+        }
+      ],
+      "map_layers": [
+        {"title": "熱傷害指數", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
+    },
+    {
+      "slug": "cold-injury",
+      "name": "冷傷害指數",
+      "topic": "health",
+      "short_desc": "各縣市今天最低的冷傷害指數",
+      "long_desc": "中央氣象署健康氣象，數值越低越冷，越容易因低溫引發心血管或呼吸道疾病。全國模式顯示各縣市鄉鎮中的最低值，縣市模式列出各鄉鎮。",
+      "use_case": "寒流來時提醒家中長輩保暖。",
+      "dataset_ids": ["health_weather"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://opendata.cwa.gov.tw/dataset/forecast/F-A0085-002"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_health\n  WHERE kind = 'cold' AND ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT t.county_code, min(f.index_value) AS data\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nGROUP BY t.county_code\nORDER BY t.county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_health\n  WHERE kind = 'cold' AND ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT t.name AS x_axis, f.index_value AS data\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nWHERE t.county_code = :county AND f.index_value IS NOT NULL\nORDER BY data, t.name"
+        }
+      ],
+      "map_layers": [
+        {"title": "冷傷害指數", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
+    },
+    {
+      "slug": "temp-diff",
+      "name": "日夜溫差",
+      "topic": "health",
+      "short_desc": "各縣市今天最大的日夜溫差",
+      "long_desc": "取自中央氣象署健康氣象的溫差提醒，溫差是預報最高溫減最低溫。全國模式顯示各縣市鄉鎮中的最大值，縣市模式列出各鄉鎮。",
+      "use_case": "溫差大的日子出門多帶件外套。",
+      "dataset_ids": ["health_weather"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "度",
+      "decimals": 0,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://opendata.cwa.gov.tw/dataset/forecast/F-A0085-004"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_health\n  WHERE kind = 'temp_diff' AND ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT t.county_code, max(f.max_temp_c - f.min_temp_c) AS data\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nGROUP BY t.county_code\nORDER BY t.county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH cur AS (\n  SELECT DISTINCT ON (geocode) *\n  FROM data.town_health\n  WHERE kind = 'temp_diff' AND ends_at > now()\n  ORDER BY geocode, starts_at\n)\nSELECT t.name AS x_axis, f.max_temp_c - f.min_temp_c AS data\nFROM cur f\nJOIN ref.forecast_town t USING (geocode)\nWHERE t.county_code = :county AND f.max_temp_c IS NOT NULL AND f.min_temp_c IS NOT NULL\nORDER BY data DESC, t.name"
+        }
+      ],
+      "map_layers": [
+        {"title": "日夜溫差", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
+    },
+    {
+      "slug": "health-warning-list",
+      "name": "健康氣象提醒",
+      "topic": "health",
+      "short_desc": "未來 24 小時有熱傷害、冷傷害或溫差提醒的鄉鎮",
+      "long_desc": "中央氣象署依健康氣象指數發布注意、警戒、危險等提醒。每個縣市的每種提醒一列，等級高的排前面。沒有提醒時無資料。",
+      "use_case": "看自己住的鄉鎮有沒有提醒。",
+      "dataset_ids": ["health_weather"],
+      "time_range": "current",
+      "chart_types": ["ListChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "links": ["https://opendata.cwa.gov.tw/dataset/forecast/M-A0085-001"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "WITH w AS (\n  SELECT DISTINCT ON (h.geocode, h.kind) h.geocode, h.kind, CASE h.warning WHEN '高危險' THEN 4 WHEN '危險' THEN 3 WHEN '警戒' THEN 2 ELSE 1 END AS rank\n  FROM data.town_health h\n  WHERE h.warning IS NOT NULL AND h.ends_at > now() AND h.starts_at < now() + interval '24 hours'\n  ORDER BY h.geocode, h.kind, rank DESC\n), g AS (\n  SELECT t.county_code, w.kind, max(w.rank) AS rank, count(*) AS n, string_agg(t.name, '、' ORDER BY t.name) AS towns\n  FROM w\n  JOIN ref.forecast_town t USING (geocode)\n  WHERE (:county::char(5) IS NULL OR t.county_code = :county)\n  GROUP BY 1, 2\n)\nSELECT c.short_name || '｜' || CASE g.kind WHEN 'heat' THEN '熱傷害' WHEN 'cold' THEN '冷傷害' ELSE '溫差' END || ' '\n       || (ARRAY['注意', '警戒', '危險', '高危險'])[g.rank] || '（' || g.n || ' 個鄉鎮）' || E'\\n' || g.towns AS x_axis,\n       NULL::numeric AS data\nFROM g\nJOIN ref.county c ON c.code = g.county_code\nORDER BY g.rank DESC, g.n DESC, c.sort_order\nLIMIT 40"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH w AS (\n  SELECT DISTINCT ON (h.geocode, h.kind) h.geocode, h.kind, CASE h.warning WHEN '高危險' THEN 4 WHEN '危險' THEN 3 WHEN '警戒' THEN 2 ELSE 1 END AS rank\n  FROM data.town_health h\n  WHERE h.warning IS NOT NULL AND h.ends_at > now() AND h.starts_at < now() + interval '24 hours'\n  ORDER BY h.geocode, h.kind, rank DESC\n), g AS (\n  SELECT t.county_code, w.kind, max(w.rank) AS rank, count(*) AS n, string_agg(t.name, '、' ORDER BY t.name) AS towns\n  FROM w\n  JOIN ref.forecast_town t USING (geocode)\n  WHERE (:county::char(5) IS NULL OR t.county_code = :county)\n  GROUP BY 1, 2\n)\nSELECT c.short_name || '｜' || CASE g.kind WHEN 'heat' THEN '熱傷害' WHEN 'cold' THEN '冷傷害' ELSE '溫差' END || ' '\n       || (ARRAY['注意', '警戒', '危險', '高危險'])[g.rank] || '（' || g.n || ' 個鄉鎮）' || E'\\n' || g.towns AS x_axis,\n       NULL::numeric AS data\nFROM g\nJOIN ref.county c ON c.code = g.county_code\nORDER BY g.rank DESC, g.n DESC, c.sort_order\nLIMIT 40"
+        }
+      ]
+    },
+    {
+      "slug": "advisory-list",
+      "name": "低溫、高溫與濃霧特報",
+      "topic": "warning",
+      "short_desc": "近 7 天的低溫特報、高溫資訊與濃霧特報",
+      "long_desc": "中央氣象署發布的低溫特報、高溫資訊與濃霧特報，最新的在最上面。影響範圍到鄉鎮時顯示鄉鎮數。沒有資料代表近 7 天沒有發布。",
+      "use_case": "寒流、熱浪或起霧時確認影響範圍。",
+      "dataset_ids": ["weather_advisory"],
+      "time_range": "current",
+      "chart_types": ["ListChart"],
+      "colors": [],
+      "unit": "",
+      "decimals": 0,
+      "links": ["https://opendata.cwa.gov.tw/dataset/warning/W-C0033-004"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "two_d",
+          "chart_sql": "SELECT coalesce(a.headline, a.event) || '｜' || coalesce(a.level, '') || CASE WHEN a.expires < now() THEN '（已結束）' ELSE '' END\n       || E'\\n' || to_char(coalesce(a.onset, a.effective) AT TIME ZONE 'Asia/Taipei', 'MM/DD HH24:MI') || '–'\n       || coalesce(to_char(a.expires AT TIME ZONE 'Asia/Taipei', 'MM/DD HH24:MI'), '') || '　' || coalesce(ar.areas, '') AS x_axis,\n       NULL::numeric AS data\nFROM data.weather_advisory a\nCROSS JOIN LATERAL (\n  SELECT string_agg(x.label, '、' ORDER BY x.sort_order) AS areas\n  FROM (\n    SELECT c.short_name || CASE WHEN bool_or(r.town = '') THEN '' ELSE ' ' || count(*) || ' 個鄉鎮' END AS label, c.sort_order\n    FROM data.weather_advisory_area r\n    JOIN ref.county c ON c.code = r.county_code\n    WHERE r.event = a.event AND r.effective = a.effective\n    GROUP BY c.short_name, c.sort_order\n  ) x\n) ar\nWHERE a.effective >= now() - interval '7 days'\n  AND (:county::char(5) IS NULL OR EXISTS (\n    SELECT 1 FROM data.weather_advisory_area r WHERE r.event = a.event AND r.effective = a.effective AND r.county_code = :county))\nORDER BY a.effective DESC"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "SELECT coalesce(a.headline, a.event) || '｜' || coalesce(a.level, '') || CASE WHEN a.expires < now() THEN '（已結束）' ELSE '' END\n       || E'\\n' || to_char(coalesce(a.onset, a.effective) AT TIME ZONE 'Asia/Taipei', 'MM/DD HH24:MI') || '–'\n       || coalesce(to_char(a.expires AT TIME ZONE 'Asia/Taipei', 'MM/DD HH24:MI'), '') || '　' || coalesce(ar.areas, '') AS x_axis,\n       NULL::numeric AS data\nFROM data.weather_advisory a\nCROSS JOIN LATERAL (\n  SELECT string_agg(x.label, '、' ORDER BY x.sort_order) AS areas\n  FROM (\n    SELECT c.short_name || CASE WHEN bool_or(r.town = '') THEN '' ELSE ' ' || count(*) || ' 個鄉鎮' END AS label, c.sort_order\n    FROM data.weather_advisory_area r\n    JOIN ref.county c ON c.code = r.county_code\n    WHERE r.event = a.event AND r.effective = a.effective\n    GROUP BY c.short_name, c.sort_order\n  ) x\n) ar\nWHERE a.effective >= now() - interval '7 days'\n  AND (:county::char(5) IS NULL OR EXISTS (\n    SELECT 1 FROM data.weather_advisory_area r WHERE r.event = a.event AND r.effective = a.effective AND r.county_code = :county))\nORDER BY a.effective DESC"
+        }
+      ]
+    },
+    {
+      "slug": "rain-vs-normal",
+      "name": "今年雨量與平年比較",
+      "topic": "reservoir",
+      "short_desc": "今年累積雨量是平年同期的幾成",
+      "long_desc": "比較中央氣象署有人氣象站今年的累積雨量和平年同期的雨量，100% 代表和平年一樣。每日雨量約晚兩天公布。只有設有人氣象站的縣市有資料。",
+      "use_case": "判斷今年是乾是濕，搭配水庫蓄水量看缺水風險。",
+      "dataset_ids": ["climate"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "%",
+      "decimals": 0,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://opendata.cwa.gov.tw/dataset/climate/C-B0025-001"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "WITH last AS (\n  SELECT max(date) AS d FROM data.rain_daily WHERE rain_mm IS NOT NULL\n), ytd AS (\n  SELECT r.station_id, sum(r.rain_mm) AS mm\n  FROM data.rain_daily r, last\n  WHERE r.date >= date_trunc('year', last.d)::date AND r.date <= last.d\n  GROUP BY 1\n), norm AS (\n  SELECT n.station_id, n.station_name,\n         sum(CASE WHEN n.month < extract(month FROM last.d) THEN n.rain_mm\n                  WHEN n.month = extract(month FROM last.d)\n                  THEN n.rain_mm * extract(day FROM last.d) / extract(day FROM date_trunc('month', last.d) + interval '1 month - 1 day')\n                  ELSE 0 END) AS mm\n  FROM data.climate_normal n, last\n  GROUP BY 1, 2\n), pct AS (\n  SELECT y.station_id, n.station_name, round(100 * y.mm / nullif(n.mm, 0)) AS p\n  FROM ytd y\n  JOIN norm n USING (station_id)\n)\nSELECT s.county_code, round(avg(p.p)) AS data\nFROM pct p\nJOIN ref.weather_station s USING (station_id)\nWHERE s.county_code IS NOT NULL AND p.p IS NOT NULL\nGROUP BY s.county_code\nORDER BY s.county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH last AS (\n  SELECT max(date) AS d FROM data.rain_daily WHERE rain_mm IS NOT NULL\n), ytd AS (\n  SELECT r.station_id, sum(r.rain_mm) AS mm\n  FROM data.rain_daily r, last\n  WHERE r.date >= date_trunc('year', last.d)::date AND r.date <= last.d\n  GROUP BY 1\n), norm AS (\n  SELECT n.station_id, n.station_name,\n         sum(CASE WHEN n.month < extract(month FROM last.d) THEN n.rain_mm\n                  WHEN n.month = extract(month FROM last.d)\n                  THEN n.rain_mm * extract(day FROM last.d) / extract(day FROM date_trunc('month', last.d) + interval '1 month - 1 day')\n                  ELSE 0 END) AS mm\n  FROM data.climate_normal n, last\n  GROUP BY 1, 2\n), pct AS (\n  SELECT y.station_id, n.station_name, round(100 * y.mm / nullif(n.mm, 0)) AS p\n  FROM ytd y\n  JOIN norm n USING (station_id)\n)\nSELECT p.station_name AS x_axis, p.p AS data\nFROM pct p\nJOIN ref.weather_station s USING (station_id)\nWHERE s.county_code = :county AND p.p IS NOT NULL\nORDER BY data, x_axis"
+        }
+      ],
+      "map_layers": [
+        {"title": "今年雨量占平年比例", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
+    },
+    {
+      "slug": "temp-vs-normal",
+      "name": "本月氣溫與平年比較",
+      "topic": "weather",
+      "short_desc": "本月平均氣溫比平年高或低幾度",
+      "long_desc": "用本站保存的逐時觀測算出有人氣象站本月的平均氣溫，再減去中央氣象署的平年值。正數代表比平年熱。月初資料少，數值變動會比較大。",
+      "use_case": "看這個月是暖是冷。",
+      "dataset_ids": ["climate", "weather_obs"],
+      "time_range": "current",
+      "chart_types": ["CountyMapChart", "BarChart"],
+      "colors": [],
+      "unit": "°C",
+      "decimals": 1,
+      "chart_map_link": {"mode": "byParam", "byParam": {"xParam": "county_code"}},
+      "links": ["https://opendata.cwa.gov.tw/dataset/climate/C-B0027-001"],
+      "status": "published",
+      "queries": [
+        {
+          "scope": "national",
+          "data_shape": "by_county",
+          "chart_sql": "WITH m AS (\n  SELECT o.station_id, avg(o.temp_c) AS t, count(*) AS n\n  FROM data.weather_obs_history o\n  WHERE o.station_id IN (SELECT station_id FROM data.climate_normal)\n    AND o.observed_at >= date_trunc('month', now(), 'Asia/Taipei') AND o.temp_c IS NOT NULL\n  GROUP BY 1\n), d AS (\n  SELECT m.station_id, n.station_name, round((m.t - n.temp_mean_c)::numeric, 1) AS diff\n  FROM m\n  JOIN data.climate_normal n ON n.station_id = m.station_id AND n.month = extract(month FROM now() AT TIME ZONE 'Asia/Taipei')\n  WHERE m.n >= 24 AND n.temp_mean_c IS NOT NULL\n)\nSELECT s.county_code, round(avg(d.diff), 1) AS data\nFROM d\nJOIN ref.weather_station s USING (station_id)\nWHERE s.county_code IS NOT NULL\nGROUP BY s.county_code\nORDER BY s.county_code"
+        },
+        {
+          "scope": "county",
+          "data_shape": "two_d",
+          "chart_sql": "WITH m AS (\n  SELECT o.station_id, avg(o.temp_c) AS t, count(*) AS n\n  FROM data.weather_obs_history o\n  WHERE o.station_id IN (SELECT station_id FROM data.climate_normal)\n    AND o.observed_at >= date_trunc('month', now(), 'Asia/Taipei') AND o.temp_c IS NOT NULL\n  GROUP BY 1\n), d AS (\n  SELECT m.station_id, n.station_name, round((m.t - n.temp_mean_c)::numeric, 1) AS diff\n  FROM m\n  JOIN data.climate_normal n ON n.station_id = m.station_id AND n.month = extract(month FROM now() AT TIME ZONE 'Asia/Taipei')\n  WHERE m.n >= 24 AND n.temp_mean_c IS NOT NULL\n)\nSELECT d.station_name AS x_axis, d.diff AS data\nFROM d\nJOIN ref.weather_station s USING (station_id)\nWHERE s.county_code = :county\nORDER BY data DESC, x_axis"
+        }
+      ],
+      "map_layers": [
+        {"title": "與平年的氣溫差", "layer_type": "fill", "source_type": "county_boundary"}
+      ]
     }
   ],
   "dashboards": [
@@ -4800,40 +5224,76 @@
       "slug": "weather",
       "name": "天氣",
       "icon": "wb_cloudy",
-      "description": "縣市天氣預報、即時氣溫與風、雨量、雷達回波、衛星雲圖與紫外線",
+      "description": "即時氣溫與風、雨量、雷達回波、衛星雲圖、紫外線，以及本月氣溫和平年的比較",
       "components": [
-        {"component": "wind-top", "size": "normal"},
-        {"component": "county-forecast", "size": "normal"},
-        {"component": "forecast-rain-chance", "size": "normal"},
+        {"component": "radar-image", "size": "normal"},
+        {"component": "satellite-image", "size": "normal"},
         {"component": "temp-by-county", "size": "normal"},
         {"component": "rain-by-county", "size": "normal"},
         {"component": "rain-1hr-top", "size": "normal"},
-        {"component": "radar-image", "size": "normal"},
-        {"component": "satellite-image", "size": "normal"},
-        {"component": "uv-by-county", "size": "normal"}
+        {"component": "wind-top", "size": "normal"},
+        {"component": "uv-by-county", "size": "normal"},
+        {"component": "temp-vs-normal", "size": "normal"}
+      ]
+    },
+    {
+      "slug": "forecast",
+      "name": "天氣預報",
+      "icon": "calendar_month",
+      "description": "縣市與鄉鎮的天氣預報、降雨機率與一週預報",
+      "components": [
+        {"component": "county-forecast", "size": "normal"},
+        {"component": "forecast-rain-chance", "size": "normal"},
+        {"component": "town-forecast-temp", "size": "normal"},
+        {"component": "town-rain-chance", "size": "normal"},
+        {"component": "week-forecast", "size": "normal"}
+      ]
+    },
+    {
+      "slug": "health",
+      "name": "健康氣象",
+      "icon": "health_and_safety",
+      "description": "熱傷害、冷傷害、日夜溫差與紫外線預報，以及各鄉鎮的健康氣象提醒",
+      "components": [
+        {"component": "cold-injury", "size": "normal"},
+        {"component": "temp-diff", "size": "normal"},
+        {"component": "heat-injury", "size": "normal"},
+        {"component": "uv-forecast", "size": "normal"},
+        {"component": "health-warning-list", "size": "wide"}
+      ]
+    },
+    {
+      "slug": "ocean",
+      "name": "海洋與天文",
+      "icon": "waves",
+      "description": "沿海潮汐預報與各縣市日出、日沒、月出、月沒時刻",
+      "components": [
+        {"component": "tide-forecast", "size": "normal"},
+        {"component": "sun-moon", "size": "normal"}
       ]
     },
     {
       "slug": "warning",
       "name": "颱風與警特報",
       "icon": "cyclone",
-      "description": "颱風路徑與警報、停班停課、避難收容、天氣警特報、土石流與淹水等防災示警",
+      "description": "颱風路徑與警報、停班停課、避難收容、天氣警特報、低溫高溫與濃霧、土石流與淹水等防災示警",
       "components": [
+        {"component": "weather-warning-by-county", "size": "normal"},
+        {"component": "weather-warning-list", "size": "normal"},
         {"component": "typhoon-track", "size": "normal"},
         {"component": "typhoon-warning-now", "size": "normal"},
         {"component": "work-closure-by-county", "size": "normal"},
         {"component": "work-closure-tomorrow", "size": "normal"},
-        {"component": "shelter-open", "size": "normal"},
-        {"component": "shelter-by-county", "size": "normal"},
-        {"component": "weather-warning-by-county", "size": "normal"},
         {"component": "disaster-alert-list", "size": "normal"},
-        {"component": "weather-warning-list", "size": "normal"},
+        {"component": "advisory-list", "size": "normal"},
         {"component": "debris-alert-summary", "size": "normal"},
+        {"component": "flood-summary", "size": "normal"},
         {"component": "debris-alert-by-county", "size": "normal"},
         {"component": "debris-alert-list", "size": "normal"},
-        {"component": "flood-summary", "size": "normal"},
         {"component": "flood-by-county", "size": "normal"},
         {"component": "flood-list", "size": "normal"},
+        {"component": "shelter-open", "size": "normal"},
+        {"component": "shelter-by-county", "size": "normal"},
         {"component": "flood-trend", "size": "normal"}
       ]
     },
@@ -4841,12 +5301,13 @@
       "slug": "earthquake",
       "name": "地震",
       "icon": "vibration",
-      "description": "各縣市最大震度、近期的有感地震、各縣市的有感次數與震度分布",
+      "description": "各縣市最大震度、近期的有感地震、各縣市的有感次數與震度分布、海嘯資訊",
       "components": [
         {"component": "quake-max-intensity-by-county", "size": "normal"},
         {"component": "quake-recent", "size": "normal"},
         {"component": "quake-felt-by-county", "size": "normal"},
-        {"component": "quake-intensity-dist", "size": "normal"}
+        {"component": "quake-intensity-dist", "size": "normal"},
+        {"component": "tsunami-recent", "size": "normal"}
       ]
     },
     {
@@ -4856,10 +5317,10 @@
       "description": "各縣市火災件數、起火原因、死傷與消防到達時間",
       "components": [
         {"component": "fire-summary", "size": "normal"},
-        {"component": "fire-cause", "size": "normal"},
         {"component": "fire-by-county", "size": "normal"},
-        {"component": "fire-arrival", "size": "normal"},
-        {"component": "fire-monthly", "size": "normal"}
+        {"component": "fire-monthly", "size": "normal"},
+        {"component": "fire-cause", "size": "normal"},
+        {"component": "fire-arrival", "size": "normal"}
       ]
     },
     {
@@ -4868,10 +5329,10 @@
       "icon": "air",
       "description": "各縣市與各測站的空氣品質、明日空品預報",
       "components": [
-        {"component": "aqi-status", "size": "normal"},
         {"component": "aqi-by-county", "size": "normal"},
+        {"component": "aqi-forecast", "size": "normal"},
         {"component": "pm25-by-county", "size": "normal"},
-        {"component": "aqi-forecast", "size": "normal"}
+        {"component": "aqi-status", "size": "normal"}
       ]
     },
     {
@@ -4882,6 +5343,7 @@
       "components": [
         {"component": "reservoir-storage", "size": "normal"},
         {"component": "reservoir-by-county", "size": "normal"},
+        {"component": "rain-vs-normal", "size": "normal"},
         {"component": "river-alert-status", "size": "normal"},
         {"component": "river-alert-margin", "size": "normal"},
         {"component": "river-quality-by-county", "size": "normal"},
@@ -4912,8 +5374,8 @@
       "description": "即時發電結構、各區用電、供電狀況與再生能源",
       "components": [
         {"component": "power-gen-mix", "size": "normal"},
-        {"component": "power-reserve", "size": "normal"},
         {"component": "power-load-today", "size": "normal"},
+        {"component": "power-reserve", "size": "normal"},
         {"component": "power-region-load", "size": "normal"},
         {"component": "power-region-balance", "size": "normal"},
         {"component": "power-forecast", "size": "normal"},
@@ -4927,9 +5389,9 @@
       "icon": "warning",
       "description": "各縣市目前的停水、未來幾天的計畫停水與災害期間的停電",
       "components": [
-        {"component": "water-outage-upcoming", "size": "normal"},
         {"component": "water-outage-by-county", "size": "normal"},
         {"component": "water-outage-households", "size": "normal"},
+        {"component": "water-outage-upcoming", "size": "normal"},
         {"component": "power-outage-by-county", "size": "normal"}
       ]
     },
@@ -5163,24 +5625,24 @@
         {"component": "typhoon-warning-now", "size": "normal"},
         {"component": "work-closure-by-county", "size": "normal"},
         {"component": "work-closure-tomorrow", "size": "normal"},
-        {"component": "disaster-alert-list", "size": "normal"},
-        {"component": "rail-alert-list", "size": "normal"},
-        {"component": "shelter-open", "size": "normal"},
+        {"component": "radar-image", "size": "normal"},
+        {"component": "satellite-image", "size": "normal"},
         {"component": "rain-by-county", "size": "normal"},
         {"component": "rain-1hr-top", "size": "normal"},
-        {"component": "weather-warning-by-county", "size": "normal"},
         {"component": "wind-top", "size": "normal"},
-        {"component": "radar-image", "size": "normal"},
+        {"component": "weather-warning-by-county", "size": "normal"},
+        {"component": "disaster-alert-list", "size": "normal"},
+        {"component": "shelter-open", "size": "normal"},
         {"component": "river-alert-status", "size": "normal"},
         {"component": "river-alert-margin", "size": "normal"},
-        {"component": "satellite-image", "size": "normal"},
-        {"component": "power-outage-by-county", "size": "normal"},
-        {"component": "water-outage-by-county", "size": "normal"},
-        {"component": "flight-cancel-by-airport", "size": "normal"},
         {"component": "debris-alert-by-county", "size": "normal"},
         {"component": "debris-alert-list", "size": "normal"},
         {"component": "flood-by-county", "size": "normal"},
-        {"component": "flood-list", "size": "normal"}
+        {"component": "flood-list", "size": "normal"},
+        {"component": "power-outage-by-county", "size": "normal"},
+        {"component": "water-outage-by-county", "size": "normal"},
+        {"component": "rail-alert-list", "size": "normal"},
+        {"component": "flight-cancel-by-airport", "size": "normal"}
       ]
     },
     {

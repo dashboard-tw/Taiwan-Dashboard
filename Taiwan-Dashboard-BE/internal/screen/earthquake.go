@@ -36,7 +36,34 @@ type QuakeDetail struct {
 	ImageURL    *string          `json:"image_url"`
 	Lon         *float64         `json:"lon"`
 	Lat         *float64         `json:"lat"`
+	ShakemapURL *string          `json:"shakemap_url"`
+	ReportType  *string          `json:"report_type"`
+	Remark      *string          `json:"remark"`
 	Intensities []QuakeIntensity `json:"intensities"`
+	Stations    []QuakeStation   `json:"stations"`
+}
+
+// QuakeStation is one seismograph's reading.
+type QuakeStation struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	CountyCode  *string  `json:"county_code"`
+	County      *string  `json:"county"`
+	Lon         *float64 `json:"lon"`
+	Lat         *float64 `json:"lat"`
+	Intensity   *string  `json:"intensity"`
+	Rank        *int     `json:"rank"`
+	PGA         *float64 `json:"pga_gal"`
+	PGAEW       *float64 `json:"pga_ew_gal"`
+	PGANS       *float64 `json:"pga_ns_gal"`
+	PGAV        *float64 `json:"pga_v_gal"`
+	PGV         *float64 `json:"pgv_kine"`
+	PGVEW       *float64 `json:"pgv_ew_kine"`
+	PGVNS       *float64 `json:"pgv_ns_kine"`
+	PGVV        *float64 `json:"pgv_v_kine"`
+	DistanceKm  *float64 `json:"distance_km"`
+	BackAzimuth *float64 `json:"back_azimuth"`
+	WaveURL     *string  `json:"wave_url"`
 }
 
 var quakeDatasets = []string{"earthquake", "earthquake_local"}
@@ -76,9 +103,10 @@ func (s *Service) Quake(ctx context.Context, id string) (*QuakeDetail, error) {
 		func(ctx context.Context) (*QuakeDetail, error) {
 			var d QuakeDetail
 			err := scanQuake(s.App.QueryRowContext(ctx, `SELECT `+quakeColumns+`,
-				issued_at, content, report_url, image_url, ST_X(geom), ST_Y(geom)
+				issued_at, content, report_url, image_url, ST_X(geom), ST_Y(geom), shakemap_url, report_type, report_remark
 				FROM data.earthquake WHERE report_id = $1`, id),
-				&d.Quake, &d.IssuedAt, &d.Content, &d.ReportURL, &d.ImageURL, &d.Lon, &d.Lat)
+				&d.Quake, &d.IssuedAt, &d.Content, &d.ReportURL, &d.ImageURL, &d.Lon, &d.Lat, &d.ShakemapURL,
+				&d.ReportType, &d.Remark)
 			if errors.Is(err, sql.ErrNoRows) {
 				return nil, &Error{Status: http.StatusNotFound, Code: "not_found", Message: "找不到這份地震報告"}
 			}
@@ -102,7 +130,33 @@ func (s *Service) Quake(ctx context.Context, id string) (*QuakeDetail, error) {
 				}
 				d.Intensities = append(d.Intensities, i)
 			}
-			return &d, rows.Err()
+			if err := rows.Err(); err != nil {
+				return nil, err
+			}
+			rows.Close()
+			stations, err := s.App.QueryContext(ctx, `
+				SELECT s.station_id, s.name, s.county_code, c.name, ST_X(s.geom), ST_Y(s.geom), s.intensity, s.intensity_rank,
+				       s.pga_gal::float8, s.pga_ew_gal::float8, s.pga_ns_gal::float8, s.pga_v_gal::float8,
+				       s.pgv_kine::float8, s.pgv_ew_kine::float8, s.pgv_ns_kine::float8, s.pgv_v_kine::float8,
+				       s.distance_km::float8, s.back_azimuth::float8, s.wave_url
+				FROM data.earthquake_station s LEFT JOIN ref.county c ON c.code = s.county_code
+				WHERE s.report_id = $1
+				ORDER BY s.intensity_rank DESC NULLS LAST, s.pga_gal DESC NULLS LAST, s.station_id`, id)
+			if err != nil {
+				return nil, err
+			}
+			defer stations.Close()
+			d.Stations = []QuakeStation{}
+			for stations.Next() {
+				var st QuakeStation
+				if err := stations.Scan(&st.ID, &st.Name, &st.CountyCode, &st.County, &st.Lon, &st.Lat, &st.Intensity,
+					&st.Rank, &st.PGA, &st.PGAEW, &st.PGANS, &st.PGAV, &st.PGV, &st.PGVEW, &st.PGVNS, &st.PGVV,
+					&st.DistanceKm, &st.BackAzimuth, &st.WaveURL); err != nil {
+					return nil, err
+				}
+				d.Stations = append(d.Stations, st)
+			}
+			return &d, stations.Err()
 		})
 	return d, err
 }

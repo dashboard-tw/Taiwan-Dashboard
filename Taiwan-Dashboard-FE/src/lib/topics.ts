@@ -25,8 +25,32 @@ export const TOPICS: TopicInfo[] = [
     label: '天氣',
     title: '天氣',
     group: 'weather',
-    mapComponent: 'county-forecast',
+    mapComponent: 'temp-by-county',
     statusComponent: 'temp-by-county',
+  },
+  {
+    slug: 'forecast',
+    label: '天氣預報',
+    title: '天氣預報',
+    group: 'weather',
+    mapComponent: 'county-forecast',
+    statusComponent: 'week-forecast',
+  },
+  {
+    slug: 'health',
+    label: '健康氣象',
+    title: '健康氣象',
+    group: 'weather',
+    mapComponent: 'cold-injury',
+    statusComponent: 'health-warning-list',
+  },
+  {
+    slug: 'ocean',
+    label: '海洋天文',
+    title: '海洋與天文',
+    group: 'weather',
+    mapComponent: 'tide-forecast',
+    statusComponent: 'sun-moon',
   },
   {
     slug: 'warning',
@@ -234,6 +258,8 @@ export const REFRESH_MINUTES: Record<string, number> = {
   animal: 60,
   sustain: 60,
   tourism: 60,
+  health: 60,
+  ocean: 60,
 }
 
 export function refreshMs(slug: string | undefined): number {
@@ -264,6 +290,9 @@ export const DASHBOARD_ICONS: Record<string, string> = {
   outage: 'warning',
   earthquake: 'vibration',
   weather: 'wb_cloudy',
+  forecast: 'calendar_month',
+  health: 'health_and_safety',
+  ocean: 'waves',
   warning: 'cyclone',
   typhoon: 'crisis_alert',
   'typhoon-event': 'cyclone',

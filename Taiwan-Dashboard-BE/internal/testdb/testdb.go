@@ -158,7 +158,9 @@ var Datasets = []string{"aqi_obs", "reservoir_obs", "reservoir_ref", "river_stat
 	"farm_price", "food_rejection", "fire_incident",
 	"real_estate", "fuel_station",
 	"dengue_daily", "nhi_visit", "econ_indicator", "income_town", "shelter_animal", "shelter_stats", "airport", "flight",
-	"debris_alert", "flood_sensor", "ev_station", "ev_live", "poultry_price", "hog_trade"}
+	"debris_alert", "flood_sensor", "ev_station", "ev_live", "poultry_price", "hog_trade",
+	"town_forecast", "town_forecast_week", "tide_forecast", "sun_moon", "tsunami",
+	"weather_advisory", "health_weather", "climate"}
 
 func RegisterDatasets(t *testing.T, db *sql.DB) {
 	t.Helper()

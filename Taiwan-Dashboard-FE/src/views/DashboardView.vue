@@ -54,6 +54,16 @@ const catalog = useCatalog()
 void catalog.load()
 
 const county = computed(() => props.county ?? null)
+// 地震頁的海嘯資訊和地震報告並排
+const PAIRED = 'tsunami-recent'
+const pairedCard = computed(() =>
+  props.slug === 'earthquake'
+    ? (dashboard.value?.components.find((c) => c.slug === PAIRED) ?? null)
+    : null,
+)
+const gridComponents = computed(() =>
+  (dashboard.value?.components ?? []).filter((c) => c !== pairedCard.value),
+)
 const countyName = computed(() => catalog.countyName(county.value))
 const unknownCounty = computed(
   () => !!county.value && catalog.counties.length > 0 && !countyName.value,
@@ -195,7 +205,7 @@ async function share() {
     </div>
     <div v-else class="component-grid">
       <ComponentCard
-        v-for="c in dashboard.components"
+        v-for="c in gridComponents"
         :key="c.slug"
         :class="{ wide: c.size === 'wide' }"
         :component="c"
@@ -203,11 +213,34 @@ async function share() {
         @select-county="selectCounty"
       />
     </div>
-    <EarthquakeReports v-if="slug === 'earthquake' && !map && dashboard" />
+    <div v-if="slug === 'earthquake' && !map && dashboard" class="quake-pair">
+      <ComponentCard
+        v-if="pairedCard"
+        :component="pairedCard"
+        :county="county"
+        @select-county="selectCounty"
+      />
+      <EarthquakeReports scroll />
+    </div>
   </div>
 </template>
 
 <style scoped>
+.quake-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 26rem;
+  gap: var(--font-m);
+  margin-top: var(--font-m);
+}
+@media (min-width: 65.625em) {
+  .quake-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.quake-pair > .component-card {
+  height: 100%;
+}
 .typhoon-links,
 .typhoon-period {
   display: flex;

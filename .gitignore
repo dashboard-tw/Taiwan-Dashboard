@@ -14,6 +14,8 @@ Thumbs.db
 
 # Go
 backend/bin/
+backend/.idea/
+backend/.vscode/
 *.exe
 *.test
 coverage.out
@@ -22,6 +24,8 @@ coverage.out
 frontend/node_modules/
 frontend/dist/
 frontend/coverage/
+frontend/.idea/
+frontend/.vscode/
 
 # 其他
 *.log

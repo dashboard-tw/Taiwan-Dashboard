@@ -62,7 +62,7 @@ func TopicOf(id string) string {
 	return "living"
 }
 
-var Datasets = append(append([]Dataset{}, coreDatasets...), moreDatasets...)
+var Datasets = append(append(append([]Dataset{}, coreDatasets...), moreDatasets...), cwaDatasets...)
 
 const (
 	typhoonFixCols = `f.typhoon_id, t.name_zh, t.name_en, t.ty_no, f.kind, f.issued_at, f.forecast_hour, f.valid_at,

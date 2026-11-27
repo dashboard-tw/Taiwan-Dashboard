@@ -164,6 +164,17 @@ export const TEMP_LEVELS: Level[] = [
   { min: 35, label: '35 以上', color: TEMP_HOT[2], ink: '#ffffff' },
 ]
 
+// 與平年相比的氣溫差
+export const TEMP_ANOMALY_LEVELS: Level[] = [
+  { min: -Infinity, label: '低 2 度以上', color: TEMP_COLD[0], ink: '#ffffff' },
+  { min: -2, label: '低 1–2 度', color: TEMP_COLD[1], ink: '#ffffff' },
+  { min: -1, label: '低 0.5–1 度', color: TEMP_COLD[2], ink: '#1c1917' },
+  { min: -0.5, label: '差不多', color: '#b9b4ab', ink: '#1c1917' },
+  { min: 0.5, label: '高 0.5–1 度', color: TEMP_HOT[0], ink: '#1c1917' },
+  { min: 1, label: '高 1–2 度', color: TEMP_HOT[1], ink: '#1c1917' },
+  { min: 2, label: '高 2 度以上', color: TEMP_HOT[2], ink: '#ffffff' },
+]
+
 const WIND_RAMP = ['#8cc47c', '#5aa553', '#378a3f', '#25732f'] as const
 
 export const WIND_LEVELS: Level[] = [
@@ -180,6 +191,31 @@ export const RAIN_CHANCE_LEVELS: Level[] = [
   { min: 50, label: '50–70%', color: RAIN_RAMP[1], ink: '#1c1917' },
   { min: 70, label: '70–90%', color: RAIN_RAMP[2], ink: '#ffffff' },
   { min: 90, label: '90% 以上', color: RAIN_RAMP[3], ink: '#ffffff' },
+]
+
+// 冷傷害指數越低越冷
+export const COLD_INJURY_LEVELS: Level[] = [
+  { min: -Infinity, label: '10 以下', color: TEMP_COLD[0], ink: '#ffffff' },
+  { min: 10, label: '10–12', color: TEMP_COLD[1], ink: '#ffffff' },
+  { min: 12, label: '12–14', color: TEMP_COLD[2], ink: '#1c1917' },
+  { min: 14, label: '14 以上', color: 'var(--map-empty)', ink: 'var(--text-primary)' },
+]
+
+// 熱傷害指數越高越容易中暑
+export const HEAT_INJURY_LEVELS: Level[] = [
+  { min: -Infinity, label: '26 以下', color: 'var(--map-empty)', ink: 'var(--text-primary)' },
+  { min: 26, label: '26–29', color: TEMP_HOT[0], ink: '#1c1917' },
+  { min: 29, label: '29–32', color: TEMP_HOT[1], ink: '#1c1917' },
+  { min: 32, label: '32 以上', color: TEMP_HOT[2], ink: '#ffffff' },
+]
+
+// 今年累積雨量占平年的百分比
+export const RAIN_NORMAL_LEVELS: Level[] = [
+  { min: 0, label: '50% 以下', color: TEMP_HOT[2], ink: '#ffffff' },
+  { min: 50, label: '50–80%', color: TEMP_HOT[0], ink: '#1c1917' },
+  { min: 80, label: '80–120%', color: '#b9b4ab', ink: '#1c1917' },
+  { min: 120, label: '120–150%', color: RAIN_RAMP[1], ink: '#1c1917' },
+  { min: 150, label: '150% 以上', color: RAIN_RAMP[3], ink: '#ffffff' },
 ]
 
 export const CLOSURE_LEVELS: Level[] = [
@@ -296,6 +332,10 @@ export function levelsFor(slug: string, topic: string, unit: string): Level[] | 
   if (slug === 'rain-by-county') return RAIN_24H_LEVELS
   if (slug === 'rain-1hr-top') return RAIN_1H_LEVELS
   if (slug === 'weather-warning-by-county') return WEATHER_WARNING_LEVELS
+  if (slug === 'temp-vs-normal') return TEMP_ANOMALY_LEVELS
+  if (slug === 'rain-vs-normal') return RAIN_NORMAL_LEVELS
+  if (slug === 'cold-injury') return COLD_INJURY_LEVELS
+  if (slug === 'heat-injury') return HEAT_INJURY_LEVELS
   if (unit === '°C') return TEMP_LEVELS
   if (slug === 'forecast-rain-chance') return RAIN_CHANCE_LEVELS
   if (

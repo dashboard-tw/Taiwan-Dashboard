@@ -5,6 +5,8 @@ import { getQuakes, type Quake } from '../api/client'
 import { intensityLevel, QUAKE_KINDS, quakePlace, quakeTime } from '../lib/quake'
 import { formatNumber } from '../lib/format'
 
+const props = defineProps<{ scroll?: boolean }>()
+
 const quakes = ref<Quake[] | null>(null)
 const failed = ref(false)
 const showAll = ref(false)
@@ -20,7 +22,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="card reports" aria-labelledby="quake-reports-title">
+  <section
+    class="card reports"
+    :class="{ scroll: props.scroll }"
+    aria-labelledby="quake-reports-title"
+  >
     <h2 id="quake-reports-title">最近的地震報告</h2>
     <p class="muted small">資料來源：交通部中央氣象署。點一份報告可以看各縣市震度與報告圖。</p>
 
@@ -30,7 +36,7 @@ onMounted(async () => {
     </ul>
     <p v-else-if="!quakes.length" class="muted">目前沒有地震報告。</p>
     <ul v-else class="list">
-      <li v-for="q in showAll ? quakes : quakes.slice(0, FIRST)" :key="q.id">
+      <li v-for="q in showAll || props.scroll ? quakes : quakes.slice(0, FIRST)" :key="q.id">
         <RouterLink :to="`/earthquake/report/${q.id}`" class="row">
           <span class="when">{{ quakeTime(q.origin_time) }}</span>
           <span class="where">
@@ -57,7 +63,7 @@ onMounted(async () => {
       </li>
     </ul>
     <button
-      v-if="quakes && quakes.length > FIRST"
+      v-if="!props.scroll && quakes && quakes.length > FIRST"
       type="button"
       class="more"
       @click="showAll = !showAll"
@@ -71,6 +77,18 @@ onMounted(async () => {
 .reports {
   margin-top: var(--font-m);
   padding: var(--font-m);
+}
+/* 固定高度，清單在框內捲動 */
+.reports.scroll {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 0;
+}
+.reports.scroll .list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 h2 {
   font-size: var(--font-ms);

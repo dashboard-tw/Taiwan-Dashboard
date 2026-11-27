@@ -162,7 +162,7 @@ func TestPublicComponentList(t *testing.T) {
 	if strings.Contains(body, "SELECT") || strings.Count(body, `"slug":`) != publishedSeed(t) {
 		t.Errorf("unexpected list %s", body)
 	}
-	if !strings.HasPrefix(strings.SplitN(body, `"slug":"`, 2)[1], "wind-top") ||
+	if !strings.HasPrefix(strings.SplitN(body, `"slug":"`, 2)[1], "radar-image") ||
 		!strings.Contains(strings.SplitN(body, `"topic":"`, 2)[1][:10], "weather") {
 		t.Errorf("list should start with the weather dashboard's first card: %.200s", body)
 	}

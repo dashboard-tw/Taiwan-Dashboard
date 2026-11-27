@@ -86,7 +86,7 @@ const hasClient = computed(() => (state.value ? state.value.clients.length > 0 :
             <li>等待審核</li>
             <li>通過後上架</li>
           </ol>
-          <p class="muted small">上架後修改內容，需要重新審核。</p>
+          <p class="muted small">上架後若修改內容，將需要重新審核。</p>
         </section>
       </div>
 

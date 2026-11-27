@@ -334,6 +334,32 @@ export interface QuakeDetail extends Quake {
   lon: number | null
   lat: number | null
   intensities: { county_code: string; county: string; intensity: string; rank: number }[]
+  shakemap_url: string | null
+  report_type: string | null
+  remark: string | null
+  stations: QuakeStation[]
+}
+
+export interface QuakeStation {
+  id: string
+  name: string
+  county_code: string | null
+  county: string | null
+  lon: number | null
+  lat: number | null
+  intensity: string | null
+  rank: number | null
+  pga_gal: number | null
+  pga_ew_gal: number | null
+  pga_ns_gal: number | null
+  pga_v_gal: number | null
+  pgv_kine: number | null
+  pgv_ew_kine: number | null
+  pgv_ns_kine: number | null
+  pgv_v_kine: number | null
+  distance_km: number | null
+  back_azimuth: number | null
+  wave_url: string | null
 }
 
 export async function getQuakes(force = false): Promise<Quake[]> {

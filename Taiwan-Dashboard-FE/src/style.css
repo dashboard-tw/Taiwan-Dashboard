@@ -229,6 +229,10 @@ button {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+/* 清單類的長文字卡片佔滿一整列 */
+.component-grid > .wide {
+  grid-column: 1 / -1;
+}
 
 .btn-highlight {
   display: inline-flex;
